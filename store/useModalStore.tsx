@@ -11,3 +11,5 @@ export const useModalStore = create<ModalState>((set) => ({
   openModal: () => set({ isOpen: true }),
   closeModal: () => set({ isOpen: false }),
 }));
+
+export default useModalStore;

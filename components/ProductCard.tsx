@@ -1,10 +1,7 @@
-"use client";
-import Image from "next/image";
 import { useState } from "react";
-import { Plus, Minus } from "lucide-react";
+import Image from "next/image";
+import { Plus, Minus, ShoppingCart } from "lucide-react";
 import { useCartStore } from "@/store/useCartStore";
-import { useModalStore } from "@/store/useModalStore";
-import Modal from "./ProductModal";
 
 interface ProductCardProps {
   image: string;
@@ -42,54 +39,55 @@ const ProductCard: React.FC<ProductCardProps> = ({
   };
 
   return (
-    <div className="w-[22rem] h-[28rem] bg-white rounded-[1.5rem] ">
-      <div className="bg-gray-100">
+    <div className="bg-white rounded-lg shadow-md ">
+      <div className="relative h-40 sm:h-50 md:h-58">
         <Image
           src={image}
-          layout="responsive"
-          width={320}
-          height={230}
           alt={alt}
+          layout="fill"
+          objectFit="cover"
+          className="transition-opacity duration-300 hover:opacity-90"
         />
       </div>
-      <div className="py-4 px-3 space-y-2">
-        <h3
-          className="text-xl font-semibold cursor-pointer hover:text-green-600"
-          onClick={onClick}
-        >
-          {name}
-        </h3>
-        <p>{description}</p>
-        <p className="text-black font-medium">{price}</p>
-        <div className="flex justify-between">
-          <p className="text-sm text-gray-600">Farm: {farm}</p>
-          <p className="text-sm text-gray-600">Stock: {sold}</p>
-        </div>
-      </div>
-
-      <div className="mt-4 px-3 flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <button
-            onClick={decrementQuantity}
-            className="bg-gray-200 p-3 rounded-md hover:bg-gray-300"
+      <div className="p-4 space-y-2">
+        <div className="flex flex-col lg:flex-row justify-start lg:justify-between items-start lg:items-center">
+          <h3
+            className="text-md md:text-lg font-semibold text-gray-800 truncate hover:text-green-600 cursor-pointer"
+            onClick={onClick}
           >
-            <Minus className="text-slate-500" size={15} />
-          </button>
-          <p>{quantity}</p>
+            {name}
+          </h3>
+          <span className="text-green-600 font-bold">{price}</span>
+        </div>
+        <p className="text-sm text-gray-600 line-clamp-2">{description}</p>
+        <div className="flex justify-between text-xs text-gray-500">
+          <span>{farm}</span>
+          <span>Stock: {sold}</span>
+        </div>
+        <div className="flex flex-col lg:flex-row items-center justify-center lg:justify-between mt-4 space-y-2">
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={decrementQuantity}
+              className="p-1 rounded-full bg-gray-200 hover:bg-gray-300 transition-colors duration-200"
+            >
+              <Minus size={16} />
+            </button>
+            <span className="w-8 text-center">{quantity}</span>
+            <button
+              onClick={incrementQuantity}
+              className="p-1 rounded-full bg-gray-200 hover:bg-gray-300 transition-colors duration-200"
+            >
+              <Plus size={16} />
+            </button>
+          </div>
           <button
-            onClick={incrementQuantity}
-            className="bg-gray-200 p-3 rounded-md hover:bg-gray-300"
+            onClick={handleAddToCart}
+            className="flex items-center space-x-1 bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200"
           >
-            <Plus className="text-slate-500" size={15} />
+            <ShoppingCart size={16} />
+            <span className="text-sm">Add to Cart</span>
           </button>
         </div>
-
-        <button
-          onClick={handleAddToCart}
-          className="flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
-        >
-          <span>Add to Cart</span>
-        </button>
       </div>
     </div>
   );
