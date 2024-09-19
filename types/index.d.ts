@@ -5,19 +5,14 @@ export interface ProductDetail {
   price: string | number;
   description: string;
   stock: string | number;
-  image: string;
-  farmName: string;
-  location: string;
+  images: string[];
+  farm: Farm;
   deliveryAvailable: boolean;
 }
 
-export type ProductCardDetail = {
-  id: string;
+export interface Farm {
   name: string;
-  category: string;
-  price: string;
-  description: string;
-  stock: string;
-  image: string;
-  farmName: string;
-};
+  about: string;
+  city: string;
+  country: string;
+}

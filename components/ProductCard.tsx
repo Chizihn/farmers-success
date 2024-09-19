@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Plus, Minus, ShoppingCart } from "lucide-react";
-import { useCartStore } from "@/store/useCartStore";
+import useCartStore from "@/store/useCartStore";
 
 interface ProductCardProps {
   image: string;
@@ -20,12 +20,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
   name,
   price,
   description,
-  farm,
+
   sold,
   onClick,
 }) => {
   const [quantity, setQuantity] = useState(0);
-  const addToCart = useCartStore((state) => state.addToCart);
+  const { addToCart } = useCartStore();
 
   const incrementQuantity = () => setQuantity((prev) => prev + 1);
   const decrementQuantity = () =>
@@ -33,7 +33,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
   const handleAddToCart = () => {
     if (quantity > 0) {
-      addToCart({ name, price, quantity });
+      addToCart({ name, price, quantity, image });
       setQuantity(0);
     }
   };
@@ -59,11 +59,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </h3>
           <span className="text-green-600 font-bold">{price}</span>
         </div>
-        <p className="text-sm text-gray-600 line-clamp-2">{description}</p>
-        <div className="flex justify-between text-xs text-gray-500">
-          <span>{farm}</span>
-          <span>Stock: {sold}</span>
-        </div>
+        <p className="text-sm text-gray-600 line-clamp-2 ">{description}</p>
+
+        <span className="text-xs text-gray-500">Stock: {sold}</span>
+
         <div className="flex flex-col lg:flex-row items-center justify-center lg:justify-between mt-4 space-y-2">
           <div className="flex items-center space-x-2">
             <button

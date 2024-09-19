@@ -12,16 +12,16 @@ const ProductDetails: React.FC = () => {
 
   const [quantity, setQuantity] = useState(1);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [activeTab, setActiveTab] = useState("Description");
   const addToCart = useCartStore((state) => state.addToCart);
 
   const product = farmProducts.find((p) => p.id === id);
 
-  const productImages = product?.images || [
-    product?.image,
-    product?.image,
-    product?.image,
-    product?.image,
-  ];
+  const productImages = Array.isArray(product?.images)
+    ? product.images
+    : product?.images[0]
+    ? [product.images[0]]
+    : [];
 
   const incrementQuantity = () => {
     const maxStock = product?.stock
@@ -43,7 +43,7 @@ const ProductDetails: React.FC = () => {
             ? parseFloat(product.price)
             : product.price,
         quantity,
-        image: product.image,
+        image: product.images[0],
       });
       setQuantity(1);
     }
@@ -51,16 +51,44 @@ const ProductDetails: React.FC = () => {
 
   const formatPrice = (price: string | number) => {
     const numPrice = typeof price === "string" ? parseFloat(price) : price;
-    return `N ${numPrice.toFixed(2)}`;
+    return `${numPrice.toFixed(2)}`;
   };
 
+  const mockDescription = `
+  These organic tomatoes are cultivated using sustainable farming methods
+  without the use of pesticides or artificial fertilizers. They are freshly picked and packed
+  to maintain their natural flavor and nutrients, perfect for salads, sauces, or eating raw.
+`;
+
+  const mockReviews = [
+    {
+      id: 1,
+      name: "John Doe",
+      rating: 5,
+      comment: "The tomatoes were fresh and flavorful! I loved the quality.",
+    },
+    {
+      id: 2,
+      name: "Jane Smith",
+      rating: 4,
+      comment: "Great quality, but I wish the delivery was a bit faster.",
+    },
+  ];
+
+  const mockAboutFarm = `
+  Green Acres Farm is dedicated to providing high-quality organic produce. 
+  Located in Lagos, Nigeria, the farm follows sustainable agricultural practices 
+  to ensure that their products are both healthy and environmentally friendly. 
+  With over 10 years of experience, Green Acres has become a trusted name in organic farming.
+`;
+
   return (
-    <div className="container mx-auto py-6 px-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="flex flex-col gap-4">
-          <div className="relative h-60 md:h-96">
+    <div className="max-w-screen-2xl w-full mx-auto py-6 px-4">
+      <div className="flex flex-col md:flex-row justify-evenly gap-6">
+        <div className="w-full lg:w-[60%] flex flex-col gap-4">
+          <div className="relative h-[12rem] md:h-96">
             <Image
-              src={productImages[selectedImageIndex]}
+              src={`${productImages[selectedImageIndex]}`}
               alt={`${product?.name}`}
               layout="fill"
               objectFit="cover"
@@ -68,45 +96,53 @@ const ProductDetails: React.FC = () => {
             />
           </div>
           <div className="flex flex-row gap-2">
-            {productImages.map((img, index) => (
-              <div
-                key={index}
-                className="w-1/4 cursor-pointer"
-                onClick={() => setSelectedImageIndex(index)}
-              >
-                <Image
-                  src={img}
-                  alt={`${product?.name} thumbnail`}
-                  width={100}
-                  height={100}
-                  layout="responsive"
-                  className={`rounded-lg ${
-                    index === selectedImageIndex
-                      ? "border-2 border-green-500"
-                      : ""
-                  }`}
-                />
+            {productImages.length > 1 && (
+              <div className="flex flex-row gap-2">
+                {productImages.map((img, index) => (
+                  <div
+                    key={index}
+                    className="w-1/4 cursor-pointer"
+                    onClick={() => setSelectedImageIndex(index)}
+                  >
+                    <Image
+                      src={img}
+                      alt={`${product?.name} thumbnail`}
+                      width={100}
+                      height={100}
+                      layout="responsive"
+                      className={`rounded-lg ${
+                        index === selectedImageIndex
+                          ? "border-2 border-green-500"
+                          : ""
+                      }`}
+                    />
+                  </div>
+                ))}
               </div>
-            ))}
+            )}
           </div>
         </div>
 
-        <div className="w-full lg:w-[30rem] px-[2rem] flex flex-col justify-between">
+        <div className="w-full lg:w-[35rem] px-[1rem] lg:px-[2rem] py-6 flex flex-col justify-between border-2 border-slate-200 rounded-md">
           <div>
-            <p className="flex gap-1 text-green-600 font-bold mb-3">
+            <p className="flex gap-1 text-green-600 font-bold mb-1 lg:mb-3">
               <span>
                 <Shrub />
               </span>{" "}
-              {product?.farmName}
+              {product?.farm.name}
             </p>
-            <div className="mb-4 space-y-6">
-              <h1 className="text-3xl font-bold mb-2">{product?.name}</h1>
+            <div className="mb-4 space-y-3 md:space-y-6">
+              <div className="mb-2 space-y-1">
+                <h1 className="text-3xl font-bold">{product?.name}</h1>
+                <p className="text-slate-600">{product?.description}</p>
+              </div>
               <p className="text-3xl font-semibold mb-4">
-                {formatPrice(product?.price || 0)}
+                N {formatPrice(product?.price || 0)}
               </p>
+
               <p>
                 <span className="font-semibold">Location:</span>{" "}
-                {product?.location}
+                {`${product?.farm.city}, ${product?.farm.country}`}
               </p>
               <p>
                 <span className="font-semibold">Stock:</span> {product?.stock}{" "}
@@ -118,7 +154,7 @@ const ProductDetails: React.FC = () => {
               </p>
             </div>
           </div>
-          <div className="flex flex-col space-y-4">
+          <div className="flex flex-col space-y-6">
             <div className="flex items-center space-x-4">
               <button
                 onClick={decrementQuantity}
@@ -139,23 +175,56 @@ const ProductDetails: React.FC = () => {
               className="flex items-center justify-center space-x-2 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors duration-200 w-full md:w-auto"
             >
               <ShoppingCart size={20} />
-              <span>Add to Cart</span>
+              <span className="font-semibold">Add to Cart</span>
             </button>
           </div>
         </div>
       </div>
-      <div className="mt-8 flex flex-col md:flex-row gap-8">
+
+      <div className="mt-[3rem] flex flex-col md:flex-row gap-8">
         <section className="w-full md:w-2/3">
-          <div className="flex space-x-4 mb-4">
-            <h2 className="font-semibold cursor-pointer">Description</h2>
-            <h2 className="font-semibold cursor-pointer">Review</h2>
-            <h2 className="font-semibold cursor-pointer">About farm</h2>
+          <div className="flex justify-start space-x-8 mb-4">
+            {["Description", "Review", "About Farm"].map((tab) => (
+              <h2
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`font-semibold text-2xl cursor-pointer ${
+                  activeTab === tab ? "text-green-600" : ""
+                }`}
+              >
+                {tab}
+              </h2>
+            ))}
           </div>
-          {/* Add content for Description, Review, and About farm here */}
+
+          {activeTab === "Description" && (
+            <div>
+              <p className="text-slate-700">{mockDescription}</p>
+            </div>
+          )}
+          {activeTab === "Review" && (
+            <div className="space-y-4">
+              {mockReviews.map((review) => (
+                <div key={review.id} className="border-b pb-4">
+                  <p className="font-bold">{review.name}</p>
+                  <p className="text-yellow-500">
+                    {`⭐`.repeat(review.rating)}
+                  </p>
+                  <p>{review.comment}</p>
+                </div>
+              ))}
+            </div>
+          )}
+          {activeTab === "About Farm" && (
+            <div>
+              <p className="text-slate-700">{mockAboutFarm}</p>
+            </div>
+          )}
         </section>
+
         <aside className="w-full md:w-1/3">
-          <h2 className="font-semibold mb-4">Review</h2>
-          {/* Add review content here */}
+          <h2 className="font-semibold mb-4"></h2>
+          Nothing yet
         </aside>
       </div>
     </div>

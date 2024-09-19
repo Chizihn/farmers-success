@@ -8,7 +8,7 @@ interface CartItem {
   image: string;
 }
 
-interface CartState {
+interface CartStore {
   cartItems: CartItem[];
   addToCart: (item: CartItem) => void;
   removeFromCart: (itemName: string) => void;
@@ -17,25 +17,25 @@ interface CartState {
   totalPrice: () => number;
 }
 
-export const useCartStore = create<CartState>()(
+const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({
       cartItems: [],
-      addToCart: (newItem) =>
+      addToCart: (item) =>
         set((state) => {
           const existingItem = state.cartItems.find(
-            (item) => item.name === newItem.name
+            (i) => i.name === item.name
           );
           if (existingItem) {
             return {
-              cartItems: state.cartItems.map((item) =>
-                item.name === newItem.name
-                  ? { ...item, quantity: item.quantity + newItem.quantity }
-                  : item
+              cartItems: state.cartItems.map((i) =>
+                i.name === item.name
+                  ? { ...i, quantity: i.quantity + item.quantity }
+                  : i
               ),
             };
           } else {
-            return { cartItems: [...state.cartItems, newItem] };
+            return { cartItems: [...state.cartItems, item] };
           }
         }),
       removeFromCart: (itemName) =>
@@ -45,22 +45,20 @@ export const useCartStore = create<CartState>()(
       updateQuantity: (itemName, newQuantity) =>
         set((state) => ({
           cartItems: state.cartItems.map((item) =>
-            item.name === itemName && newQuantity > 0
-              ? { ...item, quantity: newQuantity }
-              : item
+            item.name === itemName ? { ...item, quantity: newQuantity } : item
           ),
         })),
       totalItems: () =>
-        get().cartItems.reduce((sum, item) => sum + item.quantity, 0),
+        get().cartItems.reduce((total, item) => total + item.quantity, 0),
       totalPrice: () =>
         get().cartItems.reduce(
-          (sum, item) =>
-            sum + parseFloat(item.price.toString()) * item.quantity,
+          (total, item) =>
+            total + parseFloat(item.price.toString()) * item.quantity,
           0
         ),
     }),
     {
-      name: "cart-store",
+      name: "cart-storage",
       storage: createJSONStorage(() => localStorage),
     }
   )

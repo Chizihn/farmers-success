@@ -1,5 +1,5 @@
-import { X, Plus, Minus } from "lucide-react";
-import { useCartStore } from "@/store/useCartStore";
+import useCartStore from "@/store/useCartStore";
+import { X, Plus, Minus, Trash2 } from "lucide-react";
 import Image from "next/image";
 
 interface CartModalProps {
@@ -14,9 +14,9 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
-      <div className="bg-white p-6 rounded-lg max-w-md w-full h-screen lg:h-auto ">
-        <div className="flex justify-between items-center mb-4">
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4">
+      <div className="bg-white rounded-lg max-w-md w-full h-[90vh] flex flex-col">
+        <div className="flex justify-between items-center p-4 border-b">
           <h2 className="text-2xl font-bold">Your Cart</h2>
           <button
             onClick={onClose}
@@ -25,30 +25,32 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
             <X size={24} />
           </button>
         </div>
+
         {cartItems.length === 0 ? (
-          <p>Your cart is empty.</p>
+          <div className="flex-grow flex items-center justify-center">
+            <p className="text-gray-500 text-lg">Your cart is empty.</p>
+          </div>
         ) : (
-          <div className="h-auto flex flex-col justify-between">
-            {cartItems.map((item) => (
-              <div
-                key={item.name}
-                className="w-full grid grid-cols-3 justify-items-center mb-4"
-              >
-                <div className="flex gap-2">
-                  <div>
+          <>
+            <div className="flex-grow overflow-y-auto p-4">
+              {cartItems.map((item) => (
+                <div
+                  key={item.name}
+                  className="flex items-center space-x-4 mb-4 pb-4 border-b last:border-b-0"
+                >
+                  <div className="w-20 h-20 relative flex-shrink-0">
                     <Image
                       src={item.image}
-                      width={50}
-                      height={50}
+                      layout="fill"
                       objectFit="cover"
                       alt={item.name}
+                      className="rounded-md"
                     />
                   </div>
-                  <h3 className="font-semibold">{item.name}</h3>
-                </div>
-                <div className="flex items-center">
-                  <div>
-                    <div>
+                  <div className="flex-grow">
+                    <h3 className="font-semibold text-lg">{item.name}</h3>
+                    <p className="text-gray-600">N{item.price}</p>
+                    <div className="flex items-center mt-2">
                       <button
                         onClick={() =>
                           updateQuantity(
@@ -60,7 +62,9 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
                       >
                         <Minus size={16} />
                       </button>
-                      <span className="mx-2">{item.quantity}</span>
+                      <span className="mx-2 min-w-[20px] text-center">
+                        {item.quantity}
+                      </span>
                       <button
                         onClick={() =>
                           updateQuantity(item.name, item.quantity + 1)
@@ -70,28 +74,26 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
                         <Plus size={16} />
                       </button>
                     </div>
-                    <button
-                      onClick={() => removeFromCart(item.name)}
-                      className="ml-2 text-red-500 hover:text-red-700"
-                    >
-                      Remove
-                    </button>
                   </div>
+                  <button
+                    onClick={() => removeFromCart(item.name)}
+                    className="text-red-500 hover:text-red-700 p-2"
+                  >
+                    <Trash2 size={20} />
+                  </button>
                 </div>
-                <p className="text-gray-600">{item.price}</p>
+              ))}
+            </div>
+            <div className="border-t p-4">
+              <div className="flex justify-between items-center mb-4">
+                <span className="text-xl font-bold">Total:</span>
+                <span className="text-xl font-bold">N{totalPrice()}</span>
               </div>
-            ))}
-            <div>
-              <div className="mt-4 pt-4 border-t border-gray-200">
-                <p className="text-xl font-bold">
-                  Total: N{totalPrice().toFixed(2)}
-                </p>
-              </div>
-              <button className="mt-4 w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700">
+              <button className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors duration-200">
                 Checkout
               </button>
             </div>
-          </div>
+          </>
         )}
       </div>
     </div>
