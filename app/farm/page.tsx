@@ -1,11 +1,10 @@
-import React from "react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
-const FarmPage = () => {
-  return (
-    <div>
-      <h1>Farm page</h1>
-    </div>
-  );
+export const RedirectToFarms = () => {
+  const router = useRouter();
+  useEffect(() => {
+    router.push("/farms");
+  });
+  return <></>;
 };
-
-export default FarmPage;

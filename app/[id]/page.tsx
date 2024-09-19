@@ -5,6 +5,8 @@ import { Minus, Plus, ShoppingCart, Shrub } from "lucide-react";
 import Image from "next/image";
 import { farmProducts } from "@/components/data";
 import useCartStore from "@/store/useCartStore";
+import Link from "next/link";
+import { createSlug } from "@/utils";
 
 const ProductDetails: React.FC = () => {
   const params = useParams();
@@ -54,12 +56,6 @@ const ProductDetails: React.FC = () => {
     return `${numPrice.toFixed(2)}`;
   };
 
-  const mockDescription = `
-  These organic tomatoes are cultivated using sustainable farming methods
-  without the use of pesticides or artificial fertilizers. They are freshly picked and packed
-  to maintain their natural flavor and nutrients, perfect for salads, sauces, or eating raw.
-`;
-
   const mockReviews = [
     {
       id: 1,
@@ -74,13 +70,6 @@ const ProductDetails: React.FC = () => {
       comment: "Great quality, but I wish the delivery was a bit faster.",
     },
   ];
-
-  const mockAboutFarm = `
-  Green Acres Farm is dedicated to providing high-quality organic produce. 
-  Located in Lagos, Nigeria, the farm follows sustainable agricultural practices 
-  to ensure that their products are both healthy and environmentally friendly. 
-  With over 10 years of experience, Green Acres has become a trusted name in organic farming.
-`;
 
   return (
     <div className="max-w-screen-2xl w-full mx-auto py-6 px-4">
@@ -125,12 +114,15 @@ const ProductDetails: React.FC = () => {
 
         <div className="w-full lg:w-[35rem] px-[1rem] lg:px-[2rem] py-6 flex flex-col justify-between border-2 border-slate-200 rounded-md">
           <div>
-            <p className="flex gap-1 text-green-600 font-bold mb-1 lg:mb-3">
+            <Link
+              href={`/farms/${createSlug(product!.farm.name)}`}
+              className="flex gap-1 text-green-600 hover:text-green-700 font-bold mb-1 lg:mb-3"
+            >
               <span>
                 <Shrub />
               </span>{" "}
               {product?.farm.name}
-            </p>
+            </Link>
             <div className="mb-4 space-y-3 md:space-y-6">
               <div className="mb-2 space-y-1">
                 <h1 className="text-3xl font-bold">{product?.name}</h1>
@@ -183,13 +175,13 @@ const ProductDetails: React.FC = () => {
 
       <div className="mt-[3rem] flex flex-col md:flex-row gap-8">
         <section className="w-full md:w-2/3">
-          <div className="flex justify-start space-x-8 mb-4">
+          <div className="flex justify-start space-x-4 mb-4">
             {["Description", "Review", "About Farm"].map((tab) => (
               <h2
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`font-semibold text-2xl cursor-pointer ${
-                  activeTab === tab ? "text-green-600" : ""
+                className={`font-semibold text-xl cursor-pointer transition-all duration-100 ease ${
+                  activeTab === tab ? "border-b-4 border-green-600" : ""
                 }`}
               >
                 {tab}
@@ -199,7 +191,7 @@ const ProductDetails: React.FC = () => {
 
           {activeTab === "Description" && (
             <div>
-              <p className="text-slate-700">{mockDescription}</p>
+              <p className="text-slate-700">{product!.farm.about}</p>
             </div>
           )}
           {activeTab === "Review" && (
@@ -217,7 +209,7 @@ const ProductDetails: React.FC = () => {
           )}
           {activeTab === "About Farm" && (
             <div>
-              <p className="text-slate-700">{mockAboutFarm}</p>
+              <p className="text-slate-700">{product!.farm.about}</p>
             </div>
           )}
         </section>

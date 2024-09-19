@@ -13,9 +13,11 @@ export const farmProducts = [
       "/images/fruits.jpg",
     ],
     farm: {
+      id: "1",
       name: "Port-harcourt Greens",
       about:
         "Port-harcourt Greens is committed to sustainable farming practices, focusing on organic methods that promote soil health and biodiversity. Located in the lush region of Port-harcourt, our farm produces high-quality vegetables that nourish both body and planet.",
+      image: "/images/farm.jpeg",
       city: "Port-harcourt",
       country: "Nigeria",
     },
@@ -35,9 +37,11 @@ export const farmProducts = [
       "/images/fruits.jpg",
     ],
     farm: {
+      id: "2",
       name: "Green Valley Farms",
       about:
         "At Green Valley Farms, we pride ourselves on our commitment to organic practices and community welfare. Our spinach is grown in nutrient-rich soil, ensuring that every leaf is packed with vitamins and minerals. We believe in growing food that not only nourishes our bodies but also supports local ecosystems.",
+      image: "/images/farm.jpeg",
       city: "Ibadan",
       country: "Nigeria",
     },
@@ -57,9 +61,11 @@ export const farmProducts = [
       "/images/fruits.jpg",
     ],
     farm: {
+      id: "3",
       name: "Sunny Acres Farm",
       about:
         "Sunny Acres Farm is dedicated to producing fresh, high-quality vegetables. Our lettuce is grown in an environment that allows it to thrive naturally, without the use of harmful chemicals. We are passionate about sustainability and aim to provide our community with healthy food options.",
+      image: "/images/farm.jpeg",
       city: "Lagos",
       country: "Nigeria",
     },
@@ -79,9 +85,11 @@ export const farmProducts = [
       "/images/fruits.jpg",
     ],
     farm: {
+      id: "4",
       name: "Tropical Fruit Farm",
       about:
         "Tropical Fruit Farm specializes in growing the sweetest, juiciest fruits in a sustainable manner. Our watermelons are grown under the warm sun, nurtured by the rich soils of our farm. We prioritize ecological balance and the health of our customers with every fruit we produce.",
+      image: "/images/farm.jpeg",
       city: "Benin City",
       country: "Nigeria",
     },
@@ -101,9 +109,11 @@ export const farmProducts = [
       "/images/fruits.jpg",
     ],
     farm: {
+      id: "5",
       name: "Herb Haven",
       about:
         "Herb Haven is a small family-owned farm that focuses on growing a variety of herbs, including basil. Our herbs are grown without synthetic fertilizers, ensuring that you receive the freshest, most flavorful ingredients for your cooking. We believe in supporting local farmers and maintaining organic farming practices.",
+      image: "/images/farm.jpeg",
       city: "Kano",
       country: "Nigeria",
     },
@@ -123,9 +133,11 @@ export const farmProducts = [
       "/images/fruits.jpg",
     ],
     farm: {
+      id: "6",
       name: "Banana Bliss Farm",
       about:
         "Banana Bliss Farm is dedicated to producing the sweetest bananas without the use of harmful pesticides. We cultivate our bananas with care, ensuring they ripen naturally under the sun. Our goal is to provide our customers with delicious fruit while promoting sustainable agricultural practices.",
+      image: "/images/farm.jpeg",
       city: "Port-harcourt",
       country: "Nigeria",
     },
@@ -145,9 +157,11 @@ export const farmProducts = [
       "/images/fruits.jpg",
     ],
     farm: {
+      id: "7",
       name: "Rainbow Roots Farm",
       about:
         "Rainbow Roots Farm is a vibrant farm dedicated to growing colorful, organic vegetables. Our carrots are cultivated with care, ensuring they are free from chemicals and full of flavor. We prioritize environmental stewardship and community engagement in all our farming practices.",
+      image: "/images/farm.jpeg",
       city: "Abuja",
       country: "Nigeria",
     },
@@ -167,9 +181,11 @@ export const farmProducts = [
       "/images/fruits.jpg",
     ],
     farm: {
+      id: "8",
       name: "Berry Good Farm",
       about:
         "Berry Good Farm is known for its high-quality strawberries, grown in an environmentally friendly manner. Our berries are picked at their peak ripeness to ensure the best flavor. We are passionate about promoting healthy eating and sustainable practices in our community.",
+      image: "/images/farm.jpeg",
       city: "Owerri",
       country: "Nigeria",
     },
@@ -189,9 +205,11 @@ export const farmProducts = [
       "/images/fruits.jpg",
     ],
     farm: {
+      id: "9",
       name: "Green Gold Farm",
       about:
         "Green Gold Farm specializes in growing premium avocados that are rich in flavor and nutrients. Our farming methods are designed to enhance the natural growth process while protecting the environment. We take pride in delivering fresh, high-quality produce to our customers.",
+      image: "/images/farm.jpeg",
       city: "Enugu",
       country: "Nigeria",
     },
@@ -211,9 +229,11 @@ export const farmProducts = [
       "/images/fruits.jpg",
     ],
     farm: {
+      id: "10",
       name: "Heritage Farms",
       about:
         "Heritage Farms is passionate about preserving traditional farming methods and heirloom varieties. Our heirloom tomatoes are cultivated with care, ensuring a rich flavor and vibrant colors. We believe in the importance of biodiversity in agriculture and strive to offer unique products to our customers.",
+      image: "/images/farm.jpeg",
       city: "Jos",
       country: "Nigeria",
     },
@@ -233,9 +253,11 @@ export const farmProducts = [
       "/images/fruits.jpg",
     ],
     farm: {
+      id: "11",
       name: "Pepper Paradise",
       about:
         "Pepper Paradise is dedicated to growing a variety of peppers using sustainable practices. Our peppers are vibrant, full of flavor, and grown without chemicals. We believe in creating a healthy food system that benefits both consumers and the environment.",
+      image: "/images/farm.jpeg",
       city: "Maiduguri",
       country: "Nigeria",
     },
@@ -255,9 +277,11 @@ export const farmProducts = [
       "/images/fruits.jpg",
     ],
     farm: {
+      id: "12",
       name: "Cucumber Cove",
       about:
         "Cucumber Cove specializes in growing fresh, crispy cucumbers in a pesticide-free environment. Our commitment to organic farming allows us to provide our customers with the highest quality produce. We believe that fresh food is essential for a healthy lifestyle.",
+      image: "/images/farm.jpeg",
       city: "Yola",
       country: "Nigeria",
     },
@@ -277,9 +301,11 @@ export const farmProducts = [
       "/images/fruits.jpg",
     ],
     farm: {
+      id: "13",
       name: "Citrus Grove",
       about:
         "Citrus Grove is a vibrant farm known for its delicious citrus fruits. Our lemons are grown naturally, ensuring a zesty flavor that enhances any dish or beverage. We focus on sustainable practices to protect our environment and deliver the best produce to our customers.",
+      image: "/images/farm.jpeg",
       city: "Abeokuta",
       country: "Nigeria",
     },
@@ -299,9 +325,11 @@ export const farmProducts = [
       "/images/fruits.jpg",
     ],
     farm: {
+      id: "14",
       name: "Kale Kingdom",
       about:
         "Kale Kingdom is dedicated to growing nutrient-dense kale and other leafy greens. Our farming practices prioritize health and sustainability, allowing us to offer fresh produce that nourishes both people and the planet. We are passionate about educating our community on healthy eating.",
+      image: "/images/farm.jpeg",
       city: "Port-harcourt",
       country: "Nigeria",
     },
@@ -321,9 +349,11 @@ export const farmProducts = [
       "/images/fruits.jpg",
     ],
     farm: {
+      id: "15",
       name: "Melon Meadows",
       about:
         "Melon Meadows focuses on cultivating sweet, juicy melons using organic farming methods. Our honeydew melons are grown with love and care, ensuring they reach peak ripeness before harvest. We are committed to sustainability and supporting local communities.",
+      image: "/images/farm.jpeg",
       city: "Calabar",
       country: "Nigeria",
     },
@@ -343,9 +373,11 @@ export const farmProducts = [
       "/images/fruits.jpg",
     ],
     farm: {
+      id: "16",
       name: "Garlic Garden",
       about:
         "Garlic Garden specializes in growing high-quality garlic using organic techniques. Our garlic is known for its rich flavor and health benefits. We believe in growing food that is both delicious and nourishing, supporting a healthy lifestyle for our community.",
+      image: "/images/farm.jpeg",
       city: "Kaduna",
       country: "Nigeria",
     },
@@ -365,9 +397,11 @@ export const farmProducts = [
       "/images/fruits.jpg",
     ],
     farm: {
+      id: "17",
       name: "Blueberry Bliss Farm",
       about:
         "Blueberry Bliss Farm is dedicated to producing the best blueberries in a sustainable manner. Our berries are handpicked to ensure they are bursting with flavor and nutrients. We are committed to eco-friendly farming practices that support our local environment.",
+      image: "/images/farm.jpeg",
       city: "Jos",
       country: "Nigeria",
     },
@@ -387,9 +421,11 @@ export const farmProducts = [
       "/images/fruits.jpg",
     ],
     farm: {
+      id: "18",
       name: "Ginger Grove",
       about:
         "Ginger Grove specializes in cultivating fresh ginger with a focus on quality and sustainability. Our ginger is grown in nutrient-rich soil, ensuring a robust flavor. We believe in the importance of organic farming for the health of our customers and the planet.",
+      image: "/images/farm.jpeg",
       city: "Uyo",
       country: "Nigeria",
     },
@@ -409,9 +445,11 @@ export const farmProducts = [
       "/images/fruits.jpg",
     ],
     farm: {
+      id: "19",
       name: "Fig Orchard",
       about:
         "Fig Orchard is dedicated to growing sweet, succulent figs using organic methods. Our figs are handpicked at peak ripeness for maximum flavor. We are committed to sustainable practices that support the health of our environment and the well-being of our community.",
+      image: "/images/farm.jpeg",
       city: "Ibandan",
       country: "Nigeria",
     },
@@ -431,9 +469,11 @@ export const farmProducts = [
       "/images/fruits.jpg",
     ],
     farm: {
+      id: "20",
       name: "Potato Patch",
       about:
         "Potato Patch focuses on growing high-quality organic potatoes. Our farming techniques prioritize soil health and biodiversity, ensuring that our potatoes are not only delicious but also sustainably produced. We are passionate about feeding our community with healthy food options.",
+      image: "/images/farm.jpeg",
       city: "Kano",
       country: "Nigeria",
     },
