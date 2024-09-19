@@ -38,7 +38,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
                   key={item.name}
                   className="flex items-center space-x-4 mb-4 pb-4 border-b last:border-b-0"
                 >
-                  <div className="w-20 h-20 relative flex-shrink-0">
+                  <div className="w-[6.5rem] h-[5rem] relative flex-shrink-0">
                     <Image
                       src={item.image}
                       layout="fill"
@@ -50,7 +50,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
                   <div className="flex-grow">
                     <h3 className="font-semibold text-lg">{item.name}</h3>
                     <p className="text-gray-600">N{item.price}</p>
-                    <div className="flex items-center mt-2">
+                    <div className="flex items-center mt-1">
                       <button
                         onClick={() =>
                           updateQuantity(
@@ -79,7 +79,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
                     onClick={() => removeFromCart(item.name)}
                     className="text-red-500 hover:text-red-700 p-2"
                   >
-                    <Trash2 size={20} />
+                    <Trash2 size={22} />
                   </button>
                 </div>
               ))}
@@ -89,7 +89,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
                 <span className="text-xl font-bold">Total:</span>
                 <span className="text-xl font-bold">N{totalPrice()}</span>
               </div>
-              <button className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors duration-200">
+              <button className="w-full bg-green-600 text-white font-semibold py-3 rounded-lg hover:bg-green-700 transition-colors duration-200">
                 Checkout
               </button>
             </div>
