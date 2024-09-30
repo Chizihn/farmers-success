@@ -1,10 +1,16 @@
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+"use client";
 
-export const RedirectToFarms = () => {
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+
+const RedirectToFarmsPage = () => {
   const router = useRouter();
+
   useEffect(() => {
     router.push("/farms");
-  });
-  return <></>;
+  }, [router]);
+
+  return <p>Redirecting...</p>;
 };
+
+export default RedirectToFarmsPage;
