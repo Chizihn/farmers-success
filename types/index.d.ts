@@ -16,3 +16,18 @@ export interface Farm {
   city: string;
   country: string;
 }
+
+export interface ProductCardData {
+  image: string;
+  alt: string;
+  name: string;
+  price: string;
+  description: string;
+  farm: string;
+  sold: string;
+  onClick: () => void;
+}
+
+export interface ProductCardProps {
+  product: ProductCardData;
+}

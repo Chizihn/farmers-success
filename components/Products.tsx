@@ -1,17 +1,16 @@
 "use client";
-import { SlidersHorizontal, X } from "lucide-react";
+import { SlidersHorizontal } from "lucide-react";
 import { farmProducts } from "@/components/data";
 import ProductCard from "./ProductCard";
 import Category from "./Category";
 import Modal from "./ProductModal";
 import { useModalStore } from "@/store/useModalStore";
 import { useState } from "react";
-import Image from "next/image";
 import Filter from "./Filter";
-import Cart from "./Cart";
-import Link from "next/link";
 import { ProductDetail } from "@/types";
-import { createSlug, formatPrice, formatStock } from "@/utils";
+import { formatPrice, formatStock } from "@/utils";
+import MobileFilter from "./MobileFilter";
+import ViewProduct from "./ViewProduct";
 
 const Products: React.FC = () => {
   const { isOpen, closeModal, openModal } = useModalStore();
@@ -66,14 +65,14 @@ const Products: React.FC = () => {
             </div>
           </div>
 
-          <div className="w-full h-full max-h-full overflow-y-auto grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 justify-items-center content-center gap-x-2 gap-y-6 px-3 lg:px-0">
+          <div className="w-full h-full max-h-full overflow-y-auto grid gap-6 px-3 lg:px-0 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {farmProducts.map((product) => (
               <ProductCard
                 key={product.id}
                 image={`${product.images[0]}`}
                 alt={product.description}
                 name={product.name}
-                price={`N ${formatPrice(product.price)}`}
+                price={`${formatPrice(product.price)}`}
                 description={product.description}
                 farm={product.farm.name}
                 sold={formatStock(product.stock)}
@@ -83,90 +82,16 @@ const Products: React.FC = () => {
           </div>
         </div>
 
-        {/* Modal for Product Details */}
         <Modal isOpen={isOpen}>
-          <div className="flex justify-between items-center p-3">
-            <button
-              className=" text-gray-500 hover:text-gray-800"
-              onClick={closeModal}
-            >
-              <X />
-            </button>
-            <Cart />
-          </div>
           {selectedProduct && (
-            <div className="p-3">
-              <div className="relative h-60 mb-4 rounded-lg overflow-hidden">
-                <Image
-                  src={selectedProduct.images[0]}
-                  alt={selectedProduct.name}
-                  layout="fill"
-                  objectFit="cover"
-                />
-              </div>
-              <h3 className="text-2xl font-bold mb-2">
-                {selectedProduct.name}
-              </h3>
-              <p className="text-xl font-semibold text-green-600 mb-4">
-                N {formatPrice(selectedProduct.price)} per piece
-              </p>
-              <p className="text-gray-600 mb-6">
-                {selectedProduct.description}
-              </p>
-              <div className="space-y-3 mb-6">
-                <p className="flex justify-between">
-                  <span className="font-medium">Farm:</span>
-                  <Link
-                    href={`/farms/${createSlug(selectedProduct.farm.name)}`}
-                    className="text-green-600 font-medium"
-                  >
-                    {selectedProduct.farm.name}
-                  </Link>
-                </p>
-                <p className="flex justify-between">
-                  <span className="font-medium">Location:</span>
-                  <span>{`${selectedProduct.farm.city}, ${selectedProduct.farm.country}`}</span>
-                </p>
-                <p className="flex justify-between">
-                  <span className="font-medium">Stock:</span>
-                  <span>{formatStock(selectedProduct.stock)} pieces</span>
-                </p>
-                <p className="flex justify-between">
-                  <span className="font-medium">Delivery:</span>
-                  <span
-                    className={
-                      selectedProduct.deliveryAvailable
-                        ? "text-green-600"
-                        : "text-red-600"
-                    }
-                  >
-                    {selectedProduct.deliveryAvailable
-                      ? "Available"
-                      : "Not Available"}
-                  </span>
-                </p>
-              </div>
-              <Link href={`/${selectedProduct.id}`} target="_blank">
-                <button className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors font-semibold text-lg">
-                  View Product
-                </button>
-              </Link>
-            </div>
+            <ViewProduct product={selectedProduct} closeModal={closeModal} />
           )}
         </Modal>
 
-        <aside
-          className={`fixed top-0 right-0 w-64 bg-white h-full z-50 transform ${
-            showFilter ? "translate-x-0" : "translate-x-full"
-          } transition-transform duration-300 ease-in-out lg:hidden`}
-        >
-          <div className="flex justify-end p-4 border-b">
-            <button onClick={handleOpenFilter}>
-              <X className="text-gray-500" size={40} />
-            </button>
-          </div>
-          <Filter />
-        </aside>
+        <MobileFilter
+          showFilter={showFilter}
+          handleOpenFilter={handleOpenFilter}
+        />
       </section>
     </main>
   );

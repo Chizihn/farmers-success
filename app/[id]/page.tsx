@@ -7,6 +7,7 @@ import { farmProducts } from "@/components/data";
 import useCartStore from "@/store/useCartStore";
 import Link from "next/link";
 import { createSlug } from "@/utils";
+import ReviewsSummary from "@/components/ReviewBar";
 
 const ProductDetails: React.FC = () => {
   const params = useParams();
@@ -216,7 +217,7 @@ const ProductDetails: React.FC = () => {
 
         <aside className="w-full md:w-1/3">
           <h2 className="font-semibold mb-4"></h2>
-          Nothing yet
+          <ReviewsSummary />
         </aside>
       </div>
     </div>

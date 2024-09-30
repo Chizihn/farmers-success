@@ -7,10 +7,10 @@ import Cart from "./Cart";
 
 const Navbar = () => {
   return (
-    <div className="w-full h-auto overflow-hidden border-y-2 border-gray-200 flex flex-col md:flex-row justify-center lg:justify-evenly items-center p-3">
+    <div className="w-full h-auto overflow-hidden border-y-2 border-gray-200 flex flex-col md:flex-row justify-center lg:justify-between items-center py-3 px-6 gap-x-3">
       <Logo />
       <Search />
-      <div className="flex items-center gap-10 ">
+      <div className="flex items-center gap-8 lg:gap-10 ">
         <Cart />
         <User />
       </div>

@@ -2,16 +2,16 @@
 import { useParams } from "next/navigation";
 import { farmProducts } from "@/components/data";
 import Image from "next/image";
-import Link from "next/link";
 import ProductCard from "@/components/ProductCard";
 import Filter from "@/components/Filter";
-import { SlidersHorizontal, X } from "lucide-react";
+import { SlidersHorizontal } from "lucide-react";
 import { useState } from "react";
 import Modal from "@/components/ProductModal";
 import { useModalStore } from "@/store/useModalStore";
-import Cart from "@/components/Cart";
 import { ProductDetail } from "@/types";
 import { createSlug, formatPrice, formatStock } from "@/utils";
+import MobileFilter from "@/components/MobileFilter";
+import ViewProduct from "@/components/ViewProduct";
 
 const GetFarm: React.FC = () => {
   const params = useParams();
@@ -20,7 +20,7 @@ const GetFarm: React.FC = () => {
   const [selectedProduct, setSelectedProduct] = useState<ProductDetail | null>(
     null
   );
-
+  const [showFilter, setShowFilter] = useState(false);
   const farmProduct = farmProducts.find(
     (product) => createSlug(product.farm.name) === slug
   );
@@ -36,6 +36,9 @@ const GetFarm: React.FC = () => {
   const handleProductClick = (product: ProductDetail) => {
     setSelectedProduct(product);
     openModal();
+  };
+  const handleOpenFilter = () => {
+    setShowFilter(!showFilter);
   };
 
   return (
@@ -73,7 +76,10 @@ const GetFarm: React.FC = () => {
               Products from {farm.name}
             </h2>
             <div className="flex items-center gap-6">
-              <button className="flex lg:hidden items-center gap-2 text-green-600 hover:text-green-700 transition-colors ">
+              <button
+                className="flex lg:hidden items-center gap-2 text-green-600 hover:text-green-700 transition-colors "
+                onClick={handleOpenFilter}
+              >
                 <SlidersHorizontal size={20} />
                 <span className="font-medium">Filter</span>
               </button>
@@ -92,14 +98,14 @@ const GetFarm: React.FC = () => {
             </div>
           </div>
 
-          <div className="w-full h-full max-h-full overflow-y-auto grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 justify-items-center content-center gap-x-2 gap-y-6 px-3 lg:px-0">
+          <div className="w-full h-full max-h-full overflow-y-auto grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 justify-items-start content-center gap-x-2 gap-y-6 px-3 lg:px-0">
             {filterFarmProducts.map((product) => (
               <ProductCard
                 key={product.id}
                 image={`${product.images[0]}`}
                 alt={product.description}
                 name={product.name}
-                price={`N ${formatPrice(product.price)}`}
+                price={` ${formatPrice(product.price)}`}
                 description={product.description}
                 farm={product.farm.name}
                 sold={formatStock(product.stock)}
@@ -109,72 +115,15 @@ const GetFarm: React.FC = () => {
           </div>
         </div>
         <Modal isOpen={isOpen}>
-          <div className="flex justify-between items-center p-3">
-            <button
-              className="text-gray-500 hover:text-gray-800"
-              onClick={closeModal}
-            >
-              <X />
-            </button>
-            <Cart />
-          </div>
           {selectedProduct && (
-            <div className="p-3">
-              <div className="relative h-60 mb-4 rounded-lg overflow-hidden">
-                <Image
-                  src={selectedProduct.images[0]}
-                  alt={selectedProduct.name}
-                  layout="fill"
-                  objectFit="cover"
-                />
-              </div>
-              <h3 className="text-2xl font-bold mb-2">
-                {selectedProduct.name}
-              </h3>
-              <p className="text-xl font-semibold text-green-600 mb-4">
-                N {formatPrice(selectedProduct.price)} per piece
-              </p>
-              <p className="text-gray-600 mb-6">
-                {selectedProduct.description}
-              </p>
-              <div className="space-y-3 mb-6">
-                <p className="flex justify-between">
-                  <span className="font-medium">Farm:</span>
-                  <span className="text-green-600">
-                    {selectedProduct.farm.name}
-                  </span>
-                </p>
-                <p className="flex justify-between">
-                  <span className="font-medium">Location:</span>
-                  <span>{`${selectedProduct.farm.city}, ${selectedProduct.farm.country}`}</span>
-                </p>
-                <p className="flex justify-between">
-                  <span className="font-medium">Stock:</span>
-                  <span>{formatStock(selectedProduct.stock)} pieces</span>
-                </p>
-                <p className="flex justify-between">
-                  <span className="font-medium">Delivery:</span>
-                  <span
-                    className={
-                      selectedProduct.deliveryAvailable
-                        ? "text-green-600"
-                        : "text-red-600"
-                    }
-                  >
-                    {selectedProduct.deliveryAvailable
-                      ? "Available"
-                      : "Not Available"}
-                  </span>
-                </p>
-              </div>
-              <Link href={`/${selectedProduct.id}`} target="_blank">
-                <button className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors font-semibold text-lg">
-                  View Product
-                </button>
-              </Link>
-            </div>
+            <ViewProduct product={selectedProduct} closeModal={closeModal} />
           )}
         </Modal>
+
+        <MobileFilter
+          showFilter={showFilter}
+          handleOpenFilter={handleOpenFilter}
+        />
       </section>
     </main>
   );

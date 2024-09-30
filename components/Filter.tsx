@@ -6,11 +6,11 @@ const Filter = () => {
   const [priceRange, setPriceRange] = useState([0, 1000]);
 
   return (
-    <div className="w-full h-full px-4 overflow-y-auto sticky top-0 left-0">
-      <div className="bg-white p-4 shadow-sm rounded-lg mb-[.4rem]  sticky top-0 z-10">
+    <div className="w-full h-screen px-4 overflow-hidden sticky top-0 left-0">
+      <div className="bg-white p-4 shadow-sm rounded-lg mb-[.4rem] sticky top-0 z-10">
         <h2 className="text-xl font-semibold">Filter Products</h2>
       </div>
-      <div className="bg-white h-[90vh] shadow-md p-3 rounded-lg">
+      <div className="bg-white h-full shadow-md p-3 rounded-lg">
         <div className="mb-4">
           <h4 className="text-md font-medium">Category</h4>
           <select

@@ -2,25 +2,14 @@ import { useState } from "react";
 import Image from "next/image";
 import { Plus, Minus, ShoppingCart } from "lucide-react";
 import useCartStore from "@/store/useCartStore";
+import { ProductCardData } from "@/types";
 
-interface ProductCardProps {
-  image: string;
-  alt: string;
-  name: string;
-  price: string;
-  description: string;
-  farm: string;
-  sold: string;
-  onClick: () => void;
-}
-
-const ProductCard: React.FC<ProductCardProps> = ({
+const ProductCard: React.FC<ProductCardData> = ({
   image,
   alt,
   name,
   price,
   description,
-
   sold,
   onClick,
 }) => {
@@ -39,7 +28,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md ">
+    <div className=" bg-white rounded-lg shadow-md">
       <div className="relative h-40 sm:h-50 md:h-58">
         <Image
           src={image}
@@ -49,21 +38,21 @@ const ProductCard: React.FC<ProductCardProps> = ({
           className="transition-opacity duration-300 hover:opacity-90"
         />
       </div>
-      <div className="p-4 space-y-2">
-        <div className="flex flex-col lg:flex-row justify-start lg:justify-between items-start lg:items-center">
+
+      <div className="flex flex-col justify-between p-4">
+        <div className="flex flex-col justify-start items-start space-y-2">
           <h3
             className="text-md md:text-lg font-semibold text-gray-800 truncate hover:text-green-600 cursor-pointer"
             onClick={onClick}
           >
             {name}
           </h3>
-          <span className="text-green-600 font-bold">{price}</span>
+          <span className="text-green-600 font-bold">N {price}</span>
+          <p className="text-sm text-gray-600 line-clamp-2">{description}</p>
+          <span className="text-xs text-gray-500">Stock: {sold}</span>
         </div>
-        <p className="text-sm text-gray-600 line-clamp-2 ">{description}</p>
 
-        <span className="text-xs text-gray-500">Stock: {sold}</span>
-
-        <div className="flex flex-col lg:flex-row items-center justify-center lg:justify-between mt-4 space-y-2">
+        <div className="flex flex-wrap flex-col lg:flex-row justify-center lg:justify-between items-center mt-4 space-y-2">
           <div className="flex items-center space-x-2">
             <button
               onClick={decrementQuantity}
