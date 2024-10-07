@@ -1,6 +1,8 @@
+import React from "react";
 import useCartStore from "@/store/useCartStore";
 import { X, Plus, Minus, Trash2 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 interface CartModalProps {
   isOpen: boolean;
@@ -13,9 +15,15 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
+  // Helper function to format price
+  const formatPrice = (price: string | number) => {
+    const numPrice = typeof price === "string" ? parseFloat(price) : price;
+    return isNaN(numPrice) ? "0.00" : numPrice.toFixed(2);
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4">
-      <div className="relative bg-white rounded-lg max-w-md w-full h-[90vh] flex flex-col lg:fixed top-0 right-0 lg:h-[100vh]">
+      <div className="bg-white rounded-lg max-w-md w-full h-[90vh] flex flex-col">
         <div className="flex justify-between items-center p-4 border-b">
           <h2 className="text-2xl font-bold">Your Cart</h2>
           <button
@@ -49,7 +57,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
                   </div>
                   <div className="flex-grow">
                     <h3 className="font-semibold text-lg">{item.name}</h3>
-                    <p className="text-gray-600">N{item.price}</p>
+                    <p className="text-gray-600">N{formatPrice(item.price)}</p>
                     <div className="flex items-center mt-1">
                       <button
                         onClick={() =>
@@ -87,11 +95,25 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
             <div className="border-t p-4">
               <div className="flex justify-between items-center mb-4">
                 <span className="text-xl font-bold">Total:</span>
-                <span className="text-xl font-bold">N{totalPrice()}</span>
+                <span className="text-xl font-bold">
+                  N{formatPrice(totalPrice())}
+                </span>
               </div>
-              <button className="w-full bg-green-600 text-white font-semibold py-3 rounded-lg hover:bg-green-700 transition-colors duration-200">
-                Checkout
-              </button>
+              <Link href="/checkout">
+                <button
+                  className=" w-full
+                  bg-green-600
+                  text-white
+                  font-semibold
+                  py-3
+                  rounded-lg
+                  hover:bg-green-700
+                  transition-colors
+                  duration-200"
+                >
+                  Proceed to Checkout
+                </button>
+              </Link>
             </div>
           </>
         )}
