@@ -3,18 +3,32 @@ import Image from "next/image";
 import Link from "next/link";
 import { farmProducts } from "@/components/data";
 import { createSlug } from "@/utils";
+import MobileFilter from "@/components/MobileFilter";
+import { FarmFilter } from "@/components/Filter";
+import { useState } from "react";
 
 const Farms: React.FC = () => {
+  const [showFilter, setShowFilter] = useState<boolean>(false);
   const farms = Array.from(
     new Set(farmProducts.map((product) => product.farm))
   );
 
+  const handleOpenFilter = () => {
+    setShowFilter(!showFilter);
+  };
+
+  const handleFarmFilterChange = () => {};
+
   return (
     <section className="w-full min-h-screen h-full pt-3 bg-gray-100 flex justify-center">
+      <aside className="hidden lg:flex w-[25rem] h-screen sticky top-0 overflow-y-auto">
+        <FarmFilter onFilterChange={handleFarmFilterChange} />
+      </aside>
       <div className="container space-y-6 h-full overflow-y-auto flex-grow">
         <div className="bg-white p-3 shadow-md rounded-lg mb-2 flex flex-col lg:flex-row justify-between items-center">
           <h2 className="text-xl font-bold mb-4 lg:mb-0">Our Farms</h2>
         </div>
+
         <div className="w-full h-full max-h-full overflow-y-auto grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 justify-items-center content-center gap-x-2 gap-y-6 px-3 lg:px-0">
           {farms.map((farm) => (
             <div
@@ -42,6 +56,12 @@ const Farms: React.FC = () => {
           ))}
         </div>
       </div>
+      <MobileFilter
+        showFilter={showFilter}
+        handleOpenFilter={handleOpenFilter}
+        filterType="farm"
+        onChange={handleFarmFilterChange}
+      />
     </section>
   );
 };

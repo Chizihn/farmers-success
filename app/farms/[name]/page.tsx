@@ -3,7 +3,7 @@ import { useParams } from "next/navigation";
 import { farmProducts } from "@/components/data";
 import Image from "next/image";
 import ProductCard from "@/components/ProductCard";
-import Filter from "@/components/Filter";
+import { ProductFilter } from "@/components/Filter";
 import { SlidersHorizontal } from "lucide-react";
 import { useState } from "react";
 import Modal from "@/components/ProductModal";
@@ -20,7 +20,7 @@ const GetFarm: React.FC = () => {
   const [selectedProduct, setSelectedProduct] = useState<ProductDetail | null>(
     null
   );
-  const [showFilter, setShowFilter] = useState(false);
+  const [showFilter, setShowFilter] = useState<boolean>(false);
   const farmProduct = farmProducts.find(
     (product) => createSlug(product.farm.name) === slug
   );
@@ -41,11 +41,13 @@ const GetFarm: React.FC = () => {
     setShowFilter(!showFilter);
   };
 
+  const handleProductFilterChange = () => {};
+
   return (
     <main>
       <section className="w-full min-h-screen h-full pt-3 bg-gray-100 flex justify-center">
         <aside className="hidden lg:flex w-[25rem] h-screen sticky top-0 overflow-y-auto">
-          <Filter />
+          <ProductFilter onFilterChange={handleProductFilterChange} />
         </aside>
         <div className="container space-y-2 h-full overflow-y-auto flex-grow">
           <div className="bg-white p-3 shadow-md rounded-lg mb-2">
@@ -123,6 +125,8 @@ const GetFarm: React.FC = () => {
         <MobileFilter
           showFilter={showFilter}
           handleOpenFilter={handleOpenFilter}
+          filterType="product"
+          onChange={handleProductFilterChange}
         />
       </section>
     </main>

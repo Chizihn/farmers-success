@@ -1,14 +1,21 @@
 import { X } from "lucide-react";
-import Filter from "./Filter";
+import { FarmFilter, ProductFilter } from "./Filter";
+
+// Define a type for the filter kind
+type FilterType = "farm" | "product";
 
 interface MobileFilterProps {
   showFilter: boolean;
   handleOpenFilter: () => void;
+  filterType: FilterType; // Specify whether it's 'farm' or 'product'
+  onChange: () => void; // Generic handler for filter changes
 }
 
 const MobileFilter: React.FC<MobileFilterProps> = ({
   showFilter,
   handleOpenFilter,
+  filterType,
+  onChange,
 }) => {
   return (
     <aside
@@ -21,7 +28,12 @@ const MobileFilter: React.FC<MobileFilterProps> = ({
           <X className="text-gray-500" size={40} />
         </button>
       </div>
-      <Filter />
+      {/* Conditionally render ProductFilter or FarmFilter based on filterType */}
+      {filterType === "product" ? (
+        <ProductFilter onFilterChange={onChange} />
+      ) : (
+        <FarmFilter onFilterChange={onChange} />
+      )}
     </aside>
   );
 };

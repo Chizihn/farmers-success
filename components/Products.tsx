@@ -6,7 +6,7 @@ import Category from "./Category";
 import Modal from "./ProductModal";
 import { useModalStore } from "@/store/useModalStore";
 import { useState } from "react";
-import Filter from "./Filter";
+import { ProductFilter } from "./Filter";
 import { ProductDetail } from "@/types";
 import { formatPrice, formatStock } from "@/utils";
 import MobileFilter from "./MobileFilter";
@@ -28,12 +28,14 @@ const Products: React.FC = () => {
     setShowFilter(!showFilter);
   };
 
+  const handleProductFilterChange = () => {};
+
   return (
     <main>
       <Category />
       <section className="w-full min-h-screen h-full pt-3 bg-gray-100 flex justify-center">
         <aside className="hidden lg:flex w-[25rem] h-screen sticky top-0 overflow-y-auto">
-          <Filter />
+          <ProductFilter onFilterChange={handleProductFilterChange} />
         </aside>
 
         <div className="container space-y-2 h-full overflow-y-auto flex-grow">
@@ -91,6 +93,8 @@ const Products: React.FC = () => {
         <MobileFilter
           showFilter={showFilter}
           handleOpenFilter={handleOpenFilter}
+          filterType="product"
+          onChange={handleProductFilterChange}
         />
       </section>
     </main>

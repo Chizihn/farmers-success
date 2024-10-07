@@ -15,7 +15,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4">
-      <div className="bg-white rounded-lg max-w-md w-full h-[90vh] flex flex-col">
+      <div className="relative bg-white rounded-lg max-w-md w-full h-[90vh] flex flex-col lg:fixed top-0 right-0 lg:h-[100vh]">
         <div className="flex justify-between items-center p-4 border-b">
           <h2 className="text-2xl font-bold">Your Cart</h2>
           <button
