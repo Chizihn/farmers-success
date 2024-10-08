@@ -6,7 +6,6 @@ import { useState } from "react";
 
 const TrackMyOrder = () => {
   const [orderId, setOrderId] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
   const [orderDetails, setOrderDetails] = useState<OrderFile | null>(null);
   const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -15,9 +14,7 @@ const TrackMyOrder = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    const foundOrder = orders.find(
-      (order) => order.orderId === orderId && order.email === email
-    );
+    const foundOrder = orders.find((order) => order.orderId === orderId);
 
     setTimeout(() => {
       setIsLoading(false);
@@ -29,7 +26,7 @@ const TrackMyOrder = () => {
         setError("Order not found. Please check your details and try again.");
         setOrderDetails(null);
       }
-    }, 1500); // Simulate a loading delay
+    }, 1500);
   };
 
   return (
@@ -54,13 +51,7 @@ const TrackMyOrder = () => {
             onChange={(e) => setOrderId(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-green-600"
           />
-          <input
-            type="email"
-            placeholder="Email Address"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-green-600"
-          />
+
           <button
             className="w-full flex items-center justify-center bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition duration-200"
             disabled={isLoading}

@@ -12,18 +12,19 @@ const User = () => {
   };
 
   return (
-    <div className="relative z-20">
+    <div className="relative">
       <button
         onClick={toggleModal}
-        className="flex items-center justify-center gap-1.5 transition-colors duration-200 hover:text-green-600"
+        className={`flex items-center justify-center gap-1.5 transition-colors duration-200 hover:text-green-600 ${
+          isModalOpen ? "text-green-600" : "text-black"
+        }`}
       >
         <User2 size={25} />
         <p className="text-lg">Account</p>
         <Ellipsis size={15} />
       </button>
-
       {isModalOpen && (
-        <div className="absolute top-0 right-[-20px] bg-red-500 shadow-md rounded-lg p-4 w-48 h-48 z-{10000}">
+        <div className="absolute top-full right-[-50px] mt-2 bg-white shadow-md rounded-lg border-[1px] border-gray-200 p-4 w-48 z-50">
           {isLoggedIn ? (
             <>
               <a href="/my-account" className="block mb-2 hover:text-green-600">
@@ -33,7 +34,7 @@ const User = () => {
                 href="/track-order"
                 className="block mb-2 hover:text-green-600"
               >
-                Track My Order
+                Track Order
               </a>
               <button
                 className="block w-full text-left hover:text-green-600"
