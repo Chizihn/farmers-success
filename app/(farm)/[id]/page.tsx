@@ -13,9 +13,9 @@ const ProductDetails: React.FC = () => {
   const params = useParams();
   const id = params?.id as string;
 
-  const [quantity, setQuantity] = useState(1);
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [activeTab, setActiveTab] = useState("Description");
+  const [quantity, setQuantity] = useState<number>(1);
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number>(0);
+  const [activeTab, setActiveTab] = useState<string>("Description");
   const addToCart = useCartStore((state) => state.addToCart);
 
   const product = farmProducts.find((p) => p.id === id);

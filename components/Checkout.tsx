@@ -1,22 +1,40 @@
-// CheckoutPage.tsx
-import React, { useState } from "react";
+"use client";
+import { useState, useEffect } from "react";
 import { Loader } from "lucide-react";
 import useCartStore from "@/store/useCartStore";
 import { PaystackButton } from "react-paystack";
+import { useRouter, useSearchParams } from "next/navigation";
+import PaymentSuccess from "./PaymentSuccess";
+import PaymentFailure from "./PaymentFailure";
 
 const CheckoutPage: React.FC = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState("");
-  const [email, setEmail] = useState("");
-  const [error, setError] = useState("");
-  const { cartItems, totalPrice } = useCartStore();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [paymentMethod, setPaymentMethod] = useState<string>("");
+  const [firstName, setFirstName] = useState<string>("");
+  const [lastName, setLastName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [phone, setPhone] = useState<string>("");
+  const [error, setError] = useState<string>("");
+  const { cartItems, totalPrice, removeFromCart } = useCartStore();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.get("status") === "success") {
+      clearCart();
+    }
+  }, [searchParams]);
+
+  const clearCart = () => {
+    cartItems.forEach((item) => removeFromCart(item.name));
+  };
 
   const handlePayment = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    if (!email) {
-      setError("Please enter your email address.");
+    if (!firstName || !lastName || !email || !phone) {
+      setError("Please fill in all required fields.");
       setIsLoading(false);
       return;
     }
@@ -30,13 +48,19 @@ const CheckoutPage: React.FC = () => {
     setTimeout(() => {
       setIsLoading(false);
       if (paymentMethod === "card") {
-        alert("Card payment processed!");
+        // Simulate a 50% chance of payment failure
+        if (Math.random() < 0.5) {
+          router.push("/?checkout&status=success");
+        } else {
+          router.push("/?checkout&status=failure");
+        }
       }
     }, 1500);
   };
 
   const handlePaystackSuccess = () => {
     console.log("Paystack payment successful");
+    router.push("/?checkout&status=success");
   };
 
   const handlePaystackClose = () => {
@@ -53,8 +77,16 @@ const CheckoutPage: React.FC = () => {
     return isNaN(numPrice) ? 0 : numPrice * quantity;
   };
 
+  if (searchParams.get("status") === "success") {
+    return <PaymentSuccess />;
+  }
+
+  if (searchParams.get("status") === "failure") {
+    return <PaymentFailure />;
+  }
+
   return (
-    <div className="w-full p-6">
+    <div className="w-full h-full overflow-auto p-6 bg-white">
       <h1 className="text-2xl font-bold text-green-600 mb-4 text-left">
         Checkout
       </h1>
@@ -76,13 +108,49 @@ const CheckoutPage: React.FC = () => {
         </div>
       </div>
 
-      <form onSubmit={handlePayment} className="space-y-4">
+      <form onSubmit={handlePayment} className="space-y-4 mt-8">
+        <h2 className="font-bold text-xl mb-2">Billing Information</h2>
+
+        <div className="flex gap-1">
+          <div>
+            <label className="block mb-2">First Name</label>
+            <input
+              type="text"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              className="w-full p-3 border rounded-lg"
+              required
+            />
+          </div>
+          <div>
+            <label className="block mb-2">Last Name</label>
+            <input
+              type="text"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              className="w-full p-3 border rounded-lg"
+              required
+            />
+          </div>
+        </div>
+
         <div>
           <label className="block mb-2">Email</label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            className="w-full p-3 border rounded-lg"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block mb-2">Phone Number</label>
+          <input
+            type="tel"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
             className="w-full p-3 border rounded-lg"
             required
           />
@@ -104,8 +172,11 @@ const CheckoutPage: React.FC = () => {
         {paymentMethod === "paystack" && (
           <PaystackButton
             amount={totalPrice() * 100}
+            firstname={firstName}
+            lastname={lastName}
             email={email}
-            publicKey="your-paystack-public-key"
+            phone={phone}
+            publicKey={process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY || ""}
             text="Pay Now"
             onSuccess={handlePaystackSuccess}
             onClose={handlePaystackClose}

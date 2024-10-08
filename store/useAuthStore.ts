@@ -1,10 +1,10 @@
-import { users } from "@/components/user";
-import { User } from "@/types";
+import { users } from "@/components/mockusers";
+import { UserProfile } from "@/types";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
 interface AuthState {
-  user: User | null;
+  user: UserProfile | null;
   isAuthenticated: boolean;
   login: (email: string, password: string) => void;
   logout: () => void;

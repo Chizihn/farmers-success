@@ -9,28 +9,31 @@ import Cart from "./Cart";
 import CartPage from "./CartPage";
 import RouteModal from "./RouteModal";
 import CheckoutPage from "./Checkout";
+import TrackMyOrder from "./TrackMyOrder";
 
 const Navbar = () => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalContent, setModalContent] = useState<"cart" | "checkout" | null>(
-    null
-  );
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [modalContent, setModalContent] = useState<
+    "cart" | "checkout" | "track" | null
+  >(null);
 
   useEffect(() => {
     if (searchParams.has("cart")) {
       openModal("cart");
     } else if (searchParams.has("checkout")) {
       openModal("checkout");
+    } else if (searchParams.has("track")) {
+      openModal("track");
     } else {
       closeModal();
     }
   }, [pathname, searchParams]);
 
-  const openModal = (content: "cart" | "checkout") => {
+  const openModal = (content: "cart" | "checkout" | "track") => {
     setModalContent(content);
     setIsModalOpen(true);
   };
@@ -44,10 +47,13 @@ const Navbar = () => {
   const handleCartClick = () => {
     router.push("/?cart");
   };
-  
 
   const handleCheckoutClose = () => {
     router.push("/?cart");
+  };
+
+  const handleTrackOrder = () => {
+    router.push("/?track");
   };
 
   return (
@@ -57,7 +63,7 @@ const Navbar = () => {
         <Search />
         <div className="flex items-center gap-8 lg:gap-8 relative">
           <Cart onClick={handleCartClick} />
-          <User />
+          <User onClick={handleTrackOrder} />
         </div>
       </div>
       <RouteModal
@@ -69,6 +75,7 @@ const Navbar = () => {
           <CartPage isOpen={isModalOpen} onClose={closeModal} />
         )}
         {modalContent === "checkout" && <CheckoutPage />}
+        {modalContent === "track" && <TrackMyOrder />}
       </RouteModal>
     </>
   );

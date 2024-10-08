@@ -17,7 +17,7 @@ const Products: React.FC = () => {
   const [selectedProduct, setSelectedProduct] = useState<ProductDetail | null>(
     null
   );
-  const [showFilter, setShowFilter] = useState(false);
+  const [showFilter, setShowFilter] = useState<boolean>(false);
 
   const handleProductClick = (product: ProductDetail) => {
     setSelectedProduct(product);
@@ -38,7 +38,7 @@ const Products: React.FC = () => {
           <ProductFilter onFilterChange={handleProductFilterChange} />
         </aside>
 
-        <div className="container space-y-2 h-full overflow-y-auto flex-grow">
+        <div className="container space-y-2 h-full overflow-y-auto flex-grow pb-6 pr-2">
           <div className="bg-white p-3 shadow-md rounded-lg mb-2 flex flex-col lg:flex-row justify-between items-center">
             <h2 className="text-xl font-bold mb-4 lg:mb-0">
               Available Products

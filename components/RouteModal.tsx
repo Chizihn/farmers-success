@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { ChevronLeft, MoveLeft, X } from "lucide-react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { ChevronLeft, X } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 
 interface RouteModalProps {
@@ -17,7 +16,7 @@ const RouteModal: React.FC<RouteModalProps> = ({
   children,
 }) => {
   const searchParams = useSearchParams();
-  const isPageCheckout = searchParams.get("checkout") === "open";
+  const isPageCheckout = searchParams.get("checkout") === "";
 
   useEffect(() => {
     if (isOpen) {
@@ -39,9 +38,9 @@ const RouteModal: React.FC<RouteModalProps> = ({
         {isPageCheckout ? (
           <button
             onClick={closeCheckout}
-            className="absolute top-5 right-4 text-black text-xl"
+            className="absolute top-7 right-8 text-xl flex gap-1 items-center text-green-700"
           >
-            <MoveLeft size={30} />
+            <ChevronLeft size={30} /> <p>Back</p>
           </button>
         ) : (
           <button

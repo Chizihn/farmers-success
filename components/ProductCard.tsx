@@ -13,7 +13,7 @@ const ProductCard: React.FC<ProductCardData> = ({
   sold,
   onClick,
 }) => {
-  const [quantity, setQuantity] = useState(0);
+  const [quantity, setQuantity] = useState<number>(0);
   const { addToCart } = useCartStore();
 
   const incrementQuantity = () => setQuantity((prev) => prev + 1);

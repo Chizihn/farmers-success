@@ -4,7 +4,7 @@ import { useState } from "react";
 
 const isLoggedIn = false;
 
-const User = () => {
+const User: React.FC<{ onClick: () => void }> = ({ onClick }) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const toggleModal = () => {
@@ -31,8 +31,8 @@ const User = () => {
                 My Account
               </a>
               <a
-                href="/track-order"
-                className="block mb-2 hover:text-green-600"
+                onClick={onClick}
+                className="block mb-2 hover:text-green-600 cursor-pointer"
               >
                 Track Order
               </a>
@@ -51,7 +51,10 @@ const User = () => {
               <a href="/login" className="block mb-2 hover:text-green-600">
                 Log in
               </a>
-              <a href="/track-order" className="block hover:text-green-600">
+              <a
+                onClick={onClick}
+                className="block mb-2 hover:text-green-600 cursor-pointer"
+              >
                 Track Order
               </a>
             </>
