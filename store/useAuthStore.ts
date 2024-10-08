@@ -1,4 +1,4 @@
-import { users } from "@/components/user";
+import { users } from "@/components/users";
 import { User } from "@/types";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
