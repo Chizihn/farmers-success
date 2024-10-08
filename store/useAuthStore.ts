@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 import { users } from "@/components/mockusers";
 import { UserProfile } from "@/types";
+=======
+import { users } from "@/components/users";
+import { User } from "@/types";
+>>>>>>> 5c0983c3daa796317986ac2d2a32db8ec067a43d
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
