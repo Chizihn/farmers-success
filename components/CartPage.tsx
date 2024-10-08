@@ -23,7 +23,7 @@ const CartPage: React.FC<ModalProps> = ({ isOpen }) => {
   };
 
   const handleCheckout = () => {
-    router.push("/?checkout=open");
+    router.push("/?checkout");
   };
 
   return (

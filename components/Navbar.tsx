@@ -21,12 +21,9 @@ const Navbar = () => {
   );
 
   useEffect(() => {
-    const cartParam = searchParams.get("cart");
-    const checkoutParam = searchParams.get("checkout");
-
-    if (cartParam === "open") {
+    if (searchParams.has("cart")) {
       openModal("cart");
-    } else if (checkoutParam === "open") {
+    } else if (searchParams.has("checkout")) {
       openModal("checkout");
     } else {
       closeModal();
@@ -45,11 +42,11 @@ const Navbar = () => {
   };
 
   const handleCartClick = () => {
-    router.push("/?cart=open");
+    router.push("/?cart");
   };
 
   const handleCheckoutClose = () => {
-    router.push("/?cart=open");
+    router.push("/?cart");
   };
 
   return (

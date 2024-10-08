@@ -4,6 +4,7 @@ import Image from "next/image";
 import { createSlug, formatPrice, formatStock } from "@/utils";
 import { ProductDetail } from "@/types";
 import Cart from "./Cart";
+import { useRouter } from "next/navigation";
 
 interface ViewProductProps {
   product: ProductDetail;
@@ -11,6 +12,12 @@ interface ViewProductProps {
 }
 
 const ViewProduct: React.FC<ViewProductProps> = ({ product, closeModal }) => {
+  const router = useRouter();
+
+  const handleCartClick = () => {
+    router.push("/?cart");
+  };
+
   return (
     <>
       <div className="flex justify-between items-center p-3">
@@ -20,7 +27,7 @@ const ViewProduct: React.FC<ViewProductProps> = ({ product, closeModal }) => {
         >
           <X />
         </button>
-        <Cart />
+        <Cart onClick={handleCartClick} />
       </div>
 
       <div className="p-3">

@@ -24,7 +24,7 @@ const User = () => {
         <Ellipsis size={15} />
       </button>
       {isModalOpen && (
-        <div className="absolute top-full right-[-50px] mt-2 bg-white shadow-md rounded-lg border-[1px] border-gray-200 p-4 w-48 z-50">
+        <div className="absolute top-full right-[-5px] mt-2 bg-white shadow-md rounded-lg border-[1px] border-gray-200 p-4 w-48 z-50">
           {isLoggedIn ? (
             <>
               <a href="/my-account" className="block mb-2 hover:text-green-600">

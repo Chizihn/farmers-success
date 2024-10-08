@@ -1,3 +1,11 @@
+export interface User {
+  email: string;
+  uId: string;
+  fullName: string;
+  password: string;
+  isActivated: boolean;
+}
+
 export interface ProductDetail {
   id: string;
   name: string;
