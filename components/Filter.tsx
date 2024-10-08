@@ -112,3 +112,4 @@ const FarmFilter: React.FC<FarmFilterProps> = ({ onFilterChange }) => {
 };
 
 export { ProductFilter, FarmFilter };
+

@@ -44,6 +44,7 @@ const Navbar = () => {
   const handleCartClick = () => {
     router.push("/?cart");
   };
+  
 
   const handleCheckoutClose = () => {
     router.push("/?cart");
