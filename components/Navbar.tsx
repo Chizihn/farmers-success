@@ -5,12 +5,21 @@ import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import Logo from "./Logo";
 import Search from "./Search";
 import User from "./User";
-import Cart from "./Cart";
 import CartPage from "./CartPage";
 import RouteModal from "./RouteModal";
-import CheckoutPage from "./Checkout";
-import TrackMyOrder from "./TrackMyOrder";
+import dynamic from "next/dynamic";
 
+const Cart = dynamic(() => import("./Cart"), {
+  ssr: false,
+});
+
+const CheckoutPage = dynamic(() => import("./Checkout"), {
+  ssr: false,
+});
+
+const TrackMyOrder = dynamic(() => import("./TrackMyOrder"), {
+  ssr: false,
+});
 const Navbar = () => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -22,14 +31,17 @@ const Navbar = () => {
   >(null);
 
   useEffect(() => {
-    if (searchParams.has("cart")) {
-      openModal("cart");
-    } else if (searchParams.has("checkout")) {
-      openModal("checkout");
-    } else if (searchParams.has("track")) {
-      openModal("track");
-    } else {
-      closeModal();
+    // Ensure this effect only runs on the client
+    if (typeof window !== "undefined") {
+      if (searchParams.has("cart")) {
+        openModal("cart");
+      } else if (searchParams.has("checkout")) {
+        openModal("checkout");
+      } else if (searchParams.has("track")) {
+        openModal("track");
+      } else {
+        closeModal();
+      }
     }
   }, [pathname, searchParams]);
 

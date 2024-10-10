@@ -1,3 +1,4 @@
+"use client";
 import { ShoppingCart } from "lucide-react";
 import { useState, useEffect } from "react";
 import useCartStore from "@/store/useCartStore";
@@ -7,7 +8,7 @@ interface CartProps {
 }
 
 export const Cart: React.FC<CartProps> = ({ onClick }) => {
-  const { totalItems } = useCartStore();
+  const totalItems = useCartStore((state) => state.totalItems);
   const [hasMounted, setHasMounted] = useState<boolean>(false);
 
   useEffect(() => {
