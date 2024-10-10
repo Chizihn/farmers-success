@@ -5,7 +5,7 @@ import Image from "next/image";
 import ProductCard from "@/components/ProductCard";
 import { ProductFilter } from "@/components/Filter";
 import { SlidersHorizontal } from "lucide-react";
-import { useState } from "react";
+import React, { useState } from "react";
 import Modal from "@/components/ProductModal";
 import { useModalStore } from "@/store/useModalStore";
 import { ProductDetail } from "@/types";

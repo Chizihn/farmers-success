@@ -1,3 +1,4 @@
+"use client";
 import { users } from "@/components/mockusers";
 import { UserProfile } from "@/types";
 import { create } from "zustand";
