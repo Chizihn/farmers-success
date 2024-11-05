@@ -1,4 +1,5 @@
 "use client";
+<<<<<<< HEAD
 import useAuthStore from "@/store/useAuthStore";
 import { Ellipsis, User2 } from "lucide-react";
 import { useState } from "react";
@@ -6,15 +7,26 @@ import { useState } from "react";
 const User: React.FC = () => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const { logout } = useAuthStore();
+=======
+import { Ellipsis, User2 } from "lucide-react";
+import { useState } from "react";
+
+const isLoggedIn = false;
+
+const User: React.FC<{ onClick: () => void }> = ({ onClick }) => {
+>>>>>>> b95be22edf50a55697986b04c5c99be73de60731
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const toggleModal = () => {
     setIsModalOpen((prev) => !prev);
   };
 
+<<<<<<< HEAD
   const handleLogout = () => {
     logout();
   };
+=======
+>>>>>>> b95be22edf50a55697986b04c5c99be73de60731
   return (
     <div className="relative">
       <button
@@ -29,16 +41,29 @@ const User: React.FC = () => {
       </button>
       {isModalOpen && (
         <div className="absolute top-full right-[-5px] mt-2 bg-white shadow-md rounded-lg border-[1px] border-gray-200 p-4 w-48 z-50">
+<<<<<<< HEAD
           {isAuthenticated ? (
             <div className="space-y-4">
               <a href="/my-account" className="block mb-2 hover:text-green-600">
                 My Account
               </a>
               <a className="block mb-2 hover:text-green-600 cursor-pointer">
+=======
+          {isLoggedIn ? (
+            <>
+              <a href="/my-account" className="block mb-2 hover:text-green-600">
+                My Account
+              </a>
+              <a
+                onClick={onClick}
+                className="block mb-2 hover:text-green-600 cursor-pointer"
+              >
+>>>>>>> b95be22edf50a55697986b04c5c99be73de60731
                 Track Order
               </a>
               <button
                 className="block w-full text-left hover:text-green-600"
+<<<<<<< HEAD
                 onClick={handleLogout}
               >
                 Logout
@@ -50,6 +75,25 @@ const User: React.FC = () => {
                 Log in
               </a>
               <a className="block mb-2 hover:text-green-600 cursor-pointer">
+=======
+                onClick={() => {
+                  // Handle logout logic here
+                  console.log("Logging out...");
+                }}
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <a href="/login" className="block mb-2 hover:text-green-600">
+                Log in
+              </a>
+              <a
+                onClick={onClick}
+                className="block mb-2 hover:text-green-600 cursor-pointer"
+              >
+>>>>>>> b95be22edf50a55697986b04c5c99be73de60731
                 Track Order
               </a>
             </>

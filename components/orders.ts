@@ -34,6 +34,7 @@ export interface OrderFile {
   date: string;
   items: Items[];
 }
+<<<<<<< HEAD
 
 export const mockReviews = [
   {
@@ -49,3 +50,5 @@ export const mockReviews = [
     comment: "Great quality, but I wish the delivery was a bit faster.",
   },
 ];
+=======
+>>>>>>> b95be22edf50a55697986b04c5c99be73de60731

@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+<<<<<<< HEAD
     "@apollo/client": "^3.11.8",
     "@hookform/resolvers": "^3.9.1",
     "graphql": "^16.9.0",
@@ -31,6 +32,20 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@types/react-modal": "^3.16.3",
+=======
+    "lucide-react": "^0.441.0",
+    "next": "14.2.11",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-paystack": "^6.0.0",
+    "react-select": "^5.8.1",
+    "zustand": "^5.0.0-rc.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+>>>>>>> b95be22edf50a55697986b04c5c99be73de60731
     "eslint": "^8",
     "eslint-config-next": "14.2.11",
     "postcss": "^8",

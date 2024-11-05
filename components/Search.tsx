@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 "use client";
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
@@ -35,6 +36,24 @@ const ProductSearch: React.FC = () => {
     }
   };
 
+=======
+import { SearchIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+
+const Search = () => {
+  const router = useRouter();
+
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+    const name = formData.get("name") as string;
+
+    if (name) {
+      router.push(`/search?q=${name}`);
+    }
+  };
+>>>>>>> b95be22edf50a55697986b04c5c99be73de60731
   return (
     <form
       onSubmit={handleSearch}
@@ -42,6 +61,7 @@ const ProductSearch: React.FC = () => {
     >
       <input
         type="text"
+<<<<<<< HEAD
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         className="w-full border-2 border-gray-300 p-2  rounded-3xl"
@@ -51,6 +71,13 @@ const ProductSearch: React.FC = () => {
         type="submit"
         className="absolute top-0 right-0 flex items-center gap-1 py-3 md:py-2 px-4 md:px-6 bg-green-600 rounded-3xl transition-colors duration-150 hover:bg-green-700"
       >
+=======
+        name="name"
+        className="w-full border-2 border-gray-300 p-2  rounded-3xl"
+        placeholder="Search..."
+      />
+      <button className="absolute top-0 right-0 flex items-center gap-1 py-3 md:py-2 px-4 md:px-6 bg-green-600 rounded-3xl transition-colors duration-150 hover:bg-green-700">
+>>>>>>> b95be22edf50a55697986b04c5c99be73de60731
         <SearchIcon className="text-white" size={20} />
         <p className="text-white text-sm md:text-lg">Search</p>
       </button>
@@ -58,4 +85,8 @@ const ProductSearch: React.FC = () => {
   );
 };
 
+<<<<<<< HEAD
 export default ProductSearch;
+=======
+export default Search;
+>>>>>>> b95be22edf50a55697986b04c5c99be73de60731
