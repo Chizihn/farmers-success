@@ -1,0 +1,200 @@
+"use client";
+import { useState } from "react";
+import { Minus, Plus, ShoppingCart, Shrub, X } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import useCartStore from "@/store/useCartStore";
+import useProductStore from "@/store/useProductStore";
+import Cart from "./Cart";
+import { DEFAULT_IMAGE_URL } from "@/constants/default";
+import { capitalizeFirstChar, formatPrice } from "@/utils";
+
+interface ProductDetailsProps {
+  id: string;
+  type: "full" | "view";
+  closeModal?: () => void;
+}
+
+const ProductDetails: React.FC<ProductDetailsProps> = ({
+  id,
+  type,
+  closeModal,
+}) => {
+  const router = useRouter();
+  const { products } = useProductStore();
+  const [quantity, setQuantity] = useState<number>(1);
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number>(0);
+
+  const addToCart = useCartStore((state) => state.addToCart);
+  const product = products.find((p) => p.id === id);
+
+  if (!product) {
+    return <p>Product not found</p>;
+  }
+
+  const {
+    images,
+    name,
+    price,
+    description,
+    location,
+    quantity: stock,
+    status,
+    user,
+  } = product;
+  const productImages = images?.length ? images : [DEFAULT_IMAGE_URL];
+  const displayedImage = productImages[selectedImageIndex] || DEFAULT_IMAGE_URL;
+  const fullName = `${capitalizeFirstChar(
+    user.firstName
+  )} ${capitalizeFirstChar(user.lastName)}`;
+
+  const incrementQuantity = () =>
+    setQuantity((prev) => Math.min(prev + 1, stock || 1));
+  const decrementQuantity = () => setQuantity((prev) => Math.max(prev - 1, 1));
+
+  const handleAddToCart = () => {
+    if (quantity > 0) {
+      addToCart({
+        id: product.id,
+        name,
+        price: typeof price === "string" ? parseFloat(price) : price,
+        quantity,
+        image: images[0],
+      });
+      setQuantity(1);
+    }
+  };
+
+  return (
+    <div className="max-w-screen-2xl w-full mx-auto py-4 px-4">
+      {type === "view" && (
+        <div className="flex justify-between items-center p-3">
+          <button
+            className="text-gray-500 hover:text-gray-800"
+            onClick={closeModal}
+          >
+            <X />
+          </button>
+          <Cart />
+        </div>
+      )}
+
+      <div
+        className={`flex ${
+          type === "full" ? "flex-col md:flex-row" : "flex-col"
+        } justify-evenly gap-6`}
+      >
+        <div
+          className={`w-full ${
+            type === "full" ? "lg:w-[60%]" : "w-full"
+          } flex flex-col gap-4`}
+        >
+          <div
+            className={`relative ${type === "full" ? "h-96" : "h-60"} w-full`}
+          >
+            <Image
+              src={displayedImage}
+              alt={name || "Product"}
+              fill
+              style={{ objectFit: "cover" }}
+              className="rounded-lg"
+            />
+          </div>
+          {productImages.length > 1 && type === "full" && (
+            <div className="flex flex-row gap-2">
+              {productImages.map((img, index) => (
+                <div
+                  key={index}
+                  className="w-1/4 cursor-pointer"
+                  onClick={() => setSelectedImageIndex(index)}
+                >
+                  <Image
+                    src={img}
+                    alt={`${name} thumbnail`}
+                    width={100}
+                    height={100}
+                    className={`rounded-lg ${
+                      index === selectedImageIndex
+                        ? "border-2 border-green-500"
+                        : ""
+                    }`}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div
+          className={`w-full ${
+            type === "full"
+              ? "lg:w-[35rem] px-[1rem] lg:px-[2rem] py-6 lg:border-2 border-slate-200 rounded-md"
+              : "p-3"
+          }`}
+        >
+          <div>
+            <div className="flex gap-1 items-center mb-3">
+              <Shrub />
+              <span className="text-lg"> {fullName} </span>
+            </div>
+            <div className="mb-4 space-y-3 md:space-y-4">
+              <div className="mb-2 space-y-1">
+                <h1 className="text-3xl font-bold">{name}</h1>
+                <p className="text-slate-600">{description}</p>
+              </div>
+              <p className="text-3xl font-semibold mb-4 text-green-600">
+                N {formatPrice(price || 0)}
+              </p>
+              <p>
+                <span className="font-semibold">Location:</span> {location}
+              </p>
+              <p>
+                <span className="font-semibold">Stock:</span> {stock} pieces
+                available
+              </p>
+              <p>
+                <span className="font-semibold">Status:</span> {status}
+              </p>
+            </div>
+          </div>
+
+          {type === "full" ? (
+            <div className="flex flex-col space-y-6">
+              <div className="flex items-center space-x-4">
+                <button
+                  onClick={decrementQuantity}
+                  className="p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition-colors duration-200"
+                >
+                  <Minus size={20} />
+                </button>
+                <span className="text-xl font-semibold">{quantity}</span>
+                <button
+                  onClick={incrementQuantity}
+                  className="p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition-colors duration-200"
+                >
+                  <Plus size={20} />
+                </button>
+              </div>
+              <button
+                onClick={handleAddToCart}
+                className="flex items-center justify-center space-x-2 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors duration-200 w-full md:w-auto"
+              >
+                <ShoppingCart size={20} />
+                <span className="font-semibold">Add to Cart</span>
+              </button>
+            </div>
+          ) : (
+            <Link href={`/products/${id}`}>
+              <button className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors font-semibold text-lg">
+                View Product
+              </button>
+            </Link>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ProductDetails;

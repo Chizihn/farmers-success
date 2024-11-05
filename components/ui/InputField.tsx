@@ -1,0 +1,32 @@
+import { UseFormRegisterReturn } from "react-hook-form";
+
+interface InputFieldProps {
+  type: string;
+  placeholder: string;
+  register: UseFormRegisterReturn;
+  label?: string;
+  error?: string;
+}
+
+const InputField: React.FC<InputFieldProps> = ({
+  type,
+  placeholder,
+  register,
+  label,
+  error,
+}) => (
+  <div className="space-y-1">
+    <label className="block">{label}</label>
+    <input
+      type={type}
+      placeholder={placeholder}
+      {...register}
+      className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:border-green-600"
+    />
+    <div className="mt-2">
+      {error && <p className="text-red-500">{error}</p>}
+    </div>
+  </div>
+);
+
+export default InputField;
