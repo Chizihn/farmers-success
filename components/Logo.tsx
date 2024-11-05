@@ -10,11 +10,8 @@ const Logo = () => {
         alt="Farmer success logo"
         width={250}
         height={250}
-<<<<<<< HEAD
         className="h-auto w-auto"
         priority
-=======
->>>>>>> b95be22edf50a55697986b04c5c99be73de60731
       />
     </Link>
   );

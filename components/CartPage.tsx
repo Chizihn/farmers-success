@@ -47,13 +47,8 @@ const CartPage: React.FC<ModalProps> = ({ isOpen }) => {
                 <div className="w-[6.5rem] h-[5rem] relative flex-shrink-0">
                   <Image
                     src={item.image}
-<<<<<<< HEAD
                     fill
                     style={{ objectFit: "cover" }}
-=======
-                    layout="fill"
-                    objectFit="cover"
->>>>>>> b95be22edf50a55697986b04c5c99be73de60731
                     alt={item.name}
                     className="rounded-md"
                   />
@@ -99,11 +94,7 @@ const CartPage: React.FC<ModalProps> = ({ isOpen }) => {
             <div className="flex justify-between items-center mb-4">
               <span className="text-xl font-bold">Total:</span>
               <span className="text-xl font-bold">
-<<<<<<< HEAD
                 N{formatPrice(totalPrice)}
-=======
-                N{formatPrice(totalPrice())}
->>>>>>> b95be22edf50a55697986b04c5c99be73de60731
               </span>
             </div>
 

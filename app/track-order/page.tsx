@@ -1,7 +1,11 @@
 import React from "react";
 
 const TrackOrderPage = () => {
-  return <TrackOrderPage />;
+  return (
+    <div>
+      <h1>page</h1>
+    </div>
+  );
 };
 
 export default TrackOrderPage;

@@ -7,11 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import PaymentSuccess from "./PaymentSuccess";
 import PaymentFailure from "./PaymentFailure";
 
-<<<<<<< HEAD
 const Checkout: React.FC = () => {
-=======
-const CheckoutPage: React.FC = () => {
->>>>>>> b95be22edf50a55697986b04c5c99be73de60731
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [paymentMethod, setPaymentMethod] = useState<string>("");
   const [firstName, setFirstName] = useState<string>("");
@@ -107,13 +103,7 @@ const CheckoutPage: React.FC = () => {
             </span>
           </div>
         ))}
-<<<<<<< HEAD
         <div className="font-bold mt-2">Total: N{formatPrice(totalPrice)}</div>
-=======
-        <div className="font-bold mt-2">
-          Total: N{formatPrice(totalPrice())}
-        </div>
->>>>>>> b95be22edf50a55697986b04c5c99be73de60731
       </div>
 
       <form onSubmit={handlePayment} className="space-y-4 mt-8">
@@ -179,11 +169,7 @@ const CheckoutPage: React.FC = () => {
 
         {paymentMethod === "paystack" && (
           <PaystackButton
-<<<<<<< HEAD
             amount={totalPrice * 100}
-=======
-            amount={totalPrice() * 100}
->>>>>>> b95be22edf50a55697986b04c5c99be73de60731
             firstname={firstName}
             lastname={lastName}
             email={email}
@@ -216,8 +202,4 @@ const CheckoutPage: React.FC = () => {
   );
 };
 
-<<<<<<< HEAD
 export default Checkout;
-=======
-export default CheckoutPage;
->>>>>>> b95be22edf50a55697986b04c5c99be73de60731

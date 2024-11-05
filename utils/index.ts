@@ -13,7 +13,6 @@ export const formatPrice = (price: string | number) => {
 export const formatStock = (stock: string | number) => {
   return typeof stock === "string" ? stock : stock.toString();
 };
-<<<<<<< HEAD
 
 export const capitalizeFirstChar = (string: any) => {
   if (!string) return "";
@@ -28,5 +27,3 @@ export const capitalizeWords = (string: any) => {
 export const getCategoryPath = (category: string): string => {
   return category.trim().split(" ")[0].toLowerCase();
 };
-=======
->>>>>>> b95be22edf50a55697986b04c5c99be73de60731
