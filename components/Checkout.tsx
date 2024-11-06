@@ -1,11 +1,10 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Loader } from "lucide-react";
+import { ChevronLeft, Loader } from "lucide-react";
 import useCartStore from "@/store/useCartStore";
+import useAuthStore from "@/store/useAuthStore";
 import { PaystackButton } from "react-paystack";
-import { useRouter, useSearchParams } from "next/navigation";
-import PaymentSuccess from "./PaymentSuccess";
-import PaymentFailure from "./PaymentFailure";
+import { useRouter } from "next/navigation";
 
 const Checkout: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -15,19 +14,43 @@ const Checkout: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
   const [error, setError] = useState<string>("");
-  const { cartItems, totalPrice, removeFromCart } = useCartStore();
+
+  const { cartItems, totalItems, totalPrice } = useCartStore();
+  const { user, isAuthenticated } = useAuthStore();
   const router = useRouter();
-  const searchParams = useSearchParams();
+  // const searchParams = useSearchParams()removeFromCart;
 
   useEffect(() => {
-    if (searchParams.get("status") === "success") {
-      clearCart();
-    }
-  }, [searchParams]);
+    // if (typeof window !== null && searchParams.get("status") === "success") {
+    //   clearCart();
+    // }
 
-  const clearCart = () => {
-    cartItems.forEach((item) => removeFromCart(item.name));
-  };
+    if (typeof window !== null && isAuthenticated && user) {
+      setFirstName(user.firstName);
+      setLastName(user.lastName);
+      setEmail(user.email);
+      setPhone(user.phoneNumber);
+    }
+  }, [isAuthenticated, user]);
+
+  // const clearCart = () => {
+  //   cartItems.forEach((item) => removeFromCart(item.name));
+  // };
+
+  if (totalItems === 0) {
+    return (
+      <div className="flex items-center justify-center w-full h-full p-6 bg-white relative">
+        <button
+          onClick={() => router.replace("/")}
+          className="absolute top-0 left-0 flex gap-2 text-green-600"
+        >
+          <ChevronLeft />
+          <span>Back</span>
+        </button>
+        <h1 className="text-2xl font-bold text-gray-500">Your cart is empty</h1>
+      </div>
+    );
+  }
 
   const handlePayment = (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,7 +71,6 @@ const Checkout: React.FC = () => {
     setTimeout(() => {
       setIsLoading(false);
       if (paymentMethod === "card") {
-        // Simulate a 50% chance of payment failure
         if (Math.random() < 0.5) {
           router.push("/?checkout&status=success");
         } else {
@@ -77,16 +99,23 @@ const Checkout: React.FC = () => {
     return isNaN(numPrice) ? 0 : numPrice * quantity;
   };
 
-  if (searchParams.get("status") === "success") {
-    return <PaymentSuccess />;
-  }
+  // if (searchParams.get("status") === "success") {
+  //   return <PaymentSuccess />;
+  // }
 
-  if (searchParams.get("status") === "failure") {
-    return <PaymentFailure />;
-  }
+  // if (searchParams.get("status") === "failure") {
+  //   return <PaymentFailure />;
+  // }
 
   return (
-    <div className="w-full h-full overflow-auto p-6 bg-white">
+    <div className="w-full h-full overflow-auto p-6 bg-white relative">
+      <button
+        onClick={() => router.replace("/")}
+        className="absolute top-0 left-0 flex gap-2 text-green-600"
+      >
+        <ChevronLeft />
+        <span>Back</span>
+      </button>
       <h1 className="text-2xl font-bold text-green-600 mb-4 text-left">
         Checkout
       </h1>

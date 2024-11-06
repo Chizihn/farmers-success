@@ -1,28 +1,24 @@
-// VerifyEmailPage.tsx
-
 "use client";
 import OTPVerification from "@/components/auth/OtpVerification";
 import LoadingState from "@/components/Loading";
+import useAuthStore from "@/store/useAuthStore";
 import Cookies from "js-cookie";
+import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const VerifyPhoneOtpPage = () => {
-  const [token, setToken] = useState<string>();
+const VerifyPhoneSignInOtpPage = () => {
   const [loading, setLoading] = useState<boolean>(true);
+  const token = useAuthStore((state) => state.token);
 
   useEffect(() => {
-    const authToken = Cookies.get("token");
-    if (authToken) {
-      setToken(authToken);
-      setLoading(false);
-    }
+    setLoading(false);
   }, []);
 
   if (loading) return <LoadingState />;
+  if (!token) return redirect("/signin");
+  console.log(token);
 
-  return token ? (
-    <OTPVerification verificationType="verifySignIn" token={token} />
-  ) : null;
+  return <OTPVerification verificationType="verifySignIn" token={token} />;
 };
 
-export default VerifyPhoneOtpPage;
+export default VerifyPhoneSignInOtpPage;

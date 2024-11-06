@@ -14,12 +14,13 @@ import {
   ResetPasswordResponse,
 } from "@/types";
 import Cookies from "js-cookie";
+import { OtpActivity } from "@/types/forms";
 
 const EXPIRE_MINUTES = 5;
 
 interface SecureState extends PersistedAuthState {
   forgotPassword: (email: string) => Promise<void>;
-  resendOTP: (identifier: string, activity: string) => Promise<void>;
+  resendOTP: (identifier: string, activity: OtpActivity) => Promise<void>;
   resetPassword: (
     otp: number,
     password: string,
@@ -64,27 +65,30 @@ const useSecureStore = create<SecureState>()(
         }
       },
 
-      resendOTP: async (identifier: string, activity: string) => {
-        set({ loading: true, error: null });
+      resendOTP: async (identifier: string, activity: OtpActivity) => {
         try {
-          const { data } = await client.mutate<ResendOTPResponse>({
+          set({ loading: true, error: null });
+          const response = await client.mutate({
             mutation: RESEND_OTP,
             variables: { identifier, activity },
           });
 
-          if (!data?.resendOTP.token) {
+          if (response.data?.resendOTP?.token) {
+            const token = response.data.resendOTP.token;
+            set({
+              loading: false,
+              token: token,
+            });
+            console.log("OTP resent successfully");
+            console.log(identifier);
+          } else {
             throw new Error("Failed to resend OTP");
           }
         } catch (error) {
-          const errorMessage =
-            error instanceof Error ? error.message : "Failed to resend OTP";
-          set({ error: errorMessage });
-          throw error;
-        } finally {
-          set({ loading: false });
+          set({ error: (error as Error).message, loading: false });
+          console.error("Failed to resend OTP:", error);
         }
       },
-
       resetPassword: async (otp: number, password: string) => {
         set({ loading: true, error: null });
         try {

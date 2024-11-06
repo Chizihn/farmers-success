@@ -31,10 +31,10 @@ const TrackMyOrder = () => {
   return (
     <div className="w-full p-6 bg-white">
       <h1 className="text-2xl font-bold text-green-600 mb-5 text-left">
-        Track Order
+        Track your order
       </h1>
       <p className="text-left text-gray-600 mb-4">
-        Enter your Order ID and Email to track your order.
+        Enter your Order ID to track your order.
       </p>
 
       {/* Input Fields */}

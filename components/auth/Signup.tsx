@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 import Logo from "../Logo";
 import useAuthStore from "@/store/useAuthStore";
@@ -30,23 +31,31 @@ const Signup = () => {
     resolver: zodResolver(phoneSignupSchema),
   });
 
-  const onSubmit = async (data: EmailSignupFormType | PhoneSignupFormType) => {
+  const handleEmailSignUp = async (data: EmailSignupFormType) => {
     try {
-      if (signupMethod === "email") {
-        const { email, password } = data as EmailSignupFormType;
-        await signUpWithEmail(email, password);
-      } else {
-        const countryCodeWithoutPlus = phoneNumber
-          ?.replace("+", "")
-          .slice(0, 2);
-        const localNumber = phoneNumber?.slice(3);
-        const formattedPhoneNumber = countryCodeWithoutPlus + localNumber;
-
-        await signUpWithPhone(formattedPhoneNumber);
-      }
-      router.push("/");
+      const { email, password } = data;
+      await signUpWithEmail(email, password);
+      router.push("/verify-email");
     } catch (err) {
-      console.error("Signup failed:", error);
+      console.error("Email signup failed:", err);
+    }
+  };
+
+  const handlePhoneSignUp = async (data: PhoneSignupFormType) => {
+    try {
+      const { phoneNumber } = data;
+      console.log("inputted phone", phoneNumber);
+
+      // Extract country code and local number
+      const countryCodeWithoutPlus = phoneNumber.slice(0, 3); // Assuming it's "+234"
+      const localNumber = phoneNumber.slice(3);
+
+      const formattedPhoneNumber = countryCodeWithoutPlus + localNumber;
+
+      await signUpWithPhone(formattedPhoneNumber);
+      router.push("/verify-phone");
+    } catch (err) {
+      console.error("Phone signup failed:", err);
     }
   };
 
@@ -78,7 +87,7 @@ const Signup = () => {
             }`}
             onClick={() => handleSignupMethodChange("email")}
           >
-            Sign up with email
+            Signup with email
           </button>
           <button
             type="button"
@@ -89,14 +98,14 @@ const Signup = () => {
             }`}
             onClick={() => handleSignupMethodChange("phone")}
           >
-            Sign up with phone
+            Signup with phone
           </button>
         </div>
 
         <div className="max-w-sm">
           {signupMethod === "email" ? (
             <form
-              onSubmit={emailForm.handleSubmit(onSubmit)}
+              onSubmit={emailForm.handleSubmit(handleEmailSignUp)}
               className="space-y-4"
             >
               <InputField
@@ -125,11 +134,11 @@ const Signup = () => {
             </form>
           ) : (
             <form
-              onSubmit={phoneForm.handleSubmit(onSubmit)}
+              onSubmit={phoneForm.handleSubmit(handlePhoneSignUp)}
               className="space-y-4"
             >
               <PhoneInput
-                country={"ng"}
+                country={`ng`}
                 onChange={(value) => phoneForm.setValue("phoneNumber", value)}
                 inputStyle={{
                   width: "100%",

@@ -1,21 +1,15 @@
-// Cart.tsx
-import React from "react";
+"use client";
 import useCartStore from "@/store/useCartStore";
-import { Plus, Minus, Trash2 } from "lucide-react";
+import { Plus, Minus, Trash2, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import useModalStore from "@/store/useModalStore";
 
-interface ModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-const CartPage: React.FC<ModalProps> = ({ isOpen }) => {
+const CartPage: React.FC = () => {
   const router = useRouter();
+  const { closeModal } = useModalStore();
   const { cartItems, removeFromCart, updateQuantity, totalPrice } =
     useCartStore();
-
-  if (!isOpen) return null;
 
   const formatPrice = (price: string | number) => {
     const numPrice = typeof price === "string" ? parseFloat(price) : price;
@@ -26,10 +20,17 @@ const CartPage: React.FC<ModalProps> = ({ isOpen }) => {
     router.push("/?checkout");
   };
 
+  const handleCloseCartPage = () => {
+    closeModal();
+  };
+
   return (
     <div className="h-full flex flex-col">
-      <div className="p-4 border-b">
+      <div className="p-4 border-b flex justify-between items-center">
         <h2 className="text-2xl font-bold">Your Cart</h2>
+        <button onClick={handleCloseCartPage}>
+          <X size={35} />
+        </button>
       </div>
 
       {cartItems.length === 0 ? (

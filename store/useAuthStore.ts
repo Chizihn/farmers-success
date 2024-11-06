@@ -9,10 +9,12 @@ import {
   VERIFY_PHONE_NUMBER_OTP,
   SIGN_IN_WITH_PHONE,
   SIGN_UP_WITH_PHONE,
+  RESEND_OTP,
 } from "@/graphql/mutations";
 import client from "@/lib/apolloClient";
 import { GET_USER } from "@/graphql/queries";
-import { AuthState } from "@/types";
+import { AuthState, UserProfile } from "@/types";
+import { OtpActivity } from "@/types/forms";
 
 // Custom storage object for cookies
 const cookieStorage = {
@@ -39,25 +41,6 @@ const useAuthStore = create<AuthState>()(
         error: null,
 
         // Fetch User Details Function
-        fetchUserDetails: async (token: string) => {
-          try {
-            const userResponse = await client.query({
-              query: GET_USER,
-              context: {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              },
-            });
-            const user = userResponse.data.user;
-            set({ user, isAuthenticated: true });
-
-            // Save user to localStorage for persistence
-            cookieStorage.setItem("user", JSON.stringify(user));
-          } catch (error) {
-            set({ error: (error as Error).message });
-          }
-        },
 
         signInWithEmail: async (email: string, password: string) => {
           try {
@@ -70,10 +53,10 @@ const useAuthStore = create<AuthState>()(
             // Check if the response contains the token
             if (response.data?.signInWithEmail?.token) {
               const { token } = response.data.signInWithEmail;
-              cookieStorage.setItem("token", token);
               set({ token, isAuthenticated: true, loading: false });
+              cookieStorage.setItem("token", token);
               await useAuthStore.getState().fetchUserDetails(token);
-              console.log("Signin successful");
+              console.log("Signin was successful");
             } else {
               throw new Error("Failed to retrieve token");
             }
@@ -94,10 +77,10 @@ const useAuthStore = create<AuthState>()(
             // Check if the response contains the token
             if (response.data?.loginUser?.token) {
               const { token } = response.data.loginUser;
-              cookieStorage.setItem("token", token);
               set({ token, isAuthenticated: true, loading: false });
+              cookieStorage.setItem("token", token);
               await useAuthStore.getState().fetchUserDetails(token);
-              console.log("Signin successful with phone number");
+              console.log("Signin was successful with phone number");
             } else {
               throw new Error("Failed to retrieve token");
             }
@@ -161,46 +144,126 @@ const useAuthStore = create<AuthState>()(
         verifyEmailOTP: async (otp: number, token: string) => {
           try {
             set({ loading: true, error: null });
-            await client.mutate({
+            const response = await client.mutate({
               mutation: VERIFY_EMAIL_OTP,
               variables: { otp, token },
             });
-            set({ loading: false });
-            console.log("Otp correct and success");
+
+            if (response.data?.verifyEmailOTP) {
+              set((state) => ({
+                loading: false,
+                user: { ...state.user, isEmailVerified: true } as UserProfile,
+              }));
+              console.log("Email OTP verified successfully");
+            } else {
+              throw new Error("OTP verification failed");
+            }
           } catch (error) {
             set({ error: (error as Error).message, loading: false });
-            console.log("Otp wrong and fail");
+            console.error("Email OTP verification failed:", error);
           }
         },
-        verifyOTP: async (otp: number, token: string) => {
-          try {
-            set({ loading: true, error: null });
-            await client.mutate({
-              mutation: VERIFY_OTP,
-              variables: { otp, token },
-            });
-            set({ loading: false });
-            console.log("Otp correct and success");
-          } catch (error) {
-            set({ error: (error as Error).message, loading: false });
-            console.log("Otp wrong and fail");
-          }
-        },
+
         verifyPhoneOTP: async (otp: number, token: string) => {
           try {
             set({ loading: true, error: null });
-            await client.mutate({
+            const response = await client.mutate({
               mutation: VERIFY_PHONE_NUMBER_OTP,
               variables: { otp, token },
             });
-            set({ loading: false });
-            console.log("Otp correct and success");
+
+            if (response.data?.verifyPhoneNumberOTP) {
+              set((state) => ({
+                loading: false,
+                user: { ...state.user, isPhoneVerified: true } as UserProfile,
+              }));
+              console.log("Phone OTP verified successfully");
+            } else {
+              throw new Error("OTP verification failed");
+            }
           } catch (error) {
             set({ error: (error as Error).message, loading: false });
-            console.log("Otp wrong and fail");
+            console.error("Phone OTP verification failed:", error);
+          }
+        },
+
+        verifyOTP: async (otp: number, token: string) => {
+          try {
+            set({ loading: true, error: null });
+            const response = await client.mutate({
+              mutation: VERIFY_OTP,
+              variables: { otp, token },
+            });
+
+            // Assuming verifyOtpSuccess contains the token if OTP is valid
+            if (response.data?.verifyOTP?.token) {
+              const token = response.data.verifyOTP.token;
+              set({
+                loading: false,
+                isAuthenticated: true,
+                token: token,
+              });
+              cookieStorage.setItem("token", token); // Store token
+              await useAuthStore.getState().fetchUserDetails(token); // Fetch user details if needed
+              console.log("OTP verified successfully, user signed in");
+            } else {
+              throw new Error("OTP verification failed");
+            }
+          } catch (error) {
+            set({
+              error: (error as Error).message || "OTP verification failed",
+              loading: false,
+            });
+            console.error("OTP verification failed:", error);
+          }
+        },
+
+        resendOTP: async (identifier: string, activity: OtpActivity) => {
+          try {
+            set({ loading: true, error: null });
+            const response = await client.mutate({
+              mutation: RESEND_OTP,
+              variables: { identifier, activity },
+            });
+
+            if (response.data?.resendOTP?.token) {
+              const token = response.data.resendOTP.token;
+              set({
+                loading: false,
+                token: token,
+              });
+              console.log("OTP resent successfully");
+            } else {
+              throw new Error("Failed to resend OTP");
+            }
+          } catch (error) {
+            set({ error: (error as Error).message, loading: false });
+            console.error("Failed to resend OTP:", error);
+          }
+        },
+
+        fetchUserDetails: async (token: string) => {
+          try {
+            const userResponse = await client.query({
+              query: GET_USER,
+              context: {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              },
+            });
+            const user = userResponse.data.user;
+            set({ user, isAuthenticated: true });
+
+            // Save user to localStorage for persistence
+            cookieStorage.setItem("user", JSON.stringify(user));
+          } catch (error) {
+            set({ error: (error as Error).message });
           }
         },
         logout: () => {
+          cookieStorage.removeItem("token");
+          cookieStorage.removeItem("token");
           set({ user: null, token: null, isAuthenticated: false, error: null });
         },
       }),

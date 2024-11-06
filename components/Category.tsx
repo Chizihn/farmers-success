@@ -1,30 +1,21 @@
 "use client";
-import { Product, ProductCategory } from "@/types";
 import { capitalizeWords, getCategoryPath } from "@/utils";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import useProductStore from "@/store/useProductStore";
+import { type Category } from "@/types";
 
-interface CategoryProps {
-  products: Product[];
-}
-
-const Category: React.FC<CategoryProps> = ({ products }) => {
+const Category: React.FC = () => {
   const pathname = usePathname();
-  const categories = Array.from(
-    new Set(
-      products.flatMap((product: Product) =>
-        product.categories.map((category) => category.name)
-      )
-    )
-  );
+  const categories = useProductStore((state) => state.categories);
 
   return (
     <div>
       <div className="hidden p-3 lg:p-4 shadow-sm rounded-md lg:flex flex-col lg:flex-row justify-center lg:justify-start items-center gap-4 lg:gap-2">
         <h4 className="text-2xl font-semibold">Categories</h4>
         <ul className="flex gap-3 flex-wrap justify-center lg:justify-start">
-          {categories.map((category, index) => {
-            const categoryPath = getCategoryPath(category);
+          {categories.map((category: Category, index) => {
+            const categoryPath = getCategoryPath(category.name);
             const isActive = pathname === `/products/category/${categoryPath}`;
 
             return (
@@ -38,7 +29,7 @@ const Category: React.FC<CategoryProps> = ({ products }) => {
                           : "bg-gray-100 text-black hover:bg-green-600 hover:text-white"
                       }`}
                   >
-                    {capitalizeWords(category)}
+                    {capitalizeWords(category.name)} {/* Use category.name */}
                   </span>
                 </Link>
               </li>

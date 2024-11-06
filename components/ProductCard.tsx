@@ -1,3 +1,4 @@
+"use client";
 import { useState } from "react";
 import Image from "next/image";
 import { Plus, Minus, ShoppingCart } from "lucide-react";
@@ -5,6 +6,7 @@ import useCartStore from "@/store/useCartStore";
 import { Product } from "@/types";
 import { DEFAULT_IMAGE_URL } from "@/constants/default";
 import Link from "next/link";
+import { capitalizeFirstChar } from "@/utils";
 import { useRouter } from "next/navigation";
 
 type ProductCardProps = {
@@ -13,20 +15,40 @@ type ProductCardProps = {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const router = useRouter();
-  const { id, images, name, price, description } = product;
-  const [quantity, setQuantity] = useState<number>(0);
+  const {
+    id,
+    images,
+    name,
+    price,
+    description,
+    quantity: availableQuantity,
+  } = product;
+
   const { addToCart } = useCartStore();
 
+  // The quantity should start at 0, not the available quantity
+  const [quantity, setQuantity] = useState<number>(0);
+
+  // Fallback to default image if not provided
   const image = images.length > 0 ? images[0] : DEFAULT_IMAGE_URL;
 
-  const incrementQuantity = () => setQuantity((prev) => prev + 1);
-  const decrementQuantity = () =>
-    quantity > 0 && setQuantity((prev) => prev - 1);
+  // Increment and decrement quantity for the user
+  const incrementQuantity = () => {
+    if (quantity < availableQuantity) {
+      setQuantity((prev) => prev + 1); // Increase the quantity
+    }
+  };
+  const decrementQuantity = () => {
+    if (quantity > 0) {
+      setQuantity((prev) => prev - 1); // Decrease the quantity
+    }
+  };
 
+  // Handle adding to cart
   const handleAddToCart = () => {
     if (quantity > 0) {
       addToCart({ id, name, price, quantity, image });
-      setQuantity(0);
+      setQuantity(0); // Reset quantity after adding to cart
     }
   };
 
@@ -59,7 +81,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             </h3>
           </Link>
           <span className="text-green-600 font-bold">N {price}</span>
-          <p className="text-sm text-gray-600 line-clamp-2">{description}</p>
+          <p className="text-sm text-gray-600 line-clamp-2">
+            {capitalizeFirstChar(description)}
+          </p>
+          <p className="text-sm text-gray-600 line-clamp-2">
+            Available: <span>{availableQuantity}</span>
+          </p>
         </div>
 
         <div className="flex flex-wrap flex-col lg:flex-row justify-center lg:justify-between items-center mt-4 space-y-2">

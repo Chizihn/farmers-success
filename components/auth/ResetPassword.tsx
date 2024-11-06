@@ -7,7 +7,11 @@ import Cookies from "js-cookie";
 import Logo from "../Logo";
 import ResendOtp from "./ResendOtp";
 
-import { resetPasswordSchema, ResetPasswordFormType } from "@/types/forms";
+import {
+  resetPasswordSchema,
+  ResetPasswordFormType,
+  OtpActivity,
+} from "@/types/forms";
 import useSecureStore from "@/store/useSecure";
 import InputField from "../ui/InputField";
 
@@ -28,19 +32,11 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ token }) => {
     resolver: zodResolver(resetPasswordSchema),
   });
 
-  const [confirmPassword, setConfirmPassword] = useState<string>("");
-  const [passwordMismatchError, setPasswordMismatchError] =
-    useState<string>("");
-
   const onSubmit = async (data: ResetPasswordFormType) => {
-    if (data.password !== confirmPassword) {
-      setPasswordMismatchError("Passwords do not match");
-      return;
-    }
-
     try {
       const otpValue = parseInt(data.otp.join(""));
       if (!token) throw new Error("Token not found");
+      console.log("token not found");
 
       await resetPassword(otpValue, data.password, token);
       console.log("Password reset successfully!");
@@ -100,20 +96,6 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ token }) => {
             error={errors.password?.message}
           />
 
-          <input
-            type="password"
-            placeholder="Confirm New Password"
-            value={confirmPassword}
-            onChange={(e) => {
-              setConfirmPassword(e.target.value);
-              if (passwordMismatchError) setPasswordMismatchError("");
-            }}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-green-600"
-          />
-          {passwordMismatchError && (
-            <p className="text-red-500">{passwordMismatchError}</p>
-          )}
-
           <button
             type="submit"
             className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition duration-200"
@@ -122,7 +104,7 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ token }) => {
           </button>
         </form>
 
-        <ResendOtp identifier={token} activity="forgot_password" />
+        <ResendOtp identifier={token} activity={OtpActivity.ForgotPassword} />
         <Logo />
       </div>
     </div>

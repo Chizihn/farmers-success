@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import { OtpActivity } from "@/types/forms";
-import useSecureStore from "@/store/useSecure";
+import useAuthStore from "@/store/useAuthStore";
 
 interface ResendOtpProps {
   identifier: string;
@@ -9,7 +9,7 @@ interface ResendOtpProps {
 }
 
 const ResendOtp: React.FC<ResendOtpProps> = ({ identifier, activity }) => {
-  const { resendOTP } = useSecureStore();
+  const { resendOTP } = useAuthStore();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 

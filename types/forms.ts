@@ -49,11 +49,12 @@ export const resetPasswordSchema = z.object({
 export type ResetPasswordFormType = z.infer<typeof resetPasswordSchema>;
 
 //Resend otp
-export type OtpActivity =
-  | "email_verification"
-  | "phone_number_verification"
-  | "auth"
-  | "forgot_password";
+export enum OtpActivity {
+  EmailVerification = "email_verification",
+  PhoneNumberVerification = "phone_number_verification",
+  Auth = "auth",
+  ForgotPassword = "forgot_password",
+}
 
 // Validation schema for OTP
 export const otpSchema = z.object({

@@ -44,7 +44,7 @@ export default function Home() {
         contentLabel="Product Modal"
         style={customStyles}
       >
-        <div className="bg-white w-full h-screen lg:w-[25rem] fixed top-0 right-0 z-[10000] rounded-lg shadow-xl overflow-hidden">
+        <div className="bg-white w-full h-screen lg:w-[30rem] fixed top-0 right-0 z-[10000] rounded-lg shadow-xl overflow-hidden">
           {productId && (
             <ProductDetails
               type="view"

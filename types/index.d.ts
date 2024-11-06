@@ -1,15 +1,17 @@
 //Authstates for store
 
+import { OtpActivity } from "./forms";
+
 export interface AuthState extends PersistedAuthState {
   signInWithEmail: (email: string, password: string) => Promise<void>;
   signInWithPhone: (phoneNumber: string) => Promise<void>;
   fetchUserDetails: (token: string) => Promise<void>;
   signUpWithEmail: (email: string, password: string) => Promise<void>;
   signUpWithPhone: (phoneNumber: string) => Promise<void>;
-
   verifyEmailOTP: (otp: number, token: string) => Promise<void>;
   verifyOTP: (otp: number, token: string) => Promise<void>;
   verifyPhoneOTP: (otp: number, token: string) => Promise<void>;
+  resendOTP: (identifier: string, activity: OtpActivity) => Promise<void>;
   logout: () => void;
 }
 
@@ -155,3 +157,11 @@ export interface ResendOTPResponse {
     token: string;
   };
 }
+// Get ssetinfo
+export type Category = {
+  assetType: string;
+  createdAt: string;
+  id: string;
+  name: string;
+  updatedAt: string;
+};

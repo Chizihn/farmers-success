@@ -1,13 +1,5 @@
-import Checkout from "@/components/Checkout";
-import Modal from "@/components/ProductModal";
-import React from "react";
+// import Checkout from "@/components/Checkout";
 
-const CheckoutPage = () => {
-  return (
-    <div>
-      <h1>Checkout</h1>
-    </div>
-  );
-};
-
-export default CheckoutPage;
+export default function CheckoutPage() {
+  return;
+}

@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Logo from "../Logo";
 import ResendOtp from "./ResendOtp";
-import { OtpFormType, otpSchema } from "@/types/forms";
+import { OtpActivity, OtpFormType, otpSchema } from "@/types/forms";
 import useAuthStore from "@/store/useAuthStore";
 
 const OTPVerification: React.FC<{
@@ -23,7 +23,7 @@ const OTPVerification: React.FC<{
     resolver: zodResolver(otpSchema),
   });
 
-  const [otp, setOtp] = useState(Array(4).fill(""));
+  const [otp, setOtp] = useState<string[]>(Array(4).fill(""));
 
   const handleOtpChange = (index: number, value: string) => {
     const newOtp = [...otp];
@@ -33,7 +33,7 @@ const OTPVerification: React.FC<{
   };
 
   const onSubmit = async (data: OtpFormType) => {
-    const otpValue = parseInt(data.otp.join("")); // Concatenate OTP values
+    const otpValue = parseInt(data.otp.join(""));
     try {
       if (verificationType === "verifyEmail") {
         await verifyEmailOTP(otpValue, token);
@@ -42,12 +42,14 @@ const OTPVerification: React.FC<{
       } else {
         await verifyOTP(otpValue, token);
       }
-      router.push("/"); // Adjust the redirection as needed
+      router.push("/");
     } catch (error) {
       console.error("Verification failed:", error);
       alert("Verification failed. Please check your OTP or try again.");
     }
   };
+
+  const isOtpComplete = otp.every((value) => value !== "");
 
   return (
     <div className="flex items-center justify-center w-full h-screen lg:bg-gray-50">
@@ -78,6 +80,7 @@ const OTPVerification: React.FC<{
           <button
             type="submit"
             className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition duration-200"
+            disabled={!isOtpComplete}
           >
             Verify
           </button>
@@ -90,10 +93,10 @@ const OTPVerification: React.FC<{
               identifier={token}
               activity={
                 verificationType === "verifyEmail"
-                  ? "email_verification"
+                  ? OtpActivity.EmailVerification
                   : verificationType === "verifyPhone"
-                  ? "phone_number_verification"
-                  : "auth"
+                  ? OtpActivity.PhoneNumberVerification
+                  : OtpActivity.Auth
               }
             />
           </p>

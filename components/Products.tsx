@@ -9,7 +9,6 @@ import { SlidersHorizontal } from "lucide-react";
 import Category from "./Category";
 import MobileProductFilter from "./MobileProductFilter";
 import ProductFilter from "./ProductFilter";
-import Link from "next/link";
 
 const Products: React.FC = () => {
   const { products, loading, error } = useFetchProducts();
@@ -68,8 +67,7 @@ const Products: React.FC = () => {
   // Only render main content when we have products and aren't loading
   return (
     <main>
-      <Link href="/checkout">click</Link>
-      <Category products={products} />
+      <Category />
       <section className="w-full min-h-screen h-full pt-3 bg-gray-100 flex justify-center">
         {/* Desktop Filter */}
         <aside className="hidden lg:flex w-[25rem] h-screen sticky top-0 overflow-y-auto">

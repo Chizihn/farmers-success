@@ -1,20 +1,22 @@
-// VerifyEmailPage.tsx
-
 "use client";
 import OTPVerification from "@/components/auth/OtpVerification";
 import LoadingState from "@/components/Loading";
-import useProtectedRoute from "@/hooks/useProtectedRoute";
 import useAuthStore from "@/store/useAuthStore";
+import { redirect } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const VerifyEmailPage = () => {
+  const [loading, setLoading] = useState<boolean>(true);
   const token = useAuthStore((state) => state.token);
-  const loading = useProtectedRoute();
+
+  useEffect(() => {
+    setLoading(false);
+  }, []);
 
   if (loading) return <LoadingState />;
+  if (!token) return redirect("/signin");
 
-  return token ? (
-    <OTPVerification verificationType="verifyEmail" token={token} />
-  ) : null;
+  return <OTPVerification verificationType="verifyEmail" token={token} />;
 };
 
 export default VerifyEmailPage;

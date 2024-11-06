@@ -1,12 +1,14 @@
 "use client";
 import useAuthStore from "@/store/useAuthStore";
 import { Ellipsis, User2 } from "lucide-react";
-import { useState } from "react";
+import Link from "next/link";
+import { useState, useEffect, useRef } from "react";
 
 const User: React.FC = () => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const { logout } = useAuthStore();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   const toggleModal = () => {
     setIsModalOpen((prev) => !prev);
@@ -15,8 +17,31 @@ const User: React.FC = () => {
   const handleLogout = () => {
     logout();
   };
+
+  // Close modal if clicked outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node)
+      ) {
+        setIsModalOpen(false);
+      }
+    };
+
+    if (isModalOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isModalOpen]);
+
   return (
-    <div className="relative">
+    <div className="relative" ref={modalRef}>
       <button
         onClick={toggleModal}
         className={`flex items-center justify-center gap-1.5 transition-colors duration-200 hover:text-green-600 ${
@@ -31,12 +56,18 @@ const User: React.FC = () => {
         <div className="absolute top-full right-[-5px] mt-2 bg-white shadow-md rounded-lg border-[1px] border-gray-200 p-4 w-48 z-50">
           {isAuthenticated ? (
             <div className="space-y-4">
-              <a href="/my-account" className="block mb-2 hover:text-green-600">
+              <Link href="/account" className="block mb-2 hover:text-green-600">
                 My Account
-              </a>
-              <a className="block mb-2 hover:text-green-600 cursor-pointer">
+              </Link>
+              <Link href="/orders" className="block mb-2 hover:text-green-600">
+                My Orders
+              </Link>
+              <Link
+                href="/track-order"
+                className="block mb-2 hover:text-green-600 cursor-pointer"
+              >
                 Track Order
-              </a>
+              </Link>
               <button
                 className="block w-full text-left hover:text-green-600"
                 onClick={handleLogout}
@@ -47,7 +78,7 @@ const User: React.FC = () => {
           ) : (
             <>
               <a href="/signin" className="block mb-2 hover:text-green-600">
-                Log in
+                Sign in
               </a>
               <a className="block mb-2 hover:text-green-600 cursor-pointer">
                 Track Order

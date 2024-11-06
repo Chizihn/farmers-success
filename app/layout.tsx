@@ -10,14 +10,19 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
+  modal,
 }: Readonly<{
   children: React.ReactNode;
+  modal: React.ReactNode;
 }>) {
   return (
     <html lang="en">
       <body id="__next">
         <ApolloProviderWrapper>
-          <Suspense>{children}</Suspense>
+          <Suspense>
+            {children}
+            {modal}
+          </Suspense>
         </ApolloProviderWrapper>
       </body>
     </html>

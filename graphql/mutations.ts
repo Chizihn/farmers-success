@@ -11,7 +11,7 @@ export const SIGN_IN_WITH_EMAIL = gql`
 
 // Signin with phone Mutation
 export const SIGN_IN_WITH_PHONE = gql`
-  mutation SignInwithPhone($phoneNumber: String!) {
+  mutation SignInWithPhone($phoneNumber: String!) {
     loginUser(phoneNumber: $phoneNumber) {
       token
     }
@@ -81,6 +81,44 @@ export const VERIFY_OTP = gql`
 export const VERIFY_PHONE_NUMBER_OTP = gql`
   mutation VerifyPhoneNumberOTP($otp: Int!, $token: String!) {
     verifyPhoneNumberOTP(otp: $otp, token: $token)
+  }
+`;
+
+//Update user profile
+export const UPDATE_USER_ACCOUNT = gql`
+  mutation UpdateUserAccount($data: UpdateUser!) {
+    updateUserAccount(data: $data) {
+      address
+      city
+      dob
+      firstName
+      gender
+      lastName
+      maritalStatus
+      profileImageURL
+      state
+    }
+  }
+`;
+
+// Add item to cart
+export const ADD_CART_ITEM = gql`
+  mutation addCartItem($data: AddCartItem!) {
+    addCartItem(data: $data) {
+      cartItems {
+        cartId
+        createdAt
+        endDate
+        id
+        marketPlaceId
+        startDate
+        updatedAt
+      }
+      createdAt
+      id
+      updatedAt
+      userId
+    }
   }
 `;
 

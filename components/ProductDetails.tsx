@@ -6,9 +6,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import useCartStore from "@/store/useCartStore";
 import useProductStore from "@/store/useProductStore";
-import Cart from "./Cart";
 import { DEFAULT_IMAGE_URL } from "@/constants/default";
 import { capitalizeFirstChar, formatPrice } from "@/utils";
+import Cart from "./Cart";
 
 interface ProductDetailsProps {
   id: string;
@@ -21,9 +21,8 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
   type,
   closeModal,
 }) => {
-  const router = useRouter();
   const { products } = useProductStore();
-  const [quantity, setQuantity] = useState<number>(1);
+  const [quantity, setQuantity] = useState<number>(0); // Start at 0
   const [selectedImageIndex, setSelectedImageIndex] = useState<number>(0);
 
   const addToCart = useCartStore((state) => state.addToCart);
@@ -39,19 +38,21 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
     price,
     description,
     location,
-    quantity: stock,
+    quantity: availableQuantity,
     status,
     user,
   } = product;
+
   const productImages = images?.length ? images : [DEFAULT_IMAGE_URL];
   const displayedImage = productImages[selectedImageIndex] || DEFAULT_IMAGE_URL;
   const fullName = `${capitalizeFirstChar(
     user.firstName
   )} ${capitalizeFirstChar(user.lastName)}`;
 
+  // Adjust quantity but don't go above available stock
   const incrementQuantity = () =>
-    setQuantity((prev) => Math.min(prev + 1, stock || 1));
-  const decrementQuantity = () => setQuantity((prev) => Math.max(prev - 1, 1));
+    setQuantity((prev) => Math.min(prev + 1, availableQuantity || 1));
+  const decrementQuantity = () => setQuantity((prev) => Math.max(prev - 1, 0)); // Prevent going below 0
 
   const handleAddToCart = () => {
     if (quantity > 0) {
@@ -62,24 +63,23 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
         quantity,
         image: images[0],
       });
-      setQuantity(1);
+      setQuantity(0); // Reset quantity after adding to cart
     }
   };
 
   return (
     <div className="max-w-screen-2xl w-full mx-auto py-4 px-4">
       {type === "view" && (
-        <div className="flex justify-between items-center p-3">
+        <div className="flex justify-between items-center py-1 px-3 mb-2">
+          <Cart />
           <button
             className="text-gray-500 hover:text-gray-800"
             onClick={closeModal}
           >
-            <X />
+            <X size={35} />
           </button>
-          <Cart />
         </div>
       )}
-
       <div
         className={`flex ${
           type === "full" ? "flex-col md:flex-row" : "flex-col"
@@ -134,10 +134,6 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
           }`}
         >
           <div>
-            <div className="flex gap-1 items-center mb-3">
-              <Shrub />
-              <span className="text-lg"> {fullName} </span>
-            </div>
             <div className="mb-4 space-y-3 md:space-y-4">
               <div className="mb-2 space-y-1">
                 <h1 className="text-3xl font-bold">{name}</h1>
@@ -150,8 +146,8 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
                 <span className="font-semibold">Location:</span> {location}
               </p>
               <p>
-                <span className="font-semibold">Stock:</span> {stock} pieces
-                available
+                <span className="font-semibold">Stock:</span>{" "}
+                {availableQuantity} pieces available
               </p>
               <p>
                 <span className="font-semibold">Status:</span> {status}

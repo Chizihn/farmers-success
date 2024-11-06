@@ -27,29 +27,33 @@ const Signin = () => {
     resolver: zodResolver(phoneSigninSchema),
   });
 
-  const onSubmit = async (data: EmailSigninFormType | PhoneSigninFormType) => {
+  const handleEmailSignIn = async (data: EmailSigninFormType) => {
     try {
-      if (loginMethod === "email") {
-        const { email, password } = data as EmailSigninFormType;
-        await signInWithEmail(email, password);
-        router.push("/");
-      } else {
-        const { phoneNumber } = data as PhoneSigninFormType; // Correctly retrieve phone number
-        console.log("inputted phone", phoneNumber);
-
-        // Extract country code and local number
-        const countryCodeWithoutPlus = phoneNumber.slice(0, 3); // Assuming it's "+234"
-        const localNumber = phoneNumber.slice(3); // Get the local number
-
-        const formattedPhoneNumber = countryCodeWithoutPlus + localNumber;
-
-        await signInWithPhone(formattedPhoneNumber); // Use formatted phone number
-        console.log("sent number", formattedPhoneNumber);
-
-        router.push("/verify-otp");
-      }
+      const { email, password } = data;
+      await signInWithEmail(email, password);
+      router.push("/");
     } catch (err) {
-      console.error("Signin failed:", err);
+      console.error("Email signin failed:", err);
+    }
+  };
+
+  const handlePhoneSignIn = async (data: PhoneSigninFormType) => {
+    try {
+      const { phoneNumber } = data;
+      console.log("inputted phone", phoneNumber);
+
+      // Extract country code and local number
+      const countryCodeWithoutPlus = phoneNumber.slice(0, 3); // Assuming it's "+234"
+      const localNumber = phoneNumber.slice(3); // Get the local number
+
+      const formattedPhoneNumber = countryCodeWithoutPlus + localNumber;
+
+      await signInWithPhone(formattedPhoneNumber);
+      console.log("sent number", formattedPhoneNumber);
+
+      router.push("/verify-otp");
+    } catch (err) {
+      console.error("Phone signin failed:", err);
     }
   };
 
@@ -98,7 +102,7 @@ const Signin = () => {
         <div className="max-w-sm">
           {loginMethod === "email" ? (
             <form
-              onSubmit={emailForm.handleSubmit(onSubmit)}
+              onSubmit={emailForm.handleSubmit(handleEmailSignIn)}
               className="space-y-4"
             >
               <InputField
@@ -135,7 +139,7 @@ const Signin = () => {
             </form>
           ) : (
             <form
-              onSubmit={phoneForm.handleSubmit(onSubmit)}
+              onSubmit={phoneForm.handleSubmit(handlePhoneSignIn)}
               className="space-y-4"
             >
               <PhoneInput

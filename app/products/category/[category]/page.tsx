@@ -79,7 +79,7 @@ const Products: React.FC<ProductsProps> = ({ params }) => {
   // Only render main content when we have products and aren't loading
   return (
     <main>
-      <Category products={products} />
+      <Category />
       <section className="w-full min-h-screen h-full pt-3 bg-gray-100 flex justify-center">
         {/* Desktop Filter */}
         <aside className="hidden lg:flex w-[25rem] h-screen sticky top-0 overflow-y-auto">
