@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import useAuthStore from "@/store/useAuthStore";
 import Cookies from "js-cookie";
+import useCartStore from "@/store/useCartStore";
 
 // Enum for different verification states
 enum VerificationStatus {
@@ -19,16 +20,11 @@ const useProtectedRoute = () => {
   const router = useRouter();
   const pathname = usePathname();
   const { user } = useAuthStore();
+  const { fetchCart } = useCartStore();
 
   // Define allowed paths for each verification status
   const allowedPaths: Record<VerificationStatus, string[]> = {
-    [VerificationStatus.NoUser]: [
-      "/",
-      "/products/",
-      "/owners",
-      "/signin",
-      "/signup",
-    ],
+    [VerificationStatus.NoUser]: ["/signin", "/signup", "/forgot-password"],
     [VerificationStatus.Unverified]: ["/verify-account", "/"],
     [VerificationStatus.EmailUnverified]: ["/verify-email", "/"],
     [VerificationStatus.PhoneUnverified]: ["/verify-phone", "/"],
@@ -78,6 +74,11 @@ const useProtectedRoute = () => {
         const defaultRedirect =
           allowedPaths[verificationStatus]?.[0] || "/signin";
         router.push(defaultRedirect);
+      }
+
+      // Fetch cart only if the user is verified
+      if (verificationStatus === VerificationStatus.Verified) {
+        fetchCart();
       }
 
       setLoading(false);

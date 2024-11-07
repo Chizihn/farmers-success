@@ -14,6 +14,7 @@ import {
 } from "@/types/forms";
 import useSecureStore from "@/store/useSecure";
 import InputField from "../ui/InputField";
+import { capitalizeFirstChar } from "@/utils";
 
 interface ResetPasswordProps {
   token: string;
@@ -70,7 +71,7 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ token }) => {
           Reset Your Password
         </h1>
         <p className="text-gray-600 mb-6 text-center">
-          Please enter the OTP sent to your email/phone and your new password.
+          Please enter the OTP sent to your email and your new password.
         </p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -87,7 +88,11 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ token }) => {
               />
             ))}
           </div>
-          {errors.otp && <p className="text-red-500">{errors.otp.message}</p>}
+          {errors.otp && (
+            <p className="text-red-500">
+              {capitalizeFirstChar(errors.otp.message)}
+            </p>
+          )}
 
           <InputField
             type="password"

@@ -1,101 +1,114 @@
 "use client";
 import { create } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
+import client from "@/lib/apolloClient";
+import {
+  ADD_PRODUCT_TO_CART,
+  REMOVE_PRODUCT_FROM_CART,
+} from "@/graphql/mutations";
+import { Product } from "@/types";
+import { GET_PRODUCT_CART } from "@/graphql/queries";
 
-interface CartItem {
-  id: string;
-  name: string;
-  price: number;
+export interface CartItem {
+  product: Product;
   quantity: number;
-  image: string;
 }
 
-interface CartStore {
+export interface CartStore {
   cartItems: CartItem[];
   totalItems: number;
   totalPrice: number;
-  addToCart: (item: CartItem) => void;
-  removeFromCart: (itemId: string) => void;
+  fetchCart: () => Promise<void>;
+  addToCart: (productId: string, quantity: number) => Promise<void>;
+  removeFromCart: (productId: string) => Promise<void>;
   updateQuantity: (itemId: string, newQuantity: number) => void;
 }
 
-const useCartStore = create<CartStore>()(
-  persist(
-    (set) => ({
-      cartItems: [],
-      totalItems: 0,
-      totalPrice: 0,
+const useCartStore = create<CartStore>()((set, get) => ({
+  cartItems: [],
+  totalItems: 0,
+  totalPrice: 0,
 
-      addToCart: (item) => {
-        set((state) => {
-          const existingItem = state.cartItems.find((i) => i.id === item.id);
-          let updatedCartItems;
-
-          if (existingItem) {
-            updatedCartItems = state.cartItems.map((i) =>
-              i.id === item.id
-                ? { ...i, quantity: i.quantity + item.quantity }
-                : i
-            );
-          } else {
-            updatedCartItems = [...state.cartItems, item];
-          }
-
-          return {
-            cartItems: updatedCartItems,
-            totalItems: updatedCartItems.reduce(
-              (total, item) => total + item.quantity,
-              0
-            ),
-            totalPrice: updatedCartItems.reduce(
-              (total, item) => total + item.price * item.quantity,
-              0
-            ),
-          };
-        });
-      },
-
-      removeFromCart: (itemId) =>
-        set((state) => {
-          const updatedCartItems = state.cartItems.filter(
-            (item) => item.id !== itemId
-          );
-          return {
-            cartItems: updatedCartItems,
-            totalItems: updatedCartItems.reduce(
-              (total, item) => total + item.quantity,
-              0
-            ),
-            totalPrice: updatedCartItems.reduce(
-              (total, item) => total + item.price * item.quantity,
-              0
-            ),
-          };
-        }),
-
-      updateQuantity: (itemId, newQuantity) =>
-        set((state) => {
-          const updatedCartItems = state.cartItems.map((item) =>
-            item.id === itemId ? { ...item, quantity: newQuantity } : item
-          );
-          return {
-            cartItems: updatedCartItems,
-            totalItems: updatedCartItems.reduce(
-              (total, item) => total + item.quantity,
-              0
-            ),
-            totalPrice: updatedCartItems.reduce(
-              (total, item) => total + item.price * item.quantity,
-              0
-            ),
-          };
-        }),
-    }),
-    {
-      name: "cart-storage",
-      storage: createJSONStorage(() => localStorage),
+  // Fetch cart data from GraphQL
+  fetchCart: async () => {
+    try {
+      const { data } = await client.query({ query: GET_PRODUCT_CART });
+      const cartData = data.getProductCart;
+      set({
+        cartItems: cartData.items,
+        totalItems: cartData.totalQuantity,
+        totalPrice: cartData.totalAmount,
+      });
+    } catch (error) {
+      console.error("Failed to fetch cart:", error);
     }
-  )
-);
+  },
+
+  // Add item to cart with GraphQL mutation
+  addToCart: async (productId, quantity) => {
+    try {
+      await client.mutate({
+        mutation: ADD_PRODUCT_TO_CART,
+        variables: {
+          productId,
+          quantity,
+        },
+      });
+      // Refresh cart data
+      await get().fetchCart();
+    } catch (error) {
+      console.error("Failed to add item to cart:", error);
+    }
+  },
+
+  // Remove item from cart with GraphQL mutation
+  removeFromCart: async (productId) => {
+    try {
+      await client.mutate({
+        mutation: REMOVE_PRODUCT_FROM_CART,
+        variables: { productId },
+      });
+
+      // Optimistically update the store's cartItems state to remove the product.
+      set((state) => ({
+        cartItems: state.cartItems.filter(
+          (item) => item.product.id !== productId
+        ),
+        totalItems: state.cartItems
+          .filter((item) => item.product.id !== productId)
+          .reduce((total, item) => total + item.quantity, 0),
+        totalPrice: state.cartItems
+          .filter((item) => item.product.id !== productId)
+          .reduce(
+            (total, item) => total + item.product.price * item.quantity,
+            0
+          ),
+      }));
+
+      console.log("delete success");
+    } catch (error) {
+      console.log("failed delete", error);
+      console.error("Failed to remove item from cart:", error);
+    }
+  },
+
+  // Update item quantity locally
+  updateQuantity: (itemId, newQuantity) =>
+    set((state) => {
+      const updatedCartItems = state.cartItems.map((item) =>
+        item.product.id === itemId ? { ...item, quantity: newQuantity } : item
+      );
+      return {
+        cartItems: updatedCartItems,
+        totalItems: updatedCartItems.reduce(
+          (total, item) => total + item.quantity,
+          0
+        ),
+        totalPrice: updatedCartItems.reduce(
+          (total, item) => total + item.product.price * item.quantity,
+          0
+        ),
+      };
+    }),
+}));
 
 export default useCartStore;

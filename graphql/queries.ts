@@ -121,88 +121,73 @@ export const GET_ASSET_INFO_TYPES = gql`
   }
 `;
 
-//Get cart items
-export const GET_PRODUCT_CART = gql`
-  fragment ProductOwnerFields on ProductOwner {
-    firstName
-    id
-    lastName
-    profileImageURL
-  }
-
-  fragment ProductCategoryFields on ProductCategory {
-    categoryId
-    categoryType
-    name
-    productId
-  }
-
-  fragment ProductField on Product {
-    categories {
-      ...ProductCategoryFields
-    }
-    city
-    createdAt
-    description
-    id
-    images
-    location
-    name
-    price
-    quantity
-    state
-    status
-    updatedAt
-    user {
-      ...ProductOwnerFields
-    }
-    userId
-  }
-
-  fragment CartItemsList on CartItem {
-    product {
-      ...ProductField
-    }
-    quantity
-  }
-  query GetProductCart {
-    getProductCart {
-      items {
-        ...CartItemsList
-      }
-      totalAmount
-      totalQuantity
-    }
-  }
-`;
-
 // Get cart items by user id
 export const GET_CART_ITEM = gql`
   query GetCartItem($cartItemId: String!) {
     getCartItem(cartItemId: $cartItemId) {
       cartId
       createdAt
-      endDate
       id
-      marketPlaceId
-      marketplace {
-        id
-        name
-        location
-      }
-      startDate
       updatedAt
     }
   }
 `;
 
-// Get order items by filter
-export const GET_ORDER_ITEMS = gql`
-  query GetOrderItems($filter: OrderItemFilter!) {
-    getOrderItems(filter: $filter) {
+// Get order Item
+export const GET_ORDER_ITEM = gql`
+  fragment UserData on User {
+    address
+    city
+    createdAt
+    credit
+    dob
+    email
+    firstName
+    gender
+    id
+    isEmailVerified
+    isPhoneVerified
+    lastName
+    maritalStatus
+    phoneNumber
+    profileImageURL
+    state
+    updatedAt
+    userType
+  }
+
+  fragment OrderItemData on UserOrderItem {
+    buyer {
+      ...UserData
+    }
+    buyerId
+    createdAt
+    deliveryInfo
+    endDate
+    id
+    location
+    orderId
+    seller {
+      ...UserData
+    }
+    sellerId
+    startDate
+    state
+    status {
+      createdAt
+      date
+      id
+      orderItemId
+      status
+      updatedAt
+    }
+    updatedAt
+  }
+
+  query GetOrderItem($orderItemId: String!) {
+    getOrderItem(orderItemId: $orderItemId) {
       buyer {
-        id
-        email
+        ...UserData
       }
       buyerId
       createdAt
@@ -210,22 +195,134 @@ export const GET_ORDER_ITEMS = gql`
       endDate
       id
       location
-      marketPlace {
-        id
-        name
-        location
-      }
-      marketPlaceId
       orderId
-      rentPrice
-      seller {
+      order {
+        address
+        amount
+        createdAt
+        discount
         id
-        email
+        orderItems {
+          ...OrderItemData
+        }
+        paymentMethod
+        updatedAt
+        user {
+          ...UserData
+        }
+        userId
+      }
+      seller {
+        ...UserData
       }
       sellerId
       startDate
       state
+      status {
+        createdAt
+        date
+        id
+        orderItemId
+        status
+        updatedAt
+      }
+      updatedAt
+    }
+  }
+`;
+
+// Get order items by filter
+export const GET_ORDER_ITEMS = gql`
+  fragment UserData on User {
+    address
+    city
+    createdAt
+    credit
+    dob
+    email
+    firstName
+    gender
+    id
+    isEmailVerified
+    isPhoneVerified
+    lastName
+    maritalStatus
+    phoneNumber
+    profileImageURL
+    state
+    updatedAt
+    userType
+  }
+
+  fragment OrderItemData on UserOrderItem {
+    buyer {
+      ...UserData
+    }
+    buyerId
+    createdAt
+    deliveryInfo
+    id
+    location
+    orderId
+    seller {
+      ...UserData
+    }
+    sellerId
+    state
+    status {
+      createdAt
+      date
+      id
+      orderItemId
       status
+      updatedAt
+    }
+    updatedAt
+  }
+
+  query GetOrderItems($filter: OrderItemFilter!) {
+    getOrderItems(filter: $filter) {
+      buyer {
+        ...UserData
+      }
+      buyerId
+      createdAt
+      deliveryInfo
+
+      id
+      location
+
+      orderId
+      order {
+        address
+        amount
+        createdAt
+        discount
+        id
+        orderItems {
+          ...OrderItemData
+        }
+        paymentMethod
+        updatedAt
+        user {
+          ...UserData
+        }
+        userId
+      }
+      seller {
+        ...UserData
+      }
+      sellerId
+
+      state
+      status {
+        createdAt
+        date
+        id
+        orderItemId
+        status
+        updatedAt
+      }
       updatedAt
     }
   }
@@ -245,6 +342,107 @@ export const GET_USER_CART = gql`
       id
       updatedAt
       userId
+    }
+  }
+`;
+
+// Get User Order Items
+export const GET_USER_ORDER_ITEMS = gql`
+  fragment UserData on User {
+    address
+    city
+    createdAt
+    credit
+    dob
+    email
+    firstName
+    gender
+    id
+    isEmailVerified
+    isPhoneVerified
+    lastName
+    maritalStatus
+    phoneNumber
+    profileImageURL
+    state
+    updatedAt
+    userType
+  }
+
+  query GetUserOrderItems($userId: String!) {
+    getUserOrderItems(userId: $userId) {
+      buyer {
+        ...UserData
+      }
+      buyerId
+      createdAt
+      deliveryInfo
+
+      id
+      location
+      orderId
+      seller {
+        ...UserData
+      }
+      sellerId
+      state
+      status {
+        createdAt
+        date
+        id
+        orderItemId
+        status
+        updatedAt
+      }
+      updatedAt
+    }
+  }
+`;
+
+// Get Product Cart
+export const GET_PRODUCT_CART = gql`
+  fragment ProductOwnerFields on ProductOwner {
+    firstName
+    id
+    lastName
+    profileImageURL
+  }
+
+  fragment ProductCategoryFields on ProductCategory {
+    categoryId
+    categoryType
+    name
+    productId
+  }
+
+  query GetProductCart {
+    getProductCart {
+      items {
+        product {
+          categories {
+            ...ProductCategoryFields
+          }
+          city
+          createdAt
+          description
+          id
+          images
+          location
+          name
+          price
+          quantity
+          state
+          status
+          updatedAt
+          user {
+            ...ProductOwnerFields
+          }
+          userId
+        }
+        quantity
+      }
+      totalAmount
+      totalQuantity
     }
   }
 `;

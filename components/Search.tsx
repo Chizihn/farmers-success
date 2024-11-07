@@ -9,11 +9,13 @@ const ProductSearch: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { products } = useProductStore();
-  
-  const [searchTerm, setSearchTerm] = useState<string>(searchParams.get("q") || "");
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
 
-  const filterProducts = useCallback(() => {
+  const [searchTerm, setSearchTerm] = useState<string>(
+    searchParams.get("q") || ""
+  );
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>(products);
+
+  useEffect(() => {
     const term = searchTerm.trim().toLowerCase();
     setFilteredProducts(
       term
@@ -22,11 +24,7 @@ const ProductSearch: React.FC = () => {
           )
         : products
     );
-  }, [products, searchTerm]);
-
-  useEffect(() => {
-    if (products) filterProducts();
-  }, [products, searchTerm]);
+  }, [searchTerm, products]);
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -36,7 +34,10 @@ const ProductSearch: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSearch} className="w-full md:w-[50rem] flex gap-3 relative my-4 md:my-0">
+    <form
+      onSubmit={handleSearch}
+      className="w-full md:w-[50rem] flex gap-3 relative my-4 md:my-0"
+    >
       <input
         type="text"
         value={searchTerm}

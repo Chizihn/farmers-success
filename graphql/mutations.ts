@@ -111,6 +111,13 @@ export const ADD_CART_ITEM = gql`
         endDate
         id
         marketPlaceId
+        marketplace {
+          createdAt
+          deliveryInfo
+          id
+          location
+          updatedAt
+        }
         startDate
         updatedAt
       }
@@ -122,9 +129,117 @@ export const ADD_CART_ITEM = gql`
   }
 `;
 
+// Add to order
+export const ADD_TO_ORDER = gql`
+  fragment UserData on User {
+    address
+    city
+    createdAt
+    credit
+    dob
+    email
+    firstName
+    gender
+    id
+    isEmailVerified
+    isPhoneVerified
+    lastName
+    maritalStatus
+    phoneNumber
+    profileImageURL
+    state
+    updatedAt
+    userType
+  }
+
+  mutation AddToOrder(
+    $addToOrderAddress2: String!
+    $addToOrderPaymentMethod2: paymentMethod!
+    $applyCredit: Boolean
+  ) {
+    addToOrder(
+      address: $addToOrderAddress2
+      paymentMethod: $addToOrderPaymentMethod2
+      applyCredit: $applyCredit
+    ) {
+      address
+      amount
+      createdAt
+      discount
+      id
+      orderItems {
+        buyer {
+          ...UserData
+        }
+        buyerId
+        createdAt
+        deliveryInfo
+        endDate
+        id
+        location
+        marketPlaceId
+        order {
+          address
+          amount
+          createdAt
+          discount
+          id
+          orderItems {
+            buyer {
+              ...UserData
+            }
+          }
+          paymentMethod
+          updatedAt
+          user {
+            ...UserData
+          }
+          userId
+        }
+        orderId
+        seller {
+          ...UserData
+        }
+        sellerId
+        state
+        status {
+          createdAt
+          date
+          id
+          orderItemId
+          status
+          updatedAt
+        }
+        updatedAt
+      }
+
+      paymentMethod
+      updatedAt
+      user {
+        ...UserData
+      }
+      userId
+    }
+  }
+`;
+
+// Add product to cart
+export const ADD_PRODUCT_TO_CART = gql`
+  mutation AddProductToCart($productId: String!, $quantity: Int!) {
+    addProductToCart(productId: $productId, quantity: $quantity)
+  }
+`;
+
 // Delete cartitem
 export const DELETE_CART_ITEM = gql`
   mutation DeleteCartItem($cartItemId: String!) {
     deleteCartItem(cartItemId: $cartItemId)
+  }
+`;
+
+// Remove product from cart
+export const REMOVE_PRODUCT_FROM_CART = gql`
+  mutation RemoveProductFromCart($productId: String!) {
+    removeProductFromCart(productId: $productId)
   }
 `;

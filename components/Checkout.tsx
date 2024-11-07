@@ -122,16 +122,22 @@ const Checkout: React.FC = () => {
 
       <div className="mb-4">
         <h2 className="font-semibold mb-2">Order Summary</h2>
-        {cartItems.map((item) => (
-          <div key={item.name} className="flex justify-between">
-            <span>
-              {item.name} x {item.quantity}
-            </span>
-            <span>
-              N{formatPrice(calculateItemTotal(item.price, item.quantity))}
-            </span>
-          </div>
-        ))}
+        {cartItems
+          .flatMap((item) => (item.product ? [item] : []))
+          .map((item) => (
+            <div key={item.product.id} className="flex justify-between">
+              <span>
+                {item.product.name} x {item.quantity}
+              </span>
+              <span>
+                N
+                {formatPrice(
+                  calculateItemTotal(item.product.price, item.quantity)
+                )}
+              </span>
+            </div>
+          ))}
+
         <div className="font-bold mt-2">Total: N{formatPrice(totalPrice)}</div>
       </div>
 

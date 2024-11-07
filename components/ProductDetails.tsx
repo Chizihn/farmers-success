@@ -56,14 +56,8 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
 
   const handleAddToCart = () => {
     if (quantity > 0) {
-      addToCart({
-        id: product.id,
-        name,
-        price: typeof price === "string" ? parseFloat(price) : price,
-        quantity,
-        image: images[0],
-      });
-      setQuantity(0); // Reset quantity after adding to cart
+      addToCart(product.id, quantity);
+      setQuantity(0);
     }
   };
 

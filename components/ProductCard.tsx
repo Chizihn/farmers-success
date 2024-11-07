@@ -24,31 +24,28 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     quantity: availableQuantity,
   } = product;
 
-  const { addToCart } = useCartStore();
+  const addToCart = useCartStore((state) => state.addToCart);
 
-  // The quantity should start at 0, not the available quantity
   const [quantity, setQuantity] = useState<number>(0);
 
-  // Fallback to default image if not provided
   const image = images.length > 0 ? images[0] : DEFAULT_IMAGE_URL;
 
-  // Increment and decrement quantity for the user
   const incrementQuantity = () => {
     if (quantity < availableQuantity) {
-      setQuantity((prev) => prev + 1); // Increase the quantity
-    }
-  };
-  const decrementQuantity = () => {
-    if (quantity > 0) {
-      setQuantity((prev) => prev - 1); // Decrease the quantity
+      setQuantity((prev) => prev + 1);
     }
   };
 
-  // Handle adding to cart
+  const decrementQuantity = () => {
+    if (quantity > 0) {
+      setQuantity((prev) => prev - 1);
+    }
+  };
+
   const handleAddToCart = () => {
     if (quantity > 0) {
-      addToCart({ id, name, price, quantity, image });
-      setQuantity(0); // Reset quantity after adding to cart
+      addToCart(id, quantity);
+      setQuantity(0);
     }
   };
 
@@ -77,7 +74,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             }}
           >
             <h3 className="text-md md:text-lg font-semibold text-gray-800 truncate hover:text-green-600 cursor-pointer">
-              {name}
+              {capitalizeFirstChar(name)}
             </h3>
           </Link>
           <span className="text-green-600 font-bold">N {price}</span>

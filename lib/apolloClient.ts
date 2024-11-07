@@ -1,7 +1,28 @@
-import { ApolloClient, InMemoryCache } from "@apollo/client";
+// Apollo Client configuration
+import {
+  ApolloClient,
+  InMemoryCache,
+  HttpLink,
+  ApolloLink,
+} from "@apollo/client";
+import Cookies from "js-cookie";
+
+const authLink = new ApolloLink((operation, forward) => {
+  const token = Cookies.get("token");
+
+  operation.setContext({
+    headers: {
+      authorization: token ? `Bearer ${token}` : "",
+    },
+  });
+
+  return forward(operation);
+});
 
 const client = new ApolloClient({
-  uri: process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT,
+  link: authLink.concat(
+    new HttpLink({ uri: process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT })
+  ),
   cache: new InMemoryCache(),
 });
 

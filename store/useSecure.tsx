@@ -98,7 +98,7 @@ const useSecureStore = create<SecureState>()(
 
           const { data } = await client.mutate<ResetPasswordResponse>({
             mutation: RESET_PASSWORD,
-            variables: { otp, password, token }, // Pass the token from the cookie here
+            variables: { otp, password, token },
           });
 
           if (!data?.resetPassword) {

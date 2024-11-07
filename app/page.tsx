@@ -5,7 +5,6 @@ import Products from "@/components/Products";
 import { useRouter, useSearchParams } from "next/navigation";
 import ReactModal from "react-modal";
 import ProductDetails from "@/components/ProductDetails";
-
 ReactModal.setAppElement("#__next");
 
 const customStyles = {

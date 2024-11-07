@@ -16,15 +16,15 @@ export default function RootLayout({
   modal: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body id="__next">
-        <ApolloProviderWrapper>
+    <ApolloProviderWrapper>
+      <html lang="en">
+        <body id="__next">
           <Suspense>
             {children}
             {modal}
           </Suspense>
-        </ApolloProviderWrapper>
-      </body>
-    </html>
+        </body>
+      </html>
+    </ApolloProviderWrapper>
   );
 }

@@ -2,6 +2,7 @@
 import OTPVerification from "@/components/auth/OtpVerification";
 import LoadingState from "@/components/Loading";
 import useAuthStore from "@/store/useAuthStore";
+import Cookies from "js-cookie";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 

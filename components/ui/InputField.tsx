@@ -1,3 +1,4 @@
+import { capitalizeFirstChar } from "@/utils";
 import { UseFormRegisterReturn } from "react-hook-form";
 
 interface InputFieldProps {
@@ -24,7 +25,7 @@ const InputField: React.FC<InputFieldProps> = ({
       className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:border-green-600"
     />
     <div className="mt-2">
-      {error && <p className="text-red-500">{error}</p>}
+      {error && <p className="text-red-500">{capitalizeFirstChar(error)}</p>}
     </div>
   </div>
 );

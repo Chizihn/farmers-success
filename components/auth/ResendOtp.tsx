@@ -36,8 +36,11 @@ const ResendOtp: React.FC<ResendOtpProps> = ({ identifier, activity }) => {
         className="text-green-600 hover:text-green-700 transition duration-200"
       >
         {loading ? "Resending..." : "Resend OTP"}
-      </button>
-      {message && <p className="text-center text-gray-600 mt-2">{message}</p>}
+      </button>{" "}
+      <br />
+      {message && (
+        <span className="text-center text-gray-600 mt-2">{message}</span>
+      )}
     </>
   );
 };
