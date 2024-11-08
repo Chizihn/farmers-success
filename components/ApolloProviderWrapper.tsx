@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useEffect } from "react";
+import { ReactNode } from "react";
 import { ApolloProvider } from "@apollo/client";
 import client from "../lib/apolloClient";
 import useProtectedRoute from "@/hooks/useProtectedRoute";

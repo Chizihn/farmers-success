@@ -18,7 +18,10 @@ export default function RootLayout({
   return (
     <ApolloProviderWrapper>
       <html lang="en">
-        <body id="__next">
+        <body
+          id="__next"
+          className="max-w-[1400px] w-full mx-auto bg-gray-100 "
+        >
           <Suspense>
             {children}
             {modal}

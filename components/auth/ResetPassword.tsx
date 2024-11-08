@@ -2,7 +2,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import Cookies from "js-cookie";
 import Logo from "../Logo";
 import ResendOtp from "./ResendOtp";
@@ -18,9 +17,10 @@ import { capitalizeFirstChar } from "@/utils";
 
 interface ResetPasswordProps {
   token: string;
+  identifier: string;
 }
 
-const ResetPassword: React.FC<ResetPasswordProps> = ({ token }) => {
+const ResetPassword: React.FC<ResetPasswordProps> = ({ token, identifier }) => {
   const { resetPassword } = useSecureStore();
   const router = useRouter();
 
@@ -65,7 +65,7 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ token }) => {
   };
 
   return (
-    <div className="flex items-center justify-center w-full h-screen lg:bg-gray-50">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 lg:bg-gray-50">
       <div className="w-full lg:max-w-lg p-6 bg-white lg:shadow-md lg:rounded-lg md:w-[40rem] flex flex-col justify-center items-center gap-2">
         <h1 className="text-2xl font-bold text-green-600 mb-4 text-center">
           Reset Your Password
@@ -109,7 +109,7 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ token }) => {
           </button>
         </form>
 
-        <ResendOtp identifier={token} activity={OtpActivity.ForgotPassword} />
+        <ResendOtp identifier={identifier} activity="forgot_password" />
         <Logo />
       </div>
     </div>

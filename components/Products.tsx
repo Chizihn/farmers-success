@@ -68,7 +68,7 @@ const Products: React.FC = () => {
   return (
     <main>
       <Category />
-      <section className="w-full min-h-screen h-full pt-3 bg-gray-100 flex justify-center">
+      <section className="w-full min-h-screen h-full pt-3 flex lg:gap-3 justify-center">
         {/* Desktop Filter */}
         <aside className="hidden lg:flex w-[25rem] h-screen sticky top-0 overflow-y-auto">
           <ProductFilter
@@ -78,7 +78,7 @@ const Products: React.FC = () => {
           />
         </aside>
 
-        <div className="container space-y-2 h-full overflow-y-auto flex-grow pb-6 pr-2">
+        <div className="container space-y-2 h-full overflow-y-auto flex-grow pb-6 ">
           <div className="bg-white p-3 shadow-md rounded-lg mb-2 flex flex-col lg:flex-row justify-between items-center">
             <h2 className="text-xl font-bold mb-4 lg:mb-0">
               Available Products ({displayProducts.length})
@@ -99,7 +99,7 @@ const Products: React.FC = () => {
               <p className="text-gray-500 text-lg">No products found</p>
             </div>
           ) : (
-            <div className="w-full h-full max-h-full overflow-y-auto grid gap-6 px-3 lg:px-0 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            <div className="bg-gray-50 w-full h-full max-h-full overflow-y-auto grid gap-6 px-3 lg:px-0 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               {displayProducts.map((product: Product) => (
                 <ProductCard key={product.id} product={product} />
               ))}

@@ -243,3 +243,10 @@ export const REMOVE_PRODUCT_FROM_CART = gql`
     removeProductFromCart(productId: $productId)
   }
 `;
+
+// Create order
+export const CREATE_ORDER = gql`
+  mutation CreateOrder($input: CreateOrder!) {
+    createOrder(input: $input)
+  }
+`;

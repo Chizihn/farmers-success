@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useActionState, useState } from "react";
 import { Minus, Plus, ShoppingCart, Shrub, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,6 +9,8 @@ import useProductStore from "@/store/useProductStore";
 import { DEFAULT_IMAGE_URL } from "@/constants/default";
 import { capitalizeFirstChar, formatPrice } from "@/utils";
 import Cart from "./Cart";
+import useAuthStore from "@/store/useAuthStore";
+import useGuestCartStore from "@/store/useGuestCartStore";
 
 interface ProductDetailsProps {
   id: string;
@@ -21,11 +23,15 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
   type,
   closeModal,
 }) => {
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const { products } = useProductStore();
   const [quantity, setQuantity] = useState<number>(0); // Start at 0
   const [selectedImageIndex, setSelectedImageIndex] = useState<number>(0);
 
   const addToCart = useCartStore((state) => state.addToCart);
+
+  const guestAddToCart = useGuestCartStore((state) => state.guestAddToCart);
+
   const product = products.find((p) => p.id === id);
 
   if (!product) {
@@ -61,6 +67,13 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
     }
   };
 
+  const handleGuestAddToCart = () => {
+    if (quantity > 0) {
+      guestAddToCart({ product, quantity });
+      setQuantity(0);
+    }
+  };
+
   return (
     <div className="max-w-screen-2xl w-full mx-auto py-4 px-4">
       {type === "view" && (
@@ -85,7 +98,9 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
           } flex flex-col gap-4`}
         >
           <div
-            className={`relative ${type === "full" ? "h-96" : "h-60"} w-full`}
+            className={`relative border-[4px] border-green-600 rounded-lg ${
+              type === "full" ? "h-96" : "h-60"
+            } w-full`}
           >
             <Image
               src={displayedImage}
@@ -130,8 +145,12 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
           <div>
             <div className="mb-4 space-y-3 md:space-y-4">
               <div className="mb-2 space-y-1">
-                <h1 className="text-3xl font-bold">{name}</h1>
-                <p className="text-slate-600">{description}</p>
+                <h1 className="text-3xl font-bold">
+                  {capitalizeFirstChar(name)}
+                </h1>
+                <p className="text-slate-600">
+                  {capitalizeFirstChar(description)}
+                </p>
               </div>
               <p className="text-3xl font-semibold mb-4 text-green-600">
                 N {formatPrice(price || 0)}
@@ -142,9 +161,6 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
               <p>
                 <span className="font-semibold">Stock:</span>{" "}
                 {availableQuantity} pieces available
-              </p>
-              <p>
-                <span className="font-semibold">Status:</span> {status}
               </p>
             </div>
           </div>
@@ -167,7 +183,9 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
                 </button>
               </div>
               <button
-                onClick={handleAddToCart}
+                onClick={
+                  isAuthenticated ? handleAddToCart : handleGuestAddToCart
+                }
                 className="flex items-center justify-center space-x-2 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors duration-200 w-full md:w-auto"
               >
                 <ShoppingCart size={20} />

@@ -11,7 +11,8 @@ import useAuthStore from "@/store/useAuthStore";
 const OTPVerification: React.FC<{
   verificationType: "verifyEmail" | "verifyPhone" | "verifySignIn";
   token: string;
-}> = ({ verificationType, token }) => {
+  identifier: string;
+}> = ({ verificationType, token, identifier }) => {
   const { verifyEmailOTP, verifyPhoneOTP, verifyOTP } = useAuthStore();
   const router = useRouter();
 
@@ -88,19 +89,16 @@ const OTPVerification: React.FC<{
         </form>
 
         <div className="mt-6">
-          <p className="text-center text-gray-600">
-            Didn’t receive an OTP?{" "}
-            <ResendOtp
-              identifier={token}
-              activity={
-                verificationType === "verifyEmail"
-                  ? OtpActivity.EmailVerification
-                  : verificationType === "verifyPhone"
-                  ? OtpActivity.PhoneNumberVerification
-                  : OtpActivity.Auth
-              }
-            />
-          </p>
+          <ResendOtp
+            identifier={identifier}
+            activity={
+              verificationType === "verifyEmail"
+                ? "email_verification"
+                : verificationType === "verifyPhone"
+                ? "phone_number_verification"
+                : "auth"
+            }
+          />
         </div>
 
         <div className="mt-8 flex justify-center">

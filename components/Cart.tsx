@@ -3,11 +3,16 @@ import { ShoppingCart } from "lucide-react";
 import { useState, useEffect } from "react";
 import useCartStore from "@/store/useCartStore";
 import useModalStore from "@/store/useModalStore";
+import useGuestCartStore from "@/store/useGuestCartStore";
+import useAuthStore from "@/store/useAuthStore";
 
 export const Cart: React.FC = () => {
   const { openModal } = useModalStore();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   const totalItems = useCartStore((state) => state.totalItems);
+  const guestTotalItems = useGuestCartStore((state) => state.guestTotalItems);
+
   const [hasMounted, setHasMounted] = useState<boolean>(false);
 
   useEffect(() => {
@@ -27,7 +32,7 @@ export const Cart: React.FC = () => {
         <ShoppingCart size={28} />
         {hasMounted && (
           <p className="absolute top-[-6px] right-[-7px] md:top-[-10px] md:right-[-10px] bg-red-600 w-[15px] h-[15px] md:w-[20px] md:h-[20px] rounded-full flex justify-center items-center text-white text-xs md:text-sm ">
-            <strong>{totalItems}</strong>
+            <strong>{isAuthenticated ? totalItems : guestTotalItems}</strong>
           </p>
         )}
       </button>

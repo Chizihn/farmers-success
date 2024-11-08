@@ -1,10 +1,13 @@
 import { create } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
 
 interface ModalState {
   isModalOpen: boolean;
   openModal: () => void;
   closeModal: () => void;
+
+  isCheckoutModalOpen: boolean;
+  openCheckoutModal: () => void;
+  closeCheckoutModal: () => void;
 }
 
 export const useModalStore = create<ModalState>()((set) => ({
@@ -15,6 +18,14 @@ export const useModalStore = create<ModalState>()((set) => ({
   },
   closeModal: () => {
     set({ isModalOpen: false });
+  },
+
+  isCheckoutModalOpen: false,
+  openCheckoutModal: () => {
+    set({ isCheckoutModalOpen: true });
+  },
+  closeCheckoutModal: () => {
+    set({ isCheckoutModalOpen: false });
   },
 }));
 

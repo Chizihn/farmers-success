@@ -38,10 +38,7 @@ export type ForgotPasswordFormType = z.infer<typeof forgotPasswordSchema>;
 // Reset Password Form Schema
 export const resetPasswordSchema = z.object({
   otp: z.array(z.string().min(1).max(1)).length(4),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters long")
-    .regex(/[A-Za-z]/, "Password must contain both letters and numbers"),
+  password: z.string().min(8, "Password must be at least 8 characters long"),
   token: z.string(),
 });
 
@@ -49,13 +46,18 @@ export const resetPasswordSchema = z.object({
 export type ResetPasswordFormType = z.infer<typeof resetPasswordSchema>;
 
 //Resend otp
-export enum OtpActivity {
-  EmailVerification = "email_verification",
-  PhoneNumberVerification = "phone_number_verification",
-  Auth = "auth",
-  ForgotPassword = "forgot_password",
-}
+// export enum OtpActivity {
+//   EmailVerification = "email_verification",
+//   PhoneNumberVerification = "phone_number_verification",
+//   Auth = "auth",
+//   ForgotPassword = "forgot_password",
+// }
 
+export type OtpActivity =
+  | "email_verification"
+  | "phone_number_verification"
+  | "auth"
+  | "forgot_password";
 // Validation schema for OTP
 export const otpSchema = z.object({
   otp: z.array(z.string().min(1).max(1)).length(4),

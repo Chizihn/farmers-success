@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { forgotPasswordSchema, ForgotPasswordFormType } from "@/types/forms";
-
+import Cookies from "js-cookie";
 import Logo from "../Logo";
 import useSecureStore from "@/store/useSecure";
 
@@ -22,6 +22,9 @@ const ForgotPassword = () => {
   const onSubmit = async (data: ForgotPasswordFormType) => {
     try {
       await forgotPassword(data.email);
+      Cookies.set("identifier", data.email);
+      console.log(data.email);
+
       router.push("/reset-password");
       console.log("OTP sent");
     } catch (err) {
@@ -30,7 +33,7 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="flex items-center justify-center w-full h-screen lg:bg-gray-50">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 lg:bg-gray-50">
       <div className="w-full lg:max-w-lg p-6 bg-white lg:shadow-md lg:rounded-lg md:w-[40rem] flex flex-col justify-center items-center gap-2">
         <div>
           <h1 className="text-2xl font-bold text-green-600 mb-4 text-center">

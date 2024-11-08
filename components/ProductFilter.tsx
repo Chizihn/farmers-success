@@ -113,7 +113,7 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
   };
 
   return (
-    <div className="w-full h-screen px-4 overflow-hidden sticky top-0 left-0">
+    <div className="w-full h-screen overflow-hidden sticky top-0 left-0">
       <div className="bg-white py-3 px-4 shadow-md rounded-lg mb-[.4rem] sticky top-0 z-10">
         <h2 className="text-xl font-semibold">Filter Products</h2>
       </div>

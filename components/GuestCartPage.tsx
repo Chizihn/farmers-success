@@ -9,10 +9,12 @@ import { capitalizeFirstChar } from "@/utils";
 import { useEffect } from "react";
 import dynamic from "next/dynamic";
 import CheckoutModal from "./auth/CheckoutModal";
+import useGuestCartStore from "@/store/useGuestCartStore";
+import GuestCheckout from "./GuestCheckout";
 
 const CheckoutPage = dynamic(() => import("./Checkout"), { ssr: false });
 
-const CartPage: React.FC = () => {
+const GuestCartPage: React.FC = () => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -22,8 +24,12 @@ const CartPage: React.FC = () => {
     openCheckoutModal,
     closeCheckoutModal,
   } = useModalStore();
-  const { cartItems, removeFromCart, updateQuantity, totalPrice } =
-    useCartStore();
+  const {
+    guestCartItems,
+    guestRemoveFromCart,
+    guestUpdateQuantity,
+    guestTotalPrice,
+  } = useGuestCartStore();
 
   const formatPrice = (price: string | number) => {
     const numPrice = typeof price === "string" ? parseFloat(price) : price;
@@ -34,12 +40,12 @@ const CartPage: React.FC = () => {
     router.push(`${pathname}?checkout`);
   };
 
-  const handleCloseCartPage = () => {
+  const handleCloseGuestCartPage = () => {
     closeModal();
   };
 
   const handleDeleteProduct = (id: string) => {
-    removeFromCart(id);
+    guestRemoveFromCart(id);
     console.log("deleted", id);
   };
 
@@ -57,19 +63,19 @@ const CartPage: React.FC = () => {
     <div className="h-full flex flex-col">
       <div className="p-4 border-b flex justify-between items-center">
         <h2 className="text-2xl font-bold">Your Cart</h2>
-        <button onClick={handleCloseCartPage}>
+        <button onClick={handleCloseGuestCartPage}>
           <X size={35} />
         </button>
       </div>
 
-      {cartItems.length === 0 ? (
+      {guestCartItems.length === 0 ? (
         <div className="flex-grow flex items-center justify-center">
           <p className="text-gray-500 text-lg">Your cart is empty.</p>
         </div>
       ) : (
         <>
           <div className="flex-grow overflow-y-auto p-4">
-            {cartItems.map((item) => (
+            {guestCartItems.map((item) => (
               <div
                 key={item.product.id}
                 className="flex items-center space-x-4 mb-4 pb-4 border-b last:border-b-0"
@@ -93,7 +99,7 @@ const CartPage: React.FC = () => {
                   <div className="flex items-center mt-1">
                     <button
                       onClick={() =>
-                        updateQuantity(
+                        guestUpdateQuantity(
                           item.product.id,
                           Math.max(0, item.quantity - 1)
                         )
@@ -108,7 +114,7 @@ const CartPage: React.FC = () => {
 
                     <button
                       onClick={() =>
-                        updateQuantity(item.product.id, item.quantity + 1)
+                        guestUpdateQuantity(item.product.id, item.quantity + 1)
                       }
                       className="p-1 rounded-full bg-gray-200 hover:bg-gray-300"
                     >
@@ -130,7 +136,7 @@ const CartPage: React.FC = () => {
             <div className="flex justify-between items-center mb-4">
               <span className="text-xl font-bold">Total:</span>
               <span className="text-xl font-bold">
-                N{formatPrice(totalPrice)}
+                N{formatPrice(guestTotalPrice)}
               </span>
             </div>
 
@@ -142,7 +148,7 @@ const CartPage: React.FC = () => {
             </button>
           </div>
           <CheckoutModal isOpen={isCheckoutModalOpen}>
-            <CheckoutPage />
+            <GuestCheckout />
           </CheckoutModal>
         </>
       )}
@@ -150,4 +156,4 @@ const CartPage: React.FC = () => {
   );
 };
 
-export default CartPage;
+export default GuestCartPage;

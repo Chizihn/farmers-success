@@ -1,21 +1,20 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Loader } from "lucide-react";
-import useCartStore from "@/store/useCartStore";
-import useAuthStore from "@/store/useAuthStore";
+
 import useOrderStore, {
   ProductPaymentMethod,
   CreateOrder,
 } from "@/store/useOrderStore";
-// import { PaystackButton } from "react-paystack";
 import { useRouter, useSearchParams } from "next/navigation";
 import PaymentSuccess from "./PaymentSuccess";
 import PaymentFailure from "./PaymentFailure";
 import { formatPrice } from "@/utils/checkout";
 import CheckoutHeader from "./checkout/CheckoutHeader";
 import OrderSummary from "./checkout/OrderSummary";
+import useGuestCartStore from "@/store/useGuestCartStore";
 
-const Checkout: React.FC = () => {
+const GuestCheckout: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [paymentMethod, setPaymentMethod] = useState<string>("");
   const [firstName, setFirstName] = useState<string>("");
@@ -25,27 +24,21 @@ const Checkout: React.FC = () => {
   const [address, setAddress] = useState<string>("");
   const [error, setError] = useState<string>("");
 
-  const { cartItems, totalItems, totalPrice, removeFromCart } = useCartStore();
-  const { user, isAuthenticated } = useAuthStore();
+  const {
+    guestCartItems,
+    guestTotalItems,
+    guestTotalPrice,
+    guestRemoveFromCart,
+  } = useGuestCartStore();
   const { createOrder, loading: orderLoading } = useOrderStore();
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  useEffect(() => {
-    if (typeof window !== null && isAuthenticated && user) {
-      setFirstName(user.firstName);
-      setLastName(user.lastName);
-      setEmail(user.email);
-      setPhone(user.phoneNumber);
-      setAddress(user.address);
-    }
-  }, [isAuthenticated, user]);
-
   const clearCart = () => {
-    cartItems.forEach((item) => removeFromCart(item.product.id));
+    guestCartItems.forEach((item) => guestRemoveFromCart(item.product.id));
   };
 
-  if (totalItems === 0) {
+  if (guestTotalItems === 0) {
     return (
       <div className="flex items-center justify-center w-full h-full p-6 bg-white relative">
         <CheckoutHeader />
@@ -72,7 +65,7 @@ const Checkout: React.FC = () => {
 
     try {
       // Map cartItems to create a guestCart array of the expected structure
-      const guestCart = cartItems.map((item) => ({
+      const guestCart = guestCartItems.map((item) => ({
         productId: item.product.id, // Extract only the product ID
         quantity: item.quantity,
       }));
@@ -118,8 +111,10 @@ const Checkout: React.FC = () => {
   return (
     <div className="w-full h-full overflow-auto py-4 px-6 bg-white relative">
       <CheckoutHeader />
-      <OrderSummary cartItems={cartItems} />
-      <div className="font-bold mt-2">Total: N{formatPrice(totalPrice)}</div>
+      <OrderSummary cartItems={guestCartItems} />
+      <div className="font-bold mt-2">
+        Total: N{formatPrice(guestTotalPrice)}
+      </div>
 
       <form onSubmit={handlePayment} className="space-y-4 mt-8">
         <h2 className="font-bold text-xl mb-2">Billing Information</h2>
@@ -212,4 +207,4 @@ const Checkout: React.FC = () => {
   );
 };
 
-export default Checkout;
+export default GuestCheckout;

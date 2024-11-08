@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import useAuthStore from "@/store/useAuthStore";
 import Cookies from "js-cookie";
-import useCartStore from "@/store/useCartStore";
 
 // Enum for different verification states
 enum VerificationStatus {
@@ -20,11 +19,18 @@ const useProtectedRoute = () => {
   const router = useRouter();
   const pathname = usePathname();
   const { user } = useAuthStore();
-  const { fetchCart } = useCartStore();
 
   // Define allowed paths for each verification status
   const allowedPaths: Record<VerificationStatus, string[]> = {
-    [VerificationStatus.NoUser]: ["/signin", "/signup", "/forgot-password"],
+    [VerificationStatus.NoUser]: [
+      "/",
+      "/products/",
+      "/owners",
+      "/signin",
+      "/search/",
+      "/signup",
+      "/forgot-password",
+    ],
     [VerificationStatus.Unverified]: ["/verify-account", "/"],
     [VerificationStatus.EmailUnverified]: ["/verify-email", "/"],
     [VerificationStatus.PhoneUnverified]: ["/verify-phone", "/"],
@@ -32,6 +38,7 @@ const useProtectedRoute = () => {
     [VerificationStatus.Verified]: [
       "/",
       "/account",
+      "/search",
       "/edit-profile",
       "/dashboard",
       "/profile",
@@ -55,7 +62,6 @@ const useProtectedRoute = () => {
 
   useEffect(() => {
     const initializeRoute = async () => {
-      // Handle reset password route separately
       if (pathname === "/reset-password") {
         const resetToken = Cookies.get("reset_token");
         if (!resetToken) {
@@ -76,11 +82,6 @@ const useProtectedRoute = () => {
         router.push(defaultRedirect);
       }
 
-      // Fetch cart only if the user is verified
-      if (verificationStatus === VerificationStatus.Verified) {
-        fetchCart();
-      }
-
       setLoading(false);
       setInitialized(true);
     };
@@ -88,6 +89,7 @@ const useProtectedRoute = () => {
     initializeRoute();
   }, [pathname, user]);
 
+  // Return both loading state and whether routes are initialized
   return { loading, initialized };
 };
 

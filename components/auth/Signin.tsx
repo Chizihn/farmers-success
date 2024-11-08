@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import Cookies from "js-cookie";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Logo from "../Logo";
 import useAuthStore from "@/store/useAuthStore";
@@ -49,6 +50,7 @@ const Signin = () => {
       const formattedPhoneNumber = countryCodeWithoutPlus + localNumber;
 
       await signInWithPhone(formattedPhoneNumber);
+      Cookies.set("identifier", formattedPhoneNumber);
       console.log("sent number", formattedPhoneNumber);
 
       router.push("/verify-otp");

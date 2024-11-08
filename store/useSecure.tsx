@@ -74,7 +74,7 @@ const useSecureStore = create<SecureState>()(
           });
 
           if (response.data?.resendOTP?.token) {
-            const token = response.data.resendOTP.token;
+            const { token } = response.data.resendOTP.token;
             set({
               loading: false,
               token: token,

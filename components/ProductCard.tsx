@@ -8,6 +8,8 @@ import { DEFAULT_IMAGE_URL } from "@/constants/default";
 import Link from "next/link";
 import { capitalizeFirstChar } from "@/utils";
 import { useRouter } from "next/navigation";
+import useGuestCartStore from "@/store/useGuestCartStore";
+import useAuthStore from "@/store/useAuthStore";
 
 type ProductCardProps = {
   product: Product;
@@ -23,8 +25,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     description,
     quantity: availableQuantity,
   } = product;
-
-  const addToCart = useCartStore((state) => state.addToCart);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const { addToCart } = useCartStore();
+  const { guestAddToCart } = useGuestCartStore();
 
   const [quantity, setQuantity] = useState<number>(0);
 
@@ -42,9 +45,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     }
   };
 
-  const handleAddToCart = () => {
-    if (quantity > 0) {
+  const handleAddToCart = async () => {
+    if (quantity > 0 && quantity <= availableQuantity) {
       addToCart(id, quantity);
+      setQuantity(0);
+    }
+  };
+
+  const handleGuestAddToCart = async () => {
+    if (quantity > 0 && quantity <= availableQuantity) {
+      guestAddToCart({ product, quantity });
       setQuantity(0);
     }
   };
@@ -56,6 +66,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           src={image}
           alt={description}
           fill
+          sizes=""
           style={{ objectFit: "cover" }}
           className="transition-opacity duration-300 hover:opacity-90"
           priority
@@ -95,6 +106,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               <Minus size={16} />
             </button>
             <span className="w-8 text-center">{quantity}</span>
+
             <button
               onClick={incrementQuantity}
               className="p-1 rounded-full bg-gray-200 hover:bg-gray-300 transition-colors duration-200"
@@ -102,13 +114,24 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               <Plus size={16} />
             </button>
           </div>
-          <button
-            onClick={handleAddToCart}
-            className="flex items-center space-x-1 bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200"
-          >
-            <ShoppingCart size={16} />
-            <span className="text-sm">Add to Cart</span>
-          </button>
+
+          {isAuthenticated ? (
+            <button
+              onClick={handleAddToCart}
+              className="flex items-center space-x-1 bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200"
+            >
+              <ShoppingCart size={16} />
+              <span className="text-sm">Add to Cart</span>
+            </button>
+          ) : (
+            <button
+              onClick={handleGuestAddToCart}
+              className="flex items-center space-x-1 bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200"
+            >
+              <ShoppingCart size={16} />
+              <span className="text-sm">Add to Cart</span>
+            </button>
+          )}
         </div>
       </div>
     </div>

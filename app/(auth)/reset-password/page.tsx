@@ -8,19 +8,22 @@ import { redirect } from "next/navigation";
 const ResetPasswordPage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [token, setToken] = useState<string | null>(null);
+  const [identifier, setIdentifier] = useState<string | null>(null);
 
   useEffect(() => {
     const retrievedToken = Cookies.get("reset_token") as string | null;
-    if (retrievedToken) {
+    const retrievedIdentifier = Cookies.get("identifier") as string | null;
+    if (retrievedToken && retrievedIdentifier) {
       setToken(retrievedToken);
+      setIdentifier(retrievedIdentifier);
     }
     setLoading(false);
   }, []);
 
   if (loading) return <LoadingState />;
-  if (!token) return redirect("/signin");
+  if (!token || !identifier) return redirect("/signin");
 
-  return <ResetPassword token={token} />;
+  return <ResetPassword identifier={identifier} token={token} />;
 };
 
 export default ResetPasswordPage;

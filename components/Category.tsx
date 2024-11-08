@@ -11,7 +11,7 @@ const Category: React.FC = () => {
 
   return (
     <div>
-      <div className="hidden p-3 lg:p-4 shadow-sm rounded-md lg:flex flex-col lg:flex-row justify-center lg:justify-start items-center gap-4 lg:gap-2">
+      <div className="bg-white hidden p-3 lg:p-4 shadow-lg rounded-md lg:flex flex-col lg:flex-row justify-center lg:justify-start items-center gap-4 lg:gap-2">
         <h4 className="text-2xl font-semibold">Categories</h4>
         <ul className="flex gap-3 flex-wrap justify-center lg:justify-start">
           {categories.map((category: Category, index) => {

@@ -6,13 +6,16 @@ import Cart from "./Cart";
 import Modal from "./ProductModal";
 import useModalStore from "@/store/useModalStore";
 import CartPage from "./CartPage";
+import useAuthStore from "@/store/useAuthStore";
+import GuestCartPage from "./GuestCartPage";
 
 const Navbar = () => {
   const { isModalOpen } = useModalStore();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   return (
     <>
-      <div className="w-full overflow-visible border-y-2 border-gray-200 flex flex-col md:flex-row justify-center lg:justify-between items-center py-3 px-6 gap-x-3">
+      <div className="bg-white w-full overflow-visible border-y-2 border-gray-200 shadow-md rounded-b-lg rounded-sm flex flex-col md:flex-row justify-center lg:justify-between items-center py-3 px-6 gap-x-3">
         <Logo />
         <Search />
         <div className="flex items-center gap-8 lg:gap-8 relative">
@@ -23,7 +26,7 @@ const Navbar = () => {
 
       {isModalOpen && (
         <Modal isOpen={isModalOpen}>
-          <CartPage />
+          {isAuthenticated ? <CartPage /> : <GuestCartPage />}
         </Modal>
       )}
     </>

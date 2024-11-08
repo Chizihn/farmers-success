@@ -26,7 +26,7 @@ const SearchPage: React.FC = () => {
   }, [searchParams, products]);
 
   return (
-    <div className="bg-gray-50 container mx-auto py-8">
+    <div className="bg-gray-50 container mx-auto">
       <div className="bg-white p-3 shadow-md rounded-lg mb-2 flex flex-col lg:flex-row justify-between items-center">
         <h2 className="text-xl font-bold mb-4 lg:mb-0">
           Search result for {`"${searchTerm}"`}
