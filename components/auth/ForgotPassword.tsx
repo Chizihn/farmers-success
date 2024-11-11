@@ -3,13 +3,12 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { forgotPasswordSchema, ForgotPasswordFormType } from "@/types/forms";
-import Cookies from "js-cookie";
 import Logo from "../Logo";
 import useSecureStore from "@/store/useSecure";
 
 const ForgotPassword = () => {
   const router = useRouter();
-  const { forgotPassword, loading, error } = useSecureStore();
+  const { forgotPassword, setIdentifier, loading, error } = useSecureStore();
 
   const {
     register,
@@ -22,9 +21,8 @@ const ForgotPassword = () => {
   const onSubmit = async (data: ForgotPasswordFormType) => {
     try {
       await forgotPassword(data.email);
-      Cookies.set("identifier", data.email);
-      console.log(data.email);
-
+      setIdentifier(data.email);
+      console.log("identifier frim forgot page", data.email);
       router.push("/reset-password");
       console.log("OTP sent");
     } catch (err) {

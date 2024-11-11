@@ -18,37 +18,59 @@ const SearchPage: React.FC = () => {
     setSearchTerm(term);
     setFilteredProducts(
       term
-        ? products.filter((product) =>
+        ? products?.filter((product) =>
             product.name.toLowerCase().includes(term)
-          )
-        : products
+          ) || []
+        : products || []
     );
   }, [searchParams, products]);
 
   return (
     <div className="bg-gray-50 container mx-auto">
-      <div className="bg-white p-3 shadow-md rounded-lg mb-2 flex flex-col lg:flex-row justify-between items-center">
-        <h2 className="text-xl font-bold mb-4 lg:mb-0">
-          Search result for {`"${searchTerm}"`}
-        </h2>
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4">
-        {filteredProducts.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </div>
-      {filteredProducts.length === 0 && (
-        <div className="text-center mt-8">
-          <h2 className="text-2xl font-bold">No products found</h2>
-          <p className="text-gray-500">
-            Try searching for a different term or browse our catalog.
-          </p>
-          <button
-            className="bg-green-600 text-white px-4 py-2 rounded-md mt-4 hover:bg-green-700"
-            onClick={() => router.push("/")}
-          >
-            Go to Home
-          </button>
+      {searchTerm ? (
+        <>
+          <div className="bg-white p-3 shadow-md rounded-lg mb-2 flex flex-col lg:flex-row justify-between items-center">
+            <h2 className="text-xl font-bold mb-4 lg:mb-0">
+              Search result for {`"${searchTerm}"`}
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4">
+            {filteredProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+          {filteredProducts.length === 0 && (
+            <div className="text-center mt-8">
+              <h2 className="text-2xl font-bold">No products found</h2>
+              <p className="text-gray-500">
+                Try searching for a different term or browse our catalog.
+              </p>
+              <button
+                className="bg-green-600 text-white px-4 py-2 rounded-md mt-4 hover:bg-green-700"
+                onClick={() => router.push("/")}
+              >
+                Go to Home
+              </button>
+            </div>
+          )}
+        </>
+      ) : (
+        <div className="h-full flex justify-center items-center p-5 mt-8">
+          <div className="max-w-md mx-auto">
+            <h2 className="text-2xl text-center">
+              {" "}
+              You haven’t searched for anything yet. Try searching for a product
+              or browse our catalog.
+            </h2>
+            <div className="flex justify-center ">
+              <button
+                className="bg-green-600 text-white p-4 rounded-md mt-4 hover:bg-green-700 font-semibold "
+                onClick={() => router.push("/")}
+              >
+                Return to Home
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

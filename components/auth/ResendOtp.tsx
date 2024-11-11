@@ -3,12 +3,11 @@ import { OtpActivity } from "@/types/forms";
 import useSecureStore from "@/store/useSecure";
 
 export interface ResendOtpProps {
-  identifier: string;
   activity: OtpActivity;
 }
 
-const ResendOtp: React.FC<ResendOtpProps> = ({ identifier, activity }) => {
-  const { resendOTP } = useSecureStore();
+const ResendOtp: React.FC<ResendOtpProps> = ({ activity }) => {
+  const { resendOTP, identifier } = useSecureStore();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
@@ -19,8 +18,8 @@ const ResendOtp: React.FC<ResendOtpProps> = ({ identifier, activity }) => {
     try {
       await resendOTP(identifier, activity);
       setMessage("OTP resent successfully.");
-      console.log("identifier", identifier);
-      console.log("activity", activity);
+      console.log("identifier from resent otp form", identifier);
+      console.log("activity from resend otp form", activity);
     } catch (error) {
       console.error("Failed to resend OTP:", error);
       setMessage("Failed to resend OTP. Please try again.");

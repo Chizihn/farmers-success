@@ -1,3 +1,5 @@
+// app/layout.js
+
 import type { Metadata } from "next";
 import "./globals.css";
 import ApolloProviderWrapper from "@/components/ApolloProviderWrapper";
@@ -16,18 +18,18 @@ export default function RootLayout({
   modal: React.ReactNode;
 }>) {
   return (
-    <ApolloProviderWrapper>
-      <html lang="en">
-        <body
-          id="__next"
-          className="max-w-[1400px] w-full mx-auto bg-gray-100 "
-        >
-          <Suspense>
+    <html lang="en">
+      <body
+        id="__next"
+        className="max-w-[1400px] w-full mx-auto bg-gray-100 relative"
+      >
+        <Suspense>
+          <ApolloProviderWrapper>
             {children}
             {modal}
-          </Suspense>
-        </body>
-      </html>
-    </ApolloProviderWrapper>
+          </ApolloProviderWrapper>
+        </Suspense>
+      </body>
+    </html>
   );
 }

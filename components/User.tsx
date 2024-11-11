@@ -76,14 +76,17 @@ const User: React.FC = () => {
               </button>
             </div>
           ) : (
-            <>
-              <a href="/signin" className="block mb-2 hover:text-green-600">
+            <div className="space-y-4">
+              <Link href="/signin" className="block mb-2 hover:text-green-600">
                 Sign in
-              </a>
-              <a className="block mb-2 hover:text-green-600 cursor-pointer">
+              </Link>
+              <Link
+                href="/track-order"
+                className="block mb-2 hover:text-green-600 cursor-pointer"
+              >
                 Track Order
-              </a>
-            </>
+              </Link>
+            </div>
           )}
         </div>
       )}

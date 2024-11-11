@@ -1,5 +1,4 @@
-//Authstates for store
-
+import { AssetType } from "./category";
 import { OtpActivity } from "./forms";
 
 export interface AuthState extends PersistedAuthState {
@@ -74,8 +73,6 @@ export interface ProductOwner {
   profileImageUrl: string;
 }
 
-export type AssetType = "crop" | "livestock";
-
 export interface ProductCategory {
   categoryId: string;
   categoryType: AssetType;
@@ -137,6 +134,7 @@ export interface Farm {
 export interface PersistedAuthState {
   user: UserProfile | null;
   isAuthenticated: boolean;
+  setAuthenticated: (isAuthenticated: boolean) => void;
   token: string | null;
   loading: boolean;
   error: string | null;
@@ -157,11 +155,3 @@ export interface ResendOTPResponse {
     token: string;
   };
 }
-// Get ssetinfo
-export type Category = {
-  assetType: string;
-  createdAt: string;
-  id: string;
-  name: string;
-  updatedAt: string;
-};

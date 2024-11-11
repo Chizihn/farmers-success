@@ -39,9 +39,9 @@ const useAuthStore = create<AuthState>()(
         token: null,
         loading: false,
         error: null,
-
-        // Fetch User Details Function
-
+        setAuthenticated: (isAuthenticated: boolean) => {
+          set({ isAuthenticated });
+        },
         signInWithEmail: async (email: string, password: string) => {
           try {
             set({ loading: true, error: null });
@@ -263,7 +263,7 @@ const useAuthStore = create<AuthState>()(
         },
         logout: () => {
           cookieStorage.removeItem("token");
-          cookieStorage.removeItem("token");
+          cookieStorage.removeItem("user");
           set({ user: null, token: null, isAuthenticated: false, error: null });
         },
       }),

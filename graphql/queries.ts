@@ -1,4 +1,5 @@
 import { gql } from "@apollo/client";
+import { ORDER_ITEM_DATA_FRAGMENT, USER_DATA_FRAGMENT } from "./fragments";
 
 // Get user products
 export const GET_USER_PRODUCTS = gql`
@@ -108,7 +109,7 @@ export const GET_USER = gql`
   }
 `;
 
-//Get All Categoried
+//Get All Categories
 export const GET_ASSET_INFO_TYPES = gql`
   query GetAssetInfoType($assetType: AssetType) {
     getAssetInfoTypes(assetType: $assetType) {
@@ -135,54 +136,8 @@ export const GET_CART_ITEM = gql`
 
 // Get order Item
 export const GET_ORDER_ITEM = gql`
-  fragment UserData on User {
-    address
-    city
-    createdAt
-    credit
-    dob
-    email
-    firstName
-    gender
-    id
-    isEmailVerified
-    isPhoneVerified
-    lastName
-    maritalStatus
-    phoneNumber
-    profileImageURL
-    state
-    updatedAt
-    userType
-  }
-
-  fragment OrderItemData on UserOrderItem {
-    buyer {
-      ...UserData
-    }
-    buyerId
-    createdAt
-    deliveryInfo
-    endDate
-    id
-    location
-    orderId
-    seller {
-      ...UserData
-    }
-    sellerId
-    startDate
-    state
-    status {
-      createdAt
-      date
-      id
-      orderItemId
-      status
-      updatedAt
-    }
-    updatedAt
-  }
+  ${USER_DATA_FRAGMENT}
+  ${ORDER_ITEM_DATA_FRAGMENT}
 
   query GetOrderItem($orderItemId: String!) {
     getOrderItem(orderItemId: $orderItemId) {
@@ -233,52 +188,8 @@ export const GET_ORDER_ITEM = gql`
 
 // Get order items by filter
 export const GET_ORDER_ITEMS = gql`
-  fragment UserData on User {
-    address
-    city
-    createdAt
-    credit
-    dob
-    email
-    firstName
-    gender
-    id
-    isEmailVerified
-    isPhoneVerified
-    lastName
-    maritalStatus
-    phoneNumber
-    profileImageURL
-    state
-    updatedAt
-    userType
-  }
-
-  fragment OrderItemData on UserOrderItem {
-    buyer {
-      ...UserData
-    }
-    buyerId
-    createdAt
-    deliveryInfo
-    id
-    location
-    orderId
-    seller {
-      ...UserData
-    }
-    sellerId
-    state
-    status {
-      createdAt
-      date
-      id
-      orderItemId
-      status
-      updatedAt
-    }
-    updatedAt
-  }
+  ${USER_DATA_FRAGMENT}
+  ${ORDER_ITEM_DATA_FRAGMENT}
 
   query GetOrderItems($filter: OrderItemFilter!) {
     getOrderItems(filter: $filter) {
@@ -348,26 +259,7 @@ export const GET_USER_CART = gql`
 
 // Get User Order Items
 export const GET_USER_ORDER_ITEMS = gql`
-  fragment UserData on User {
-    address
-    city
-    createdAt
-    credit
-    dob
-    email
-    firstName
-    gender
-    id
-    isEmailVerified
-    isPhoneVerified
-    lastName
-    maritalStatus
-    phoneNumber
-    profileImageURL
-    state
-    updatedAt
-    userType
-  }
+  ${USER_DATA_FRAGMENT}
 
   query GetUserOrderItems($userId: String!) {
     getUserOrderItems(userId: $userId) {

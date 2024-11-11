@@ -1,7 +1,8 @@
 "use client";
 import { GET_PRODUCTS, GET_ASSET_INFO_TYPES } from "@/graphql/queries";
 import client from "@/lib/apolloClient";
-import { Category, GetProductsFilter, Product } from "@/types";
+import { GetProductsFilter, Product } from "@/types";
+import { AssetInfoType, AssetType } from "@/types/category";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
@@ -9,9 +10,9 @@ interface ProductStore {
   products: Product[];
   loading: boolean;
   error: Error | null;
-  categories: Category[];
+  categories: AssetInfoType[];
   fetchProducts: (filter?: GetProductsFilter) => Promise<void>;
-  fetchCategories: (assetType?: string) => Promise<void>;
+  fetchCategories: (assetType: AssetType) => Promise<void>;
 }
 
 const useProductStore = create<ProductStore>()(
@@ -37,13 +38,13 @@ const useProductStore = create<ProductStore>()(
         }
       },
 
-      fetchCategories: async (assetType) => {
+      fetchCategories: async (assetType: AssetType) => {
         try {
           set({ loading: true, error: null });
           const { data } = await client.query({
             query: GET_ASSET_INFO_TYPES,
+            fetchPolicy: "no-cache",
             variables: { assetType },
-            fetchPolicy: "network-only",
           });
           set({ categories: data.getAssetInfoTypes, loading: false });
         } catch (error) {

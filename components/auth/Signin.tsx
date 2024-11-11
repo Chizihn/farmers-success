@@ -15,11 +15,13 @@ import {
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import InputField from "../ui/InputField";
+import useSecureStore from "@/store/useSecure";
 
 const Signin = () => {
   const router = useRouter();
   const [loginMethod, setLoginMethod] = useState<"email" | "phone">("email");
   const { signInWithEmail, signInWithPhone, loading, error } = useAuthStore();
+  const { setIdentifier } = useSecureStore();
 
   const emailForm = useForm<EmailSigninFormType>({
     resolver: zodResolver(emailSigninSchema),
@@ -44,15 +46,11 @@ const Signin = () => {
       console.log("inputted phone", phoneNumber);
 
       // Extract country code and local number
-      const countryCodeWithoutPlus = phoneNumber.slice(0, 3); // Assuming it's "+234"
-      const localNumber = phoneNumber.slice(3); // Get the local number
-
+      const countryCodeWithoutPlus = phoneNumber.slice(0, 3);
+      const localNumber = phoneNumber.slice(3);
       const formattedPhoneNumber = countryCodeWithoutPlus + localNumber;
-
+      setIdentifier(formattedPhoneNumber);
       await signInWithPhone(formattedPhoneNumber);
-      Cookies.set("identifier", formattedPhoneNumber);
-      console.log("sent number", formattedPhoneNumber);
-
       router.push("/verify-otp");
     } catch (err) {
       console.error("Phone signin failed:", err);

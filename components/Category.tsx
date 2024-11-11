@@ -1,27 +1,47 @@
 "use client";
-import { capitalizeWords, getCategoryPath } from "@/utils";
-import { usePathname } from "next/navigation";
-import Link from "next/link";
-import useProductStore from "@/store/useProductStore";
-import { type Category } from "@/types";
 
-const Category: React.FC = () => {
+import { capitalizeWords, getCategoryPath } from "@/utils";
+import { usePathname, useRouter } from "next/navigation";
+import Dropdown from "react-dropdown"; // Ensure Dropdown is imported
+import { useState } from "react";
+import { AssetInfoType } from "@/types/category";
+
+interface CategoryProps {
+  categories: AssetInfoType[];
+}
+
+const Category: React.FC<CategoryProps> = ({ categories }) => {
+  const router = useRouter();
   const pathname = usePathname();
-  const categories = useProductStore((state) => state.categories);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  const handleCategory = (categoryPath: string) => {
+    router.push(`/products/category/${categoryPath}`);
+  };
+
+  const handleCategorySelect = (option: { value: string }) => {
+    setSelectedCategory(option.value);
+    const categoryPath = getCategoryPath(option.value);
+    handleCategory(categoryPath);
+  };
 
   return (
-    <div>
-      <div className="bg-white hidden p-3 lg:p-4 shadow-lg rounded-md lg:flex flex-col lg:flex-row justify-center lg:justify-start items-center gap-4 lg:gap-2">
-        <h4 className="text-2xl font-semibold">Categories</h4>
-        <ul className="flex gap-3 flex-wrap justify-center lg:justify-start">
-          {categories.map((category: Category, index) => {
-            const categoryPath = getCategoryPath(category.name);
-            const isActive = pathname === `/products/category/${categoryPath}`;
+    <>
+      <div className="bg-white p-3 lg:p-4 shadow-lg rounded-md flex flex-col justify-center items-center gap-4">
+        <h2 className="text-xl lg:text-3xl font-semibold">All Categories</h2>
 
-            return (
-              <li key={index}>
-                <Link href={`/products/category/${categoryPath}`} passHref>
-                  <span
+        {/* Desktop Category List */}
+        <div className="hidden lg:flex">
+          <ul className="flex gap-3 flex-wrap justify-center lg:justify-start">
+            {categories.map((category, index) => {
+              const categoryPath = getCategoryPath(category.name);
+              const isActive =
+                pathname === `/products/category/${categoryPath}`;
+
+              return (
+                <li key={index}>
+                  <button
+                    onClick={() => handleCategory(categoryPath)}
                     className={`block py-1 lg:py-2 px-3 lg:px-5 rounded-3xl text-center font-medium cursor-pointer transition-all duration-300 
                       ${
                         isActive
@@ -29,15 +49,29 @@ const Category: React.FC = () => {
                           : "bg-gray-100 text-black hover:bg-green-600 hover:text-white"
                       }`}
                   >
-                    {capitalizeWords(category.name)} {/* Use category.name */}
-                  </span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+                    {capitalizeWords(category.name)}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+
+        {/* Mobile Dropdown */}
+        <div className="flex lg:hidden w-full">
+          <Dropdown
+            options={categories.map((category) => ({
+              value: category.name,
+              label: capitalizeWords(category.name),
+            }))}
+            onChange={handleCategorySelect}
+            value={selectedCategory || "Select a category"}
+            placeholder="Select a category"
+            className="w-full p-2 border rounded-md"
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

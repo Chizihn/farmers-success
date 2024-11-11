@@ -15,12 +15,13 @@ import {
   PhoneSignupFormType,
 } from "@/types/forms";
 import InputField from "../ui/InputField";
+import useSecureStore from "@/store/useSecure";
 
 const Signup = () => {
   const router = useRouter();
   const [signupMethod, setSignupMethod] = useState<"email" | "phone">("email");
   const { signUpWithEmail, signUpWithPhone, loading, error } = useAuthStore();
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const { setIdentifier } = useSecureStore();
 
   // Separate form handlers for email and phone
   const emailForm = useForm<EmailSignupFormType>({
@@ -34,6 +35,7 @@ const Signup = () => {
   const handleEmailSignUp = async (data: EmailSignupFormType) => {
     try {
       const { email, password } = data;
+      setIdentifier(email);
       await signUpWithEmail(email, password);
       router.push("/verify-email");
     } catch (err) {
@@ -49,9 +51,9 @@ const Signup = () => {
       // Extract country code and local number
       const countryCodeWithoutPlus = phoneNumber.slice(0, 3); // Assuming it's "+234"
       const localNumber = phoneNumber.slice(3);
-
       const formattedPhoneNumber = countryCodeWithoutPlus + localNumber;
 
+      setIdentifier(formattedPhoneNumber);
       await signUpWithPhone(formattedPhoneNumber);
       router.push("/verify-phone");
     } catch (err) {

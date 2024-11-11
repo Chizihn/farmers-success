@@ -2,16 +2,21 @@
 
 import { useFetchProducts } from "@/hooks/useFetchProducts";
 import { useState, useEffect, useCallback } from "react";
-import { Product, ProductCategory } from "@/types";
+import { Product } from "@/types";
 import ProductCard from "./ProductCard";
 import LoadingState from "./Loading";
 import { SlidersHorizontal } from "lucide-react";
 import Category from "./Category";
-import MobileProductFilter from "./MobileProductFilter";
 import ProductFilter from "./ProductFilter";
+import { AssetType } from "@/types/category";
+import { useFetchCategories } from "@/hooks/useFetchCategories";
+import MobileProductFilter from "./MobileProductFilter";
+import useAuthStore from "@/store/useAuthStore";
 
 const Products: React.FC = () => {
+  const { isAuthenticated } = useAuthStore();
   const { products, loading, error } = useFetchProducts();
+  const { categories } = useFetchCategories(AssetType.CROP);
   const [showFilter, setShowFilter] = useState<boolean>(false);
   const [displayProducts, setDisplayProducts] = useState<Product[]>([]);
   const [isInitialized, setIsInitialized] = useState(false);
@@ -51,30 +56,17 @@ const Products: React.FC = () => {
       </div>
     );
   }
-
-  const filterCategories: ProductCategory[] = Array.from(
-    new Set(
-      products.flatMap((product) =>
-        product.categories.map((category) => category.categoryId)
-      )
-    )
-  ).map((categoryId) => {
-    return products
-      .flatMap((product) => product.categories)
-      .find((category) => category.categoryId === categoryId)!;
-  });
-
   // Only render main content when we have products and aren't loading
   return (
     <main>
-      <Category />
+      <Category categories={categories} />
       <section className="w-full min-h-screen h-full pt-3 flex lg:gap-3 justify-center">
         {/* Desktop Filter */}
         <aside className="hidden lg:flex w-[25rem] h-screen sticky top-0 overflow-y-auto">
           <ProductFilter
             products={products}
             onFilteredProductsChange={handleFilteredProductsChange}
-            categories={filterCategories}
+            categories={categories}
           />
         </aside>
 
@@ -112,6 +104,7 @@ const Products: React.FC = () => {
           showFilter={showFilter}
           handleOpenFilter={handleOpenFilter}
           products={products}
+          categories={categories}
           onFilteredProductsChange={handleFilteredProductsChange}
         />
       </section>

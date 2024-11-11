@@ -61,7 +61,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   return (
     <div className="bg-white rounded-lg shadow-md flex flex-col h-full">
-      <div className="relative h-40 sm:h-50 md:h-58">
+      <div className="relative w-full h-40 sm:h-50 md:h-58">
         <Image
           src={image}
           alt={description}

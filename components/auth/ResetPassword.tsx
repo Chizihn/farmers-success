@@ -17,10 +17,9 @@ import { capitalizeFirstChar } from "@/utils";
 
 interface ResetPasswordProps {
   token: string;
-  identifier: string;
 }
 
-const ResetPassword: React.FC<ResetPasswordProps> = ({ token, identifier }) => {
+const ResetPassword: React.FC<ResetPasswordProps> = ({ token }) => {
   const { resetPassword } = useSecureStore();
   const router = useRouter();
 
@@ -96,7 +95,7 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ token, identifier }) => {
 
           <InputField
             type="password"
-            placeholder="New Password"
+            placeholder="Enter your new password"
             register={register("password")}
             error={errors.password?.message}
           />
@@ -109,7 +108,7 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ token, identifier }) => {
           </button>
         </form>
 
-        <ResendOtp identifier={identifier} activity="forgot_password" />
+        <ResendOtp activity="forgot_password" />
         <Logo />
       </div>
     </div>

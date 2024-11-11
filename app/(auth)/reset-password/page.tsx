@@ -4,18 +4,19 @@ import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import LoadingState from "@/components/Loading";
 import { redirect } from "next/navigation";
+import useSecureStore from "@/store/useSecure";
 
 const ResetPasswordPage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [token, setToken] = useState<string | null>(null);
-  const [identifier, setIdentifier] = useState<string | null>(null);
+  const identifier = useSecureStore((state) => state.identifier);
 
   useEffect(() => {
     const retrievedToken = Cookies.get("reset_token") as string | null;
-    const retrievedIdentifier = Cookies.get("identifier") as string | null;
-    if (retrievedToken && retrievedIdentifier) {
+    console.log("identifier from reset", identifier);
+
+    if (retrievedToken) {
       setToken(retrievedToken);
-      setIdentifier(retrievedIdentifier);
     }
     setLoading(false);
   }, []);
@@ -23,7 +24,7 @@ const ResetPasswordPage = () => {
   if (loading) return <LoadingState />;
   if (!token || !identifier) return redirect("/signin");
 
-  return <ResetPassword identifier={identifier} token={token} />;
+  return <ResetPassword token={token} />;
 };
 
 export default ResetPasswordPage;

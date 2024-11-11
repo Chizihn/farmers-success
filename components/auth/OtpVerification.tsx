@@ -5,14 +5,13 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Logo from "../Logo";
 import ResendOtp from "./ResendOtp";
-import { OtpActivity, OtpFormType, otpSchema } from "@/types/forms";
+import { OtpFormType, otpSchema } from "@/types/forms";
 import useAuthStore from "@/store/useAuthStore";
 
 const OTPVerification: React.FC<{
   verificationType: "verifyEmail" | "verifyPhone" | "verifySignIn";
   token: string;
-  identifier: string;
-}> = ({ verificationType, token, identifier }) => {
+}> = ({ verificationType, token }) => {
   const { verifyEmailOTP, verifyPhoneOTP, verifyOTP } = useAuthStore();
   const router = useRouter();
 
@@ -90,7 +89,6 @@ const OTPVerification: React.FC<{
 
         <div className="mt-6">
           <ResendOtp
-            identifier={identifier}
             activity={
               verificationType === "verifyEmail"
                 ? "email_verification"

@@ -27,6 +27,7 @@ export interface CreateOrder {
 const useOrderStore = create<OrderState>((set) => ({
   orderItems: [],
   loading: false,
+  error: null,
   createOrder: async (input: CreateOrder) => {
     set({ loading: true });
     try {
@@ -48,7 +49,7 @@ const useOrderStore = create<OrderState>((set) => ({
   },
 
   fetchOrderItems: async (filter) => {
-    set({ loading: true });
+    set({ loading: true, error: null });
     try {
       const { data } = await client.query({
         query: GET_ORDER_ITEMS,
@@ -56,6 +57,7 @@ const useOrderStore = create<OrderState>((set) => ({
       });
       set({ orderItems: data.getOrderItems });
     } catch (error) {
+      set({ loading: false, error: error as Error });
       console.error("Error fetching order items:", error);
     } finally {
       set({ loading: false });

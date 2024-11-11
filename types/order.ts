@@ -9,15 +9,6 @@ export enum OrderItemState {
   Cancelled = "cancelled",
 }
 
-export interface Status {
-  createdAt: Date;
-  date: Date;
-  id: string;
-  orderItemId: string;
-  status: OrderItemState;
-  updatedAt: Date;
-}
-
 export enum PaymentMethod {
   Cash_On_Delivery = "cod",
   Online = "in_app",
@@ -33,12 +24,21 @@ export interface UserOrder {
 }
 
 export interface OrderState {
-  orderItems: OrderItem[];
+  orderItems: OrderItemData[];
   loading: boolean;
+  error: Error | null;
   createOrder: (input: CreateOrder) => Promise<void>;
   fetchOrderItems: (filter: any) => Promise<void>;
 }
 
+type OrderStatus = {
+  createdAt: string;
+  date: string;
+  id: string;
+  orderItemId: string;
+  status: string;
+  updatedAt: string;
+};
 interface OrderItem {
   buyer: UserProfile;
   buyerId: string;
@@ -51,17 +51,9 @@ interface OrderItem {
   orderId: string;
   seller: UserProfile;
   sellerId: string;
-  status: Status;
+  startDate: string;
+  status: OrderStatus[];
   updatedAt: Date;
-}
-
-interface OrderStatus {
-  createdAt: string;
-  date: string;
-  id: string;
-  orderItemId: string;
-  status: string;
-  updatedAt: string;
 }
 
 interface Order {

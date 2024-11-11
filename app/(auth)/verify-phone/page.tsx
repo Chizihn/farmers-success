@@ -9,24 +9,15 @@ import { useEffect, useState } from "react";
 const VerifyPhoneOtpPage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const token = useAuthStore((state) => state.token);
-  const [identifier, setIdentifier] = useState<string>("");
 
   useEffect(() => {
-    const retrievedIdentifier = Cookies.get("identifier");
-    setIdentifier(retrievedIdentifier as string);
     setLoading(false);
   }, []);
 
   if (loading) return <LoadingState />;
   if (!token) return redirect("/signin");
 
-  return (
-    <OTPVerification
-      verificationType="verifyPhone"
-      identifier={identifier}
-      token={token}
-    />
-  );
+  return <OTPVerification verificationType="verifyPhone" token={token} />;
 };
 
 export default VerifyPhoneOtpPage;
