@@ -10,6 +10,7 @@ interface GuestCartStore {
   guestAddToCart: (item: CartItem) => void;
   guestRemoveFromCart: (productId: string) => void;
   guestUpdateQuantity: (productId: string, newQuantity: number) => void;
+  guestClearCart: () => void;
 }
 
 const useGuestCartStore = create<GuestCartStore>()(
@@ -85,6 +86,13 @@ const useGuestCartStore = create<GuestCartStore>()(
             ),
           };
         }),
+      // Clear the cart
+      guestClearCart: () =>
+        set(() => ({
+          guestCartItems: [],
+          guestTotalItems: 0,
+          guestTotalPrice: 0,
+        })),
     }),
     {
       name: "guest_cart",

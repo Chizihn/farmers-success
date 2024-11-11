@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { devtools } from "zustand/middleware";
 import {
   FORGOT_PASSWORD,
   RESEND_OTP,
@@ -37,6 +36,7 @@ const useSecureStore = create<SecureState>()((set) => ({
     set({ identifier });
     console.log(identifier);
   },
+  setAuthenticated: (isAuthenticated) => set({ isAuthenticated }),
 
   forgotPassword: async (email: string) => {
     set({ loading: true, error: null });

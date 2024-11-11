@@ -1,12 +1,15 @@
 import React from "react";
 import { CheckCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
+import useModalStore from "@/store/useModalStore";
 
 const PaymentSuccess: React.FC = () => {
   const router = useRouter();
+  const { closeModal } = useModalStore();
 
   const handleClose = () => {
-    router.push("/");
+    router.replace("/");
+    closeModal();
   };
 
   return (

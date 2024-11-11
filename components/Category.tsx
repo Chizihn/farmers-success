@@ -15,8 +15,8 @@ const Category: React.FC<CategoryProps> = ({ categories }) => {
   const pathname = usePathname();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  const handleCategory = (categoryPath: string) => {
-    router.push(`/products/category/${categoryPath}`);
+  const handleCategory = (categoryId: string) => {
+    router.push(`/products/category/${categoryId}`);
   };
 
   const handleCategorySelect = (option: { value: string }) => {
@@ -35,13 +35,13 @@ const Category: React.FC<CategoryProps> = ({ categories }) => {
           <ul className="flex gap-3 flex-wrap justify-center lg:justify-start">
             {categories.map((category, index) => {
               const categoryPath = getCategoryPath(category.name);
-              const isActive =
-                pathname === `/products/category/${categoryPath}`;
+              const id = category.id;
+              const isActive = pathname === `/products/category/${id}`;
 
               return (
                 <li key={index}>
                   <button
-                    onClick={() => handleCategory(categoryPath)}
+                    onClick={() => handleCategory(id)}
                     className={`block py-1 lg:py-2 px-3 lg:px-5 rounded-3xl text-center font-medium cursor-pointer transition-all duration-300 
                       ${
                         isActive

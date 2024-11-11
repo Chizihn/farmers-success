@@ -4,7 +4,7 @@ import React from "react";
 export default function CategoryProductPage({
   params,
 }: {
-  params: { category: string };
+  params: { categoryId: string };
 }) {
-  return <CategoryProducts categoryName={params.category} />;
+  return <CategoryProducts categoryId={params.categoryId} />;
 }

@@ -23,8 +23,11 @@ const useProtectedRoute = () => {
     [VerificationStatus.NoUser]: [
       "/",
       "/products",
+      "/products/",
       "/category",
+      "/category/",
       "/owners",
+      "/owners/",
       "/signin",
       "/signup",
       "/forgot-password",
@@ -37,8 +40,11 @@ const useProtectedRoute = () => {
     [VerificationStatus.Verified]: [
       "/",
       "/products",
+      "/products/",
       "/category",
       "/category/",
+      "/owners",
+      "/owners/",
       "/account",
       "/account/",
       "/account/update-profile",

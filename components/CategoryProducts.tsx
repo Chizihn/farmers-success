@@ -1,20 +1,47 @@
-"use client";
-import { Product } from "@/types";
+import React from "react";
+import { GetProductsFilter, Product } from "@/types";
 import Image from "next/image";
 import { useFetchProducts } from "@/hooks/useFetchProducts";
-import useProductStore from "@/store/useProductStore";
+import { useFetchCategories } from "@/hooks/useFetchCategories";
+import { AssetType } from "@/types/category";
 
-const CategoryProducts: React.FC<{ categoryName: string }> = ({
-  categoryName,
-}) => {
-  const categories = useProductStore((state) => state.categories);
-  const category = categories.find((c) => c.name === categoryName);
+const CategoryProducts: React.FC<{ categoryId: string }> = ({ categoryId }) => {
+  const { categories } = useFetchCategories(AssetType.CROP);
+  const category = categories.find((c) => c.id === categoryId);
 
-  const { products } = useFetchProducts({
-    type: categoryName,
-  });
+  const filter: GetProductsFilter = { type: categoryId };
+  const { products, loading, error } = useFetchProducts(filter);
 
-  if (!products?.length) {
+  // Filter products that belong to the selected category
+  const categoryProducts = products.filter((product) =>
+    product.categories.some((c) => c.categoryId === categoryId)
+  );
+
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="bg-white p-6 rounded-lg shadow-lg">
+          <h2 className="text-2xl font-semibold mb-4 text-center">
+            Loading products...
+          </h2>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="bg-white p-6 rounded-lg shadow-lg">
+          <h2 className="text-2xl font-semibold mb-4 text-center">
+            Error fetching products: {error.message}
+          </h2>
+        </div>
+      </div>
+    );
+  }
+
+  if (!categoryProducts.length) {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="bg-white p-6 rounded-lg shadow-lg">
@@ -34,14 +61,14 @@ const CategoryProducts: React.FC<{ categoryName: string }> = ({
       <div className="bg-white p-6 rounded-lg shadow-lg mb-8">
         <h2 className="text-2xl font-semibold text-center">{category?.name}</h2>
         <p className="text-center text-gray-600 mt-2">
-          {products.length} {products.length === 1 ? "product" : "products"}{" "}
-          available
+          {categoryProducts.length}{" "}
+          {categoryProducts.length === 1 ? "product" : "products"} available
         </p>
       </div>
 
       {/* Products Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {products.map((product: Product) => (
+        {categoryProducts.map((product) => (
           <div
             key={product.id}
             className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
@@ -72,7 +99,7 @@ const CategoryProducts: React.FC<{ categoryName: string }> = ({
               {/* Product Price */}
               <div className="flex items-center justify-between mb-2">
                 <span className="text-green-600 font-bold">
-                  ${product.price.toFixed(2)}
+                  N {` `} {product.price.toFixed(2)}
                 </span>
                 {product.quantity > 0 ? (
                   <span className="text-sm text-green-500">In Stock</span>

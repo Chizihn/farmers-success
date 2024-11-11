@@ -25,7 +25,7 @@ const Checkout: React.FC = () => {
   const [address, setAddress] = useState<string>("");
   const [error, setError] = useState<string>("");
 
-  const { cartItems, totalItems, totalPrice, removeFromCart } = useCartStore();
+  const { cartItems, totalItems, totalPrice, clearCart } = useCartStore();
   const { user, isAuthenticated } = useAuthStore();
   const { createOrder, loading: orderLoading } = useOrderStore();
   const router = useRouter();
@@ -40,10 +40,6 @@ const Checkout: React.FC = () => {
       setAddress(user.address);
     }
   }, [isAuthenticated, user]);
-
-  const clearCart = () => {
-    cartItems.forEach((item) => removeFromCart(item.product.id));
-  };
 
   if (totalItems === 0) {
     return (
@@ -163,6 +159,7 @@ const Checkout: React.FC = () => {
           <input
             type="tel"
             value={phone}
+            placeholder="23491123456789"
             onChange={(e) => setPhone(e.target.value)}
             className="w-full p-3 border rounded-lg"
             required

@@ -92,8 +92,8 @@ const GuestCheckout: React.FC = () => {
         // If Paystack succeeds, handlePaystackSuccess will redirect
       } else {
         router.push("/?checkout&status=success");
+        clearCart();
       }
-      clearCart();
     } catch (error) {
       setError("Failed to create order. Please try again.");
       setIsLoading(false);
@@ -158,6 +158,7 @@ const GuestCheckout: React.FC = () => {
           <input
             type="tel"
             value={phone}
+            placeholder="+23481123456789"
             onChange={(e) => setPhone(e.target.value)}
             className="w-full p-3 border rounded-lg"
             required

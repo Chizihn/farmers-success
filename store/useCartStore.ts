@@ -31,55 +31,20 @@ const useCartStore = create<CartStore>()((set, get) => ({
   // Fetch cart data from GraphQL and merge with local storage
   fetchCart: async () => {
     try {
-      // Fetch cart from API
       const { data } = await client.query({
         query: GET_PRODUCT_CART,
         fetchPolicy: "no-cache",
       });
       const cartData = data.getProductCart;
-
-      // Retrieve any cart items saved in localStorage for non-signed-in users
-      const localStorageCart = JSON.parse(
-        localStorage.getItem("guest_cart") || "[]"
-      ) as CartItem[];
-
-      // Merge the local storage items with the fetched cart items
-      const mergedCartItems = [...cartData.items];
-      localStorageCart.forEach((localItem) => {
-        const existingItem = mergedCartItems.find(
-          (item) => item.product.id === localItem.product.id
-        );
-        if (existingItem) {
-          existingItem.quantity += localItem.quantity;
-        } else {
-          mergedCartItems.push(localItem);
-        }
-      });
-
-      // Calculate total quantity and price
-      const totalQuantity = mergedCartItems.reduce(
-        (total, item) => total + item.quantity,
-        0
-      );
-      const totalAmount = mergedCartItems.reduce(
-        (total, item) => total + item.product.price * item.quantity,
-        0
-      );
-
-      // Update the store state
       set({
-        cartItems: mergedCartItems,
-        totalItems: totalQuantity,
-        totalPrice: totalAmount,
+        cartItems: cartData.items,
+        totalItems: cartData.totalQuantity,
+        totalPrice: cartData.totalAmount,
       });
-
-      // Clear guest cart from localStorage after merging
-      localStorage.removeItem("guest_cart");
     } catch (error) {
-      console.error("Failed to fetch and merge cart:", error);
+      console.error("Failed to fetch cart:", error);
     }
   },
-
   // Add item to cart with GraphQL mutation
   addToCart: async (productId, quantity) => {
     try {
