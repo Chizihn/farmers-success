@@ -9,6 +9,8 @@ export const useFetchCategories = (assetType: AssetType) => {
   const { categories, loading, error, fetchCategories } = useProductStore();
 
   useEffect(() => {
+    if (!isAuthenticated) return;
+
     fetchCategories(assetType);
   }, [fetchCategories, assetType, isAuthenticated]);
 
