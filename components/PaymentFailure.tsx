@@ -1,15 +1,12 @@
 import React from "react";
 import { XCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
-import useModalStore from "@/store/useModalStore";
 
 const PaymentFailure: React.FC = () => {
   const router = useRouter();
-  const { closeModal } = useModalStore();
 
   const handleClose = () => {
     router.push("/?checkout");
-    closeModal();
   };
 
   return (

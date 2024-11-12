@@ -14,6 +14,7 @@ import PaymentFailure from "./PaymentFailure";
 import { formatPrice } from "@/utils/checkout";
 import CheckoutHeader from "./checkout/CheckoutHeader";
 import OrderSummary from "./checkout/OrderSummary";
+import useModalStore from "@/store/useModalStore";
 
 const Checkout: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -28,8 +29,8 @@ const Checkout: React.FC = () => {
   const { cartItems, totalItems, totalPrice, clearCart } = useCartStore();
   const { user, isAuthenticated } = useAuthStore();
   const { createOrder, loading: orderLoading } = useOrderStore();
-  const router = useRouter();
-  const searchParams = useSearchParams();
+
+  const { closeCheckoutModal, openPaymentSuccess } = useModalStore();
 
   useEffect(() => {
     if (typeof window !== null && isAuthenticated && user) {
@@ -89,27 +90,19 @@ const Checkout: React.FC = () => {
       // Call the createOrder function from useOrderStore
       await createOrder(orderData);
       setIsLoading(false);
-
       if (paymentMethod === "paystack") {
         // Handle online payment with Paystack
         // If Paystack succeeds, handlePaystackSuccess will redirect
       } else {
-        router.push("/?checkout&status=success");
+        closeCheckoutModal();
+        openPaymentSuccess();
+        clearCart();
       }
-      clearCart();
     } catch (error) {
       setError("Failed to create order. Please try again.");
       setIsLoading(false);
     }
   };
-
-  if (searchParams.get("status") === "success") {
-    return <PaymentSuccess />;
-  }
-
-  if (searchParams.get("status") === "failure") {
-    return <PaymentFailure />;
-  }
 
   return (
     <div className="w-full h-full overflow-auto py-4 px-6 bg-white relative">

@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import useAuthStore from "@/store/useAuthStore";
-import Cookies from "js-cookie";
 
+// Enum for different verification states
 enum VerificationStatus {
   NoUser,
-  Unverified,
   EmailUnverified,
   PhoneUnverified,
   Verified,
@@ -16,81 +15,72 @@ const useProtectedRoute = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
   const pathname = usePathname();
-  const { user, isAuthenticated, fetchUserDetails } = useAuthStore();
+  const { user, token } = useAuthStore();
 
-  // Allowed paths based on verification status
+  // Define allowed paths for each verification status
   const allowedPaths: Record<VerificationStatus, string[]> = {
     [VerificationStatus.NoUser]: [
+      "/signin",
       "/",
-      "/products",
       "/products/",
-      "/products/category",
-      "/products/category/",
       "/category/",
       "/owners",
-      "/owners/",
-      "/signin",
+      "/search",
       "/signup",
       "/forgot-password",
-      "/search",
     ],
-    [VerificationStatus.Unverified]: ["/verify-account", "/"],
     [VerificationStatus.EmailUnverified]: ["/verify-email", "/"],
     [VerificationStatus.PhoneUnverified]: ["/verify-phone", "/"],
-    [VerificationStatus.OtpPending]: ["/verify-otp"],
+    [VerificationStatus.OtpPending]: ["/verify-otp", "/"],
     [VerificationStatus.Verified]: [
       "/",
-      "/products",
-      "/products/",
-      "/products/category",
       "/category/",
-      "/owners",
-      "/owners/",
       "/account",
-      "/account/",
-      "/account/update-profile",
+      "/edit-profile",
       "/orders",
       "/orders/",
-      "/search",
     ],
   };
 
-  // Determine the current user's verification status
+  // Determine verification status
   const getVerificationStatus = (): VerificationStatus => {
     if (!user) return VerificationStatus.NoUser;
-    if (!user.isEmailVerified && !user.isPhoneVerified)
-      return VerificationStatus.Unverified;
     if (user.email && !user.isEmailVerified)
       return VerificationStatus.EmailUnverified;
     if (user.phoneNumber && !user.isPhoneVerified)
       return VerificationStatus.PhoneUnverified;
+    if (user.phoneNumber && user.isPhoneVerified)
+      return VerificationStatus.OtpPending;
     return VerificationStatus.Verified;
   };
 
   useEffect(() => {
-    const initializeRoute = async () => {
-      const token = Cookies.get("token");
-
-      if (token && !user) {
-        await fetchUserDetails(token);
-      }
-
+    const initializeRoute = () => {
       const verificationStatus = getVerificationStatus();
       const isPathAllowed =
         allowedPaths[verificationStatus]?.includes(pathname);
 
-      // Redirect to appropriate path based on verification status
-      if (!isPathAllowed) {
+      // Check if the user has a valid token
+      if (token) {
+        // If the path is allowed, let the user access it
+        if (isPathAllowed) {
+          setLoading(false);
+          return;
+        }
+        // If the path is not allowed, redirect to the default allowed path
         const defaultRedirect =
           allowedPaths[verificationStatus]?.[0] || "/signin";
         router.push(defaultRedirect);
+      } else {
+        // If the user doesn't have a valid token, redirect to the signin page
+        router.push("/signin");
       }
 
       setLoading(false);
     };
 
     initializeRoute();
-  }, [pathname, user]);
+  }, [pathname, user, token]);
 
   return { loading };
 };

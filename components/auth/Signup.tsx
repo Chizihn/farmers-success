@@ -15,13 +15,12 @@ import {
   PhoneSignupFormType,
 } from "@/types/forms";
 import InputField from "../ui/InputField";
-import useSecureStore from "@/store/useSecure";
 
 const Signup = () => {
   const router = useRouter();
   const [signupMethod, setSignupMethod] = useState<"email" | "phone">("email");
   const { signUpWithEmail, signUpWithPhone, loading, error } = useAuthStore();
-  const { setIdentifier } = useSecureStore();
+  const { setIdentifier } = useAuthStore();
 
   // Separate form handlers for email and phone
   const emailForm = useForm<EmailSignupFormType>({

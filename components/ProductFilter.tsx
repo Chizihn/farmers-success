@@ -8,6 +8,7 @@ import { capitalizeWords } from "@/utils";
 import { usePathname } from "next/navigation";
 import { AssetInfoType } from "@/types/category";
 import { filterProducts, Filters } from "@/utils/filter";
+import useAuthStore from "@/store/useAuthStore";
 
 interface ProductFilterProps {
   products: Product[];
@@ -21,6 +22,7 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
   onFilteredProductsChange,
 }) => {
   const pathname = usePathname();
+  const { isAuthenticated } = useAuthStore();
   const [filters, setFilters] = useState<Filters>({
     city: "",
     state: "",
@@ -115,23 +117,24 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
               </div>
             </div>
 
-            {!isCategoryPage && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Category
-                </label>
-                <Dropdown
-                  options={categories.map((category) => ({
-                    value: category.name,
-                    label: capitalizeWords(category.name),
-                  }))}
-                  onChange={handleCategorySelect}
-                  value={filters.type || "Select a category"}
-                  placeholder="Select a category"
-                  className="w-full p-2 border rounded-md"
-                />
-              </div>
-            )}
+            {!isCategoryPage ||
+              (isAuthenticated && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Category
+                  </label>
+                  <Dropdown
+                    options={categories.map((category) => ({
+                      value: category.name,
+                      label: capitalizeWords(category.name),
+                    }))}
+                    onChange={handleCategorySelect}
+                    value={filters.type || "Select a category"}
+                    placeholder="Select a category"
+                    className="w-full p-2 border rounded-md"
+                  />
+                </div>
+              ))}
 
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">

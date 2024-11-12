@@ -1,18 +1,11 @@
 "use client";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import Logo from "../Logo";
 import ResendOtp from "./ResendOtp";
-
-import {
-  resetPasswordSchema,
-  ResetPasswordFormType,
-  OtpActivity,
-} from "@/types/forms";
 import useSecureStore from "@/store/useSecure";
-import InputField from "../ui/InputField";
+
 import { capitalizeFirstChar } from "@/utils";
 
 interface ResetPasswordProps {
@@ -20,37 +13,18 @@ interface ResetPasswordProps {
 }
 
 const ResetPassword: React.FC<ResetPasswordProps> = ({ token }) => {
-  const { resetPassword } = useSecureStore();
+  const { resetPassword, loading } = useSecureStore();
   const router = useRouter();
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-  } = useForm<ResetPasswordFormType>({
-    resolver: zodResolver(resetPasswordSchema),
-  });
-
-  const onSubmit = async (data: ResetPasswordFormType) => {
-    try {
-      const otpValue = parseInt(data.otp.join(""));
-      if (!token) throw new Error("Token not found");
-      console.log("token not found");
-
-      await resetPassword(otpValue, data.password, token);
-      console.log("Password reset successfully!");
-
-      Cookies.remove("reset_token");
-      router.push("/signin");
-    } catch (error) {
-      console.error("Password reset failed:", error);
-      alert("Password reset failed. Please check your OTP or try again.");
-    }
-  };
+  const [otp, setOtp] = useState(["", "", "", ""]);
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
 
   const handleOtpChange = (index: number, value: string) => {
-    setValue(`otp.${index}`, value);
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
 
     if (value.length === 1 && index < 3) {
       const nextInput = document.getElementById(`otp-${index + 1}`);
@@ -60,6 +34,30 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ token }) => {
     if (value.length === 0 && index > 0) {
       const prevInput = document.getElementById(`otp-${index - 1}`);
       prevInput?.focus();
+    }
+  };
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+
+    // Simple validation
+    if (otp.some((digit) => digit === "") || password === "") {
+      setError("Please fill in all fields.");
+      return;
+    }
+
+    try {
+      const otpValue = parseInt(otp.join(""), 10);
+      if (!token) throw new Error("Token not found");
+
+      await resetPassword(otpValue, password, token);
+      setMessage("Password reset successfully!");
+      Cookies.remove("reset_token");
+      router.push("/signin");
+    } catch (error) {
+      console.error("Password reset failed:", error);
+      setError("Password reset failed. Please check your OTP or try again.");
     }
   };
 
@@ -73,7 +71,7 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ token }) => {
           Please enter the OTP sent to your email and your new password.
         </p>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={onSubmit} className="space-y-4">
           <div className="flex space-x-2">
             {[0, 1, 2, 3].map((index) => (
               <input
@@ -81,33 +79,34 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ token }) => {
                 id={`otp-${index}`}
                 type="text"
                 maxLength={1}
-                {...register(`otp.${index}` as const)}
+                value={otp[index]}
                 onChange={(e) => handleOtpChange(index, e.target.value)}
                 className="w-1/4 h-20 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-green-600 text-center"
               />
             ))}
           </div>
-          {errors.otp && (
-            <p className="text-red-500">
-              {capitalizeFirstChar(errors.otp.message)}
-            </p>
+          {error && (
+            <p className="text-red-500">{capitalizeFirstChar(error)}</p>
           )}
 
-          <InputField
+          <input
             type="password"
             placeholder="Enter your new password"
-            register={register("password")}
-            error={errors.password?.message}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:border-green-600"
           />
 
           <button
             type="submit"
             className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition duration-200"
+            disabled={loading}
           >
-            Reset Password
+            {loading ? "Resetting..." : "Reset password"}
           </button>
         </form>
 
+        {message && <p className="text-green-600 mt-2">{message}</p>}
         <ResendOtp activity="forgot_password" />
         <Logo />
       </div>

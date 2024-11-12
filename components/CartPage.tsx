@@ -8,7 +8,7 @@ import { capitalizeFirstChar } from "@/utils";
 
 import { useEffect } from "react";
 import dynamic from "next/dynamic";
-import CheckoutModal from "./auth/CheckoutModal";
+import CheckoutModal from "./CheckoutModal";
 
 const CheckoutPage = dynamic(() => import("./Checkout"), { ssr: false });
 
@@ -31,7 +31,7 @@ const CartPage: React.FC = () => {
   };
 
   const handleCheckout = () => {
-    router.push(`${pathname}?checkout`);
+    openCheckoutModal();
   };
 
   const handleCloseCartPage = () => {
@@ -42,16 +42,6 @@ const CartPage: React.FC = () => {
     removeFromCart(id);
     console.log("deleted", id);
   };
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      if (searchParams.has("checkout")) {
-        openCheckoutModal();
-      } else {
-        closeCheckoutModal();
-      }
-    }
-  }, [pathname, searchParams]);
 
   return (
     <div className="h-full flex flex-col">
@@ -141,9 +131,6 @@ const CartPage: React.FC = () => {
               Proceed to Checkout
             </button>
           </div>
-          <CheckoutModal isOpen={isCheckoutModalOpen}>
-            <CheckoutPage />
-          </CheckoutModal>
         </>
       )}
     </div>

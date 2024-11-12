@@ -138,6 +138,8 @@ export interface PersistedAuthState {
   token: string | null;
   loading: boolean;
   error: string | null;
+  identifier: string;
+  setIdentifier: (identifier: string) => void;
 }
 
 export interface ForgotPasswordResponse {

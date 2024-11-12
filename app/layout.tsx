@@ -19,10 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        id="__next"
-        className="max-w-[1400px] w-full mx-auto bg-gray-100 relative"
-      >
+      <body className="max-w-[1400px] w-full mx-auto bg-gray-100 relative">
         <Suspense>
           <ApolloProviderWrapper>
             {children}

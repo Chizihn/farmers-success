@@ -12,9 +12,9 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, children }) => {
 
   return (
     <>
-      <div className="fixed inset-0 bg-black bg-opacity-0 z-[9999]"></div>
+      <div className="fixed inset-0 bg-black bg-opacity-50 z-[9999]"></div>
 
-      <div className="bg-white w-full lg:w-[30rem] h-screen fixed top-0 right-0  z-[10000] p-3">
+      <div className="bg-white w-full lg:w-[30rem] h-screen fixed top-0 right-0  z-[10000] p-5 overflow-y-auto">
         {children}
       </div>
     </>

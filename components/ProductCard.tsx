@@ -75,15 +75,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
       <div className="flex flex-col justify-between p-4 flex-grow">
         <div className="flex flex-col justify-start items-start space-y-2">
-          <Link
-            href={`/?productId=${id}`}
-            as={`/products/${id}`}
-            className="block group"
-            onClick={(e) => {
-              e.preventDefault();
-              router.push(`/?productId=${id}`);
-            }}
-          >
+          <Link href={`/products/${id}`} scroll={false} className="block group">
             <h3 className="text-md md:text-lg font-semibold text-gray-800 truncate hover:text-green-600 cursor-pointer">
               {capitalizeFirstChar(name)}
             </h3>

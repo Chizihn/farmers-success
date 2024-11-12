@@ -1,23 +1,26 @@
 "use client";
 import OTPVerification from "@/components/auth/OtpVerification";
-import LoadingState from "@/components/Loading";
 import useAuthStore from "@/store/useAuthStore";
 
-import { redirect } from "next/navigation";
-import { useEffect, useState } from "react";
-
 const VerifyEmailPage = () => {
-  const [loading, setLoading] = useState<boolean>(true);
-  const token = useAuthStore((state) => state.token); // Get the token directly from Zustand store
+  const { token, user } = useAuthStore((state) => ({
+    token: state.token,
+    user: state.user,
+  }));
 
-  useEffect(() => {
-    setLoading(false);
-  }, []);
+  if (user?.isEmailVerified) {
+    return (
+      <div className="flex items-center justify-center h-full p-6">
+        <h1 className="text-2xl font-bold text-green-600">
+          Your email is already verified!
+        </h1>
+      </div>
+    );
+  }
 
-  if (loading) return <LoadingState />;
-  if (!token) return redirect("/signin"); // Redirect if no token is found
-
-  return <OTPVerification verificationType="verifyEmail" token={token} />;
+  return (
+    <OTPVerification verificationType="verifyEmail" token={token as string} />
+  );
 };
 
 export default VerifyEmailPage;

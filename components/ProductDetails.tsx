@@ -1,9 +1,7 @@
 "use client";
-import { useActionState, useState } from "react";
-import { Minus, Plus, ShoppingCart, Shrub, X } from "lucide-react";
+import { useState } from "react";
+import { Minus, Plus, ShoppingCart, X } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import useCartStore from "@/store/useCartStore";
 import useProductStore from "@/store/useProductStore";
 import { DEFAULT_IMAGE_URL } from "@/constants/default";
@@ -11,6 +9,7 @@ import { capitalizeFirstChar, formatPrice } from "@/utils";
 import Cart from "./Cart";
 import useAuthStore from "@/store/useAuthStore";
 import useGuestCartStore from "@/store/useGuestCartStore";
+import LoadingState from "./Loading";
 
 interface ProductDetailsProps {
   id: string;
@@ -18,14 +17,10 @@ interface ProductDetailsProps {
   closeModal?: () => void;
 }
 
-const ProductDetails: React.FC<ProductDetailsProps> = ({
-  id,
-  type,
-  closeModal,
-}) => {
+const ProductDetails: React.FC<ProductDetailsProps> = ({ id, type }) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const { products } = useProductStore();
-  const [quantity, setQuantity] = useState<number>(0); // Start at 0
+  const [quantity, setQuantity] = useState<number>(0);
   const [selectedImageIndex, setSelectedImageIndex] = useState<number>(0);
 
   const addToCart = useCartStore((state) => state.addToCart);
@@ -35,7 +30,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
   const product = products.find((p) => p.id === id);
 
   if (!product) {
-    return <p>Product not found</p>;
+    return <LoadingState />;
   }
 
   const {
@@ -74,17 +69,15 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
     }
   };
 
+  const hanldeProductPage = () => {
+    window.location.reload();
+  };
+
   return (
-    <div className="max-w-screen-2xl w-full mx-auto py-4 px-4">
+    <div className="max-w-screen-2xl w-full mx-auto bg-white py-4 px-4">
       {type === "view" && (
-        <div className="flex justify-between items-center py-1 px-3 mb-2">
+        <div className="py-2 px-2">
           <Cart />
-          <button
-            className="text-gray-500 hover:text-gray-800"
-            onClick={closeModal}
-          >
-            <X size={35} />
-          </button>
         </div>
       )}
       <div
@@ -99,7 +92,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
         >
           <div
             className={`relative border-[4px] border-green-600 rounded-lg ${
-              type === "full" ? "h-96" : "h-60"
+              type === "full" ? "h-[450px]" : "h-[330px]"
             } w-full`}
           >
             <Image
@@ -193,11 +186,12 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
               </button>
             </div>
           ) : (
-            <Link href={`/products/${id}`}>
-              <button className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors font-semibold text-lg">
-                View Product
-              </button>
-            </Link>
+            <button
+              className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors font-semibold text-lg"
+              onClick={hanldeProductPage}
+            >
+              View Product
+            </button>
           )}
         </div>
       </div>

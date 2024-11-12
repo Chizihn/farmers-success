@@ -15,13 +15,11 @@ import {
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import InputField from "../ui/InputField";
-import useSecureStore from "@/store/useSecure";
-
 const Signin = () => {
   const router = useRouter();
   const [loginMethod, setLoginMethod] = useState<"email" | "phone">("email");
   const { signInWithEmail, signInWithPhone, loading, error } = useAuthStore();
-  const { setIdentifier } = useSecureStore();
+  const { setIdentifier } = useAuthStore();
 
   const emailForm = useForm<EmailSigninFormType>({
     resolver: zodResolver(emailSigninSchema),

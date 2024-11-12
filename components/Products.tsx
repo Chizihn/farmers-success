@@ -70,7 +70,7 @@ const Products: React.FC = () => {
 
         <div className="container space-y-2 h-full overflow-y-auto flex-grow pb-6 ">
           <div className="bg-white p-[0.8rem] shadow-md rounded-lg mb-3 flex flex-col lg:flex-row justify-between items-center">
-            <h2 className="text-xl font-bold mb-4 lg:mb-0">
+            <h2 className="text-xl font-semibold mb-4 lg:mb-0">
               Available Products ({displayProducts.length})
             </h2>
             <div className="flex items-center gap-6">

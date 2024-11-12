@@ -56,7 +56,10 @@ const User: React.FC = () => {
         <div className="absolute top-full right-[-5px] mt-2 bg-white shadow-md rounded-lg border-[1px] border-gray-200 p-4 w-48 z-50">
           {isAuthenticated ? (
             <div className="space-y-4">
-              <Link href="/account" className="block mb-2 hover:text-green-600">
+              <Link
+                href="/account/update-profile"
+                className="block mb-2 hover:text-green-600"
+              >
                 My Account
               </Link>
               <Link href="/orders" className="block mb-2 hover:text-green-600">

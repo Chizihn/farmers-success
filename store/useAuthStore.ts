@@ -36,9 +36,13 @@ const useAuthStore = create<AuthState>()(
       (set) => ({
         user: null,
         isAuthenticated: false,
-        token: null,
+        token: cookieStorage.getItem("token") || null,
         loading: false,
         error: null,
+        identifier: "",
+        setIdentifier: (identifier) => {
+          set({ identifier });
+        },
         setAuthenticated: (isAuthenticated: boolean) => {
           set({ isAuthenticated });
         },
@@ -265,11 +269,19 @@ const useAuthStore = create<AuthState>()(
           cookieStorage.removeItem("token");
           cookieStorage.removeItem("user");
           set({ user: null, token: null, isAuthenticated: false, error: null });
+          window.location.reload();
         },
       }),
       {
         name: "auth-storage",
         storage: createJSONStorage(() => cookieStorage),
+        onRehydrateStorage: () => (state) => {
+          const token = cookieStorage.getItem("token");
+          if (token) {
+            state?.setAuthenticated(true);
+            state?.fetchUserDetails(token);
+          }
+        },
         partialize: (state) => ({
           user: state.user,
           token: state.token,

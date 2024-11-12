@@ -1,23 +1,26 @@
 "use client";
 import OTPVerification from "@/components/auth/OtpVerification";
-import LoadingState from "@/components/Loading";
 import useAuthStore from "@/store/useAuthStore";
-import Cookies from "js-cookie";
-import { redirect } from "next/navigation";
-import { useEffect, useState } from "react";
 
 const VerifyPhoneOtpPage = () => {
-  const [loading, setLoading] = useState<boolean>(true);
-  const token = useAuthStore((state) => state.token);
+  const { token, user } = useAuthStore((state) => ({
+    token: state.token,
+    user: state.user,
+  }));
 
-  useEffect(() => {
-    setLoading(false);
-  }, []);
+  if (user?.isPhoneVerified) {
+    return (
+      <div className="flex items-center justify-center h-full p-6">
+        <h1 className="text-2xl font-bold text-green-600">
+          Your phone number is already verified!
+        </h1>
+      </div>
+    );
+  }
 
-  if (loading) return <LoadingState />;
-  if (!token) return redirect("/signin");
-
-  return <OTPVerification verificationType="verifyPhone" token={token} />;
+  return (
+    <OTPVerification verificationType="verifyPhone" token={token as string} />
+  );
 };
 
 export default VerifyPhoneOtpPage;

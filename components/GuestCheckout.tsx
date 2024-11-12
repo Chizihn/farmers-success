@@ -13,6 +13,7 @@ import { formatPrice } from "@/utils/checkout";
 import CheckoutHeader from "./checkout/CheckoutHeader";
 import OrderSummary from "./checkout/OrderSummary";
 import useGuestCartStore from "@/store/useGuestCartStore";
+import useModalStore from "@/store/useModalStore";
 
 const GuestCheckout: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -24,6 +25,8 @@ const GuestCheckout: React.FC = () => {
   const [address, setAddress] = useState<string>("");
   const [error, setError] = useState<string>("");
 
+  const { closeCheckoutModal, openPaymentSuccess } = useModalStore();
+
   const {
     guestCartItems,
     guestTotalItems,
@@ -31,8 +34,6 @@ const GuestCheckout: React.FC = () => {
     guestRemoveFromCart,
   } = useGuestCartStore();
   const { createOrder, loading: orderLoading } = useOrderStore();
-  const router = useRouter();
-  const searchParams = useSearchParams();
 
   const clearCart = () => {
     guestCartItems.forEach((item) => guestRemoveFromCart(item.product.id));
@@ -83,33 +84,24 @@ const GuestCheckout: React.FC = () => {
         shippingAddress: address,
       };
 
-      // Call the createOrder function from useOrderStore
       await createOrder(orderData);
       setIsLoading(false);
 
       if (paymentMethod === "paystack") {
-        // Handle online payment with Paystack
-        // If Paystack succeeds, handlePaystackSuccess will redirect
       } else {
-        router.push("/?checkout&status=success");
+        closeCheckoutModal();
+        openPaymentSuccess();
         clearCart();
       }
     } catch (error) {
       setError("Failed to create order. Please try again.");
       setIsLoading(false);
+      return <PaymentFailure />;
     }
   };
 
-  if (searchParams.get("status") === "success") {
-    return <PaymentSuccess />;
-  }
-
-  if (searchParams.get("status") === "failure") {
-    return <PaymentFailure />;
-  }
-
   return (
-    <div className="w-full h-full overflow-auto py-4 px-6 bg-white relative">
+    <div className="">
       <CheckoutHeader />
       <OrderSummary cartItems={guestCartItems} />
       <div className="font-bold mt-2">
@@ -158,7 +150,6 @@ const GuestCheckout: React.FC = () => {
           <input
             type="tel"
             value={phone}
-            placeholder="+23481123456789"
             onChange={(e) => setPhone(e.target.value)}
             className="w-full p-3 border rounded-lg"
             required

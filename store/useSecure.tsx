@@ -13,8 +13,6 @@ import { OtpActivity } from "@/types/forms";
 const EXPIRE_MINUTES = 5;
 
 interface SecureState extends PersistedAuthState {
-  identifier: string;
-  setIdentifier: (identifier: string) => void;
   forgotPassword: (email: string) => Promise<void>;
   resendOTP: (identifier: string, activity: OtpActivity) => Promise<void>;
   resetPassword: (

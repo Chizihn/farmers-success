@@ -6,6 +6,7 @@ import Dropdown from "react-dropdown";
 import { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { AssetInfoType } from "@/types/category";
+import useAuthStore from "@/store/useAuthStore";
 
 interface CategoryProps {
   categories: AssetInfoType[];
@@ -13,6 +14,7 @@ interface CategoryProps {
 
 const Category: React.FC<CategoryProps> = ({ categories }) => {
   const router = useRouter();
+  const { isAuthenticated } = useAuthStore();
   const pathname = usePathname();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [showLeftScroll, setShowLeftScroll] = useState(false);
@@ -72,38 +74,41 @@ const Category: React.FC<CategoryProps> = ({ categories }) => {
   }, []);
 
   return (
-    <div className="bg-white p-3 lg:p-6 shadow-lg rounded-lg flex flex-col justify-center items-center gap-6">
-      <h2 className="text-xl lg:text-3xl font-semibold text-gray-800">
-        Categories
-      </h2>
+    <>
+      {isAuthenticated ? (
+        <div className="bg-white p-3 lg:p-6 shadow-lg rounded-lg flex flex-col justify-center items-center gap-3">
+          <h2 className="text-xl lg:text-3xl font-semibold text-gray-800">
+            Categories
+          </h2>
 
-      {/* Desktop Category List */}
-      <div className="hidden lg:flex items-center w-full relative px-[3rem]">
-        {showLeftScroll && (
-          <button
-            onClick={() => scroll("left")}
-            className="absolute left-[-10px] z-10 p-2 bg-white/90 rounded-full shadow-lg hover:bg-gray-50 transition-all"
-          >
-            <ChevronLeft className="w-6 h-6 text-gray-600" />
-          </button>
-        )}
+          {/* Desktop Category List */}
+          <div className="hidden lg:flex items-center w-full relative px-[3rem]">
+            {showLeftScroll && (
+              <button
+                onClick={() => scroll("left")}
+                className="absolute left-[-10px] z-10 p-2 bg-white/90 rounded-full shadow-lg hover:bg-gray-50 transition-all"
+              >
+                clearCart();
+                <ChevronLeft className="w-6 h-6 text-gray-600" />
+              </button>
+            )}
 
-        <div
-          ref={containerRef}
-          className="flex overflow-x-auto w-full scroll-smooth hide-scrollbar"
-          onScroll={checkScrollButtons}
-        >
-          <ul className="flex gap-3 px-4 mx-auto mb-2">
-            {categories.map((category) => {
-              const id = category.id;
-              const isActive = pathname === `/products/category/${id}`;
+            <div
+              ref={containerRef}
+              className="flex overflow-x-auto w-full scroll-smooth scroll hide-scrollbar"
+              onScroll={checkScrollButtons}
+            >
+              <ul className="flex gap-3 px-4 mx-auto mb-2">
+                {categories.map((category) => {
+                  const id = category.id;
+                  const isActive = pathname === `/products/category/${id}`;
 
-              return (
-                <li key={id}>
-                  <button
-                    ref={isActive ? activeCategoryRef : null}
-                    onClick={() => handleCategory(id)}
-                    className={`
+                  return (
+                    <li key={id}>
+                      <button
+                        ref={isActive ? activeCategoryRef : null}
+                        onClick={() => handleCategory(id)}
+                        className={`
                       py-3 px-6 
                       rounded-full 
                       text-center 
@@ -119,39 +124,41 @@ const Category: React.FC<CategoryProps> = ({ categories }) => {
                           : "bg-gray-100 text-gray-700 hover:bg-green-50 hover:text-green-700"
                       }
                     `}
-                  >
-                    {capitalizeWords(category.name)}
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
+                      >
+                        {capitalizeWords(category.name)}
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+
+            {showRightScroll && (
+              <button
+                onClick={() => scroll("right")}
+                className="absolute right-[-10px] z-10 p-2 bg-white/90 rounded-full shadow-lg hover:bg-gray-50 transition-all"
+              >
+                <ChevronRight className="w-6 h-6 text-gray-600" />
+              </button>
+            )}
+          </div>
+
+          {/* Mobile Dropdown */}
+          <div className="flex lg:hidden w-full">
+            <Dropdown
+              options={categories.map((category) => ({
+                value: category.name,
+                label: capitalizeWords(category.name),
+              }))}
+              onChange={handleCategorySelect}
+              value={selectedCategory || "Select a category"}
+              placeholder="Select a category"
+              className="w-full p-2 border rounded-md"
+            />
+          </div>
         </div>
-
-        {showRightScroll && (
-          <button
-            onClick={() => scroll("right")}
-            className="absolute right-[-10px] z-10 p-2 bg-white/90 rounded-full shadow-lg hover:bg-gray-50 transition-all"
-          >
-            <ChevronRight className="w-6 h-6 text-gray-600" />
-          </button>
-        )}
-      </div>
-
-      {/* Mobile Dropdown */}
-      <div className="flex lg:hidden w-full">
-        <Dropdown
-          options={categories.map((category) => ({
-            value: category.name,
-            label: capitalizeWords(category.name),
-          }))}
-          onChange={handleCategorySelect}
-          value={selectedCategory || "Select a category"}
-          placeholder="Select a category"
-          className="w-full p-2 border rounded-md"
-        />
-      </div>
-    </div>
+      ) : null}
+    </>
   );
 };
 

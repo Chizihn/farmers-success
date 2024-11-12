@@ -58,7 +58,6 @@ const useProductStore = create<ProductStore>()(
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         products: state.products,
-        categories: state.categories,
       }),
     }
   )

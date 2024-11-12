@@ -4,16 +4,17 @@ import { useRouter } from "next/navigation";
 import useModalStore from "@/store/useModalStore";
 
 const PaymentSuccess: React.FC = () => {
-  const router = useRouter();
-  const { closeModal } = useModalStore();
+  const { closeModal, closeCheckoutModal, closePaymentSuccess } =
+    useModalStore();
 
   const handleClose = () => {
-    router.replace("/");
+    closePaymentSuccess();
     closeModal();
+    closeCheckoutModal();
   };
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center p-6 bg-white z-[100000]">
+    <div className="fixed top-0 left-0 w-full h-full flex flex-col items-center justify-center bg-white p-6 z-[100000]">
       <CheckCircle className="text-green-500 w-16 h-16 mb-4" />
       <h2 className="text-2xl font-bold text-green-600 mb-2">
         Payment Successful!

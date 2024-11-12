@@ -8,9 +8,14 @@ import useModalStore from "@/store/useModalStore";
 import CartPage from "./CartPage";
 import useAuthStore from "@/store/useAuthStore";
 import GuestCartPage from "./GuestCartPage";
+import CheckoutModal from "./CheckoutModal";
+import GuestCheckout from "./GuestCheckout";
+import Checkout from "./Checkout";
+import PaymentSuccess from "./PaymentSuccess";
 
 const Navbar = () => {
-  const { isModalOpen } = useModalStore();
+  const { isModalOpen, isCheckoutModalOpen, isPaymentSuccess } =
+    useModalStore();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   return (
@@ -28,6 +33,17 @@ const Navbar = () => {
         <Modal isOpen={isModalOpen}>
           {isAuthenticated ? <CartPage /> : <GuestCartPage />}
         </Modal>
+      )}
+      {isCheckoutModalOpen && (
+        <CheckoutModal isOpen={isCheckoutModalOpen}>
+          {isAuthenticated ? <Checkout /> : <GuestCheckout />}
+        </CheckoutModal>
+      )}
+
+      {isPaymentSuccess && (
+        <CheckoutModal isOpen={isPaymentSuccess}>
+          <PaymentSuccess />
+        </CheckoutModal>
       )}
     </>
   );
