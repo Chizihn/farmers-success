@@ -1,5 +1,5 @@
+"use client";
 import CategoryProducts from "@/components/CategoryProducts";
-import React from "react";
 
 export default function CategoryProductPage({
   params,

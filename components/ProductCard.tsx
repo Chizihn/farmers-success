@@ -61,12 +61,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   return (
     <div className="bg-white rounded-lg shadow-md flex flex-col h-full">
-      <div className="relative w-full h-40 sm:h-50 md:h-58">
+      <div className="relative w-full h-48 bg-gray-200">
         <Image
           src={image}
           alt={description}
           fill
-          sizes=""
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           style={{ objectFit: "cover" }}
           className="transition-opacity duration-300 hover:opacity-90"
           priority
@@ -97,7 +97,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           </p>
         </div>
 
-        <div className="flex flex-wrap flex-col lg:flex-row justify-center lg:justify-between items-center mt-4 space-y-2">
+        <div className="flex flex-wrap flex-row md:flex-col lg:flex-row justify-between md:justify-center lg:justify-between items-center mt-4 space-y-2">
           <div className="flex items-center space-x-2">
             <button
               onClick={decrementQuantity}

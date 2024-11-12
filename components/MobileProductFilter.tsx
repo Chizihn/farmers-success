@@ -83,10 +83,6 @@ const MobileProductFilter: React.FC<MobileProductFilterProps> = ({
       </div>
       <div className="p-4 space-y-4">
         <div className="w-full h-screen overflow-hidden sticky top-0 left-0">
-          <div className="bg-white py-3 px-4 shadow-md rounded-lg mb-[.4rem] sticky top-0 z-10">
-            <h2 className="text-xl font-semibold">Filter Products</h2>
-          </div>
-
           <div className="bg-white h-full shadow-md p-3 rounded-lg space-y-7">
             <div>
               <input

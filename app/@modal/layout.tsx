@@ -1,5 +1,5 @@
 "use client";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import PageModal from "@/components/PageModal";
 
 export default function ModalLayout({
@@ -7,7 +7,6 @@ export default function ModalLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const router = useRouter();
   const pathname = usePathname();
 
   // List of paths where the modal should be shown
@@ -26,7 +25,7 @@ export default function ModalLayout({
   const isModalVisible = modalPaths.includes(pathname);
 
   const handleCloseModal = () => {
-    router.replace("/");
+    window.history.back();
   };
 
   return (

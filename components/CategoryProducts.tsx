@@ -1,133 +1,148 @@
-import React from "react";
-import { GetProductsFilter, Product } from "@/types";
-import Image from "next/image";
+"use client";
+
+import { useState, useEffect, useMemo, useCallback } from "react";
+import { Product } from "@/types";
 import { useFetchProducts } from "@/hooks/useFetchProducts";
 import { useFetchCategories } from "@/hooks/useFetchCategories";
 import { AssetType } from "@/types/category";
+import { capitalizeFirstChar } from "@/utils";
+import ProductCard from "./ProductCard";
+import Category from "./Category";
+import { Loader2, LoaderCircle } from "lucide-react";
 
-const CategoryProducts: React.FC<{ categoryId: string }> = ({ categoryId }) => {
-  const { categories } = useFetchCategories(AssetType.CROP);
-  const category = categories.find((c) => c.id === categoryId);
+interface CategoryProductsProps {
+  categoryId: string;
+}
 
-  const filter: GetProductsFilter = { type: categoryId };
-  const { products, loading, error } = useFetchProducts(filter);
+const CategoryProducts: React.FC<CategoryProductsProps> = ({ categoryId }) => {
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
-  // Filter products that belong to the selected category
-  const categoryProducts = products.filter((product) =>
-    product.categories.some((c) => c.categoryId === categoryId)
+  // Fetch data using custom hooks
+  const {
+    categories,
+    loading: categoriesLoading,
+    error: categoriesError,
+  } = useFetchCategories(AssetType.CROP);
+
+  const {
+    products,
+    loading: productsLoading,
+    error: productsError,
+  } = useFetchProducts();
+
+  // Memoized values
+  const category = useMemo(
+    () => categories.find((c) => c.id === categoryId),
+    [categories, categoryId]
   );
 
-  if (loading) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="bg-white p-6 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-semibold mb-4 text-center">
-            Loading products...
-          </h2>
-        </div>
-      </div>
-    );
-  }
+  const categoryProducts = useMemo(
+    () =>
+      products.filter((product) =>
+        product.categories.some((c) => c.categoryId === categoryId)
+      ),
+    [products, categoryId]
+  );
 
-  if (error) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="bg-white p-6 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-semibold mb-4 text-center">
-            Error fetching products: {error.message}
-          </h2>
-        </div>
-      </div>
-    );
-  }
+  // Handle initial loading state
+  useEffect(() => {
+    if (!categoriesLoading && !productsLoading) {
+      setTimeout(() => setIsInitialLoad(false), 300);
+    }
+  }, [categoriesLoading, productsLoading]);
 
-  if (!categoryProducts.length) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="bg-white p-6 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-semibold mb-4 text-center">
-            {category?.name}
-          </h2>
-          <p className="text-center text-gray-600">
-            No products available yet for this category.
-          </p>
-        </div>
-      </div>
-    );
-  }
+  // Error component
+  const ErrorDisplay = ({ message }: { message: string }) => (
+    <div className="flex flex-col items-center justify-center p-8 bg-red-50 rounded-lg">
+      <p className="text-red-600 font-medium text-lg mb-2">
+        Something went wrong
+      </p>
+      <p className="text-red-500 text-center">{message}</p>
+    </div>
+  );
 
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="bg-white p-6 rounded-lg shadow-lg mb-8">
-        <h2 className="text-2xl font-semibold text-center">{category?.name}</h2>
-        <p className="text-center text-gray-600 mt-2">
-          {categoryProducts.length}{" "}
-          {categoryProducts.length === 1 ? "product" : "products"} available
-        </p>
-      </div>
+  // Loading component
+  const LoadingDisplay = () => (
+    <div className="flex flex-col items-center justify-center p-8">
+      <LoaderCircle className="animate-spin h-12 w-12 text-green-700" />
+    </div>
+  );
 
-      {/* Products Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {categoryProducts.map((product) => (
+  // Empty state component
+  const EmptyState = () => (
+    <div className="flex flex-col items-center justify-center p-8 bg-gray-50 rounded-lg">
+      <p className="text-gray-600 text-lg mb-2">No products available</p>
+      <p className="text-gray-500 text-center">
+        Check back later for updates to this category.
+      </p>
+    </div>
+  );
+
+  // Product grid component
+  const ProductGrid = useCallback(
+    ({ products }: { products: Product[] }) => (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 transition-all duration-300">
+        {products.map((product) => (
           <div
             key={product.id}
-            className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+            className="transform transition-all duration-300 hover:scale-[1.02]"
           >
-            {/* Product Image */}
-            <div className="relative h-48 bg-gray-200">
-              {product.images && product.images.length > 0 ? (
-                <Image
-                  src={product.images[0]}
-                  alt={product.description}
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  style={{ objectFit: "cover" }}
-                  className="transition-opacity duration-300 hover:opacity-90"
-                  priority
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center bg-gray-100">
-                  <span className="text-gray-400">No image available</span>
-                </div>
-              )}
-            </div>
-
-            {/* Product Details */}
-            <div className="p-4">
-              <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
-
-              {/* Product Price */}
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-green-600 font-bold">
-                  N {` `} {product.price.toFixed(2)}
-                </span>
-                {product.quantity > 0 ? (
-                  <span className="text-sm text-green-500">In Stock</span>
-                ) : (
-                  <span className="text-sm text-red-500">Out of Stock</span>
-                )}
-              </div>
-
-              {/* Product Description */}
-              <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                {product.description}
-              </p>
-
-              {/* Action Button */}
-              <button
-                className={`w-full py-2 px-4 rounded-md text-center font-medium transition-colors duration-300
-                  ${
-                    product.quantity > 0
-                      ? "bg-green-600 text-white hover:bg-green-700"
-                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  }`}
-                disabled={product.quantity === 0}
-              >
-                {product.quantity > 0 ? "Add to Cart" : "Out of Stock"}
-              </button>
-            </div>
+            <ProductCard product={product} />
           </div>
         ))}
+      </div>
+    ),
+    []
+  );
+
+  // Header component
+  const CategoryHeader = useCallback(
+    ({ name, count }: { name?: string; count: number }) => (
+      <div className="bg-white p-6 rounded-lg shadow-lg mb-8 transition-all duration-300">
+        <h2 className="text-2xl font-semibold text-center text-gray-800">
+          {capitalizeFirstChar(name || "Products")}
+        </h2>
+        <p className="text-center text-gray-600 mt-2">
+          {count} {count === 1 ? "product" : "products"} available
+        </p>
+      </div>
+    ),
+    []
+  );
+
+  // Main content
+  const MainContent = () => {
+    if (categoriesError || productsError) {
+      return (
+        <ErrorDisplay
+          message={categoriesError?.message || productsError?.message || ""}
+        />
+      );
+    }
+
+    if (isInitialLoad || categoriesLoading || productsLoading) {
+      return <LoadingDisplay />;
+    }
+
+    if (!categoryProducts.length) {
+      return <EmptyState />;
+    }
+
+    return (
+      <>
+        <CategoryHeader name={category?.name} count={categoryProducts.length} />
+        <ProductGrid products={categoryProducts} />
+      </>
+    );
+  };
+
+  return (
+    <div className="">
+      <div className="mb-6">
+        <Category categories={categories} />
+      </div>
+      <div className="py-8">
+        <MainContent />
       </div>
     </div>
   );

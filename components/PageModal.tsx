@@ -1,5 +1,6 @@
 "use client";
 import { X } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
 interface PageModalProps {
@@ -9,6 +10,8 @@ interface PageModalProps {
 }
 
 const PageModal: React.FC<PageModalProps> = ({ isOpen, children, onClose }) => {
+  const pathname = usePathname();
+  const isUpdateProfilePage = pathname === "/account/update-profile";
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -31,14 +34,15 @@ const PageModal: React.FC<PageModalProps> = ({ isOpen, children, onClose }) => {
         role="dialog"
         aria-modal="true"
       >
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 p-1 rounded-md hover:bg-gray-100"
-          aria-label="Close modal"
-        >
-          <X size={24} />
-        </button>
+        {isUpdateProfilePage ? null : (
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 p-1 rounded-md hover:bg-gray-100"
+            aria-label="Close modal"
+          >
+            <X size={24} />
+          </button>
+        )}
 
         {/* Modal Body */}
         <div className="flex-1">{children}</div>

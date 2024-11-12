@@ -24,7 +24,8 @@ const useProtectedRoute = () => {
       "/",
       "/products",
       "/products/",
-      "/category",
+      "/products/category",
+      "/products/category/",
       "/category/",
       "/owners",
       "/owners/",
@@ -41,7 +42,7 @@ const useProtectedRoute = () => {
       "/",
       "/products",
       "/products/",
-      "/category",
+      "/products/category",
       "/category/",
       "/owners",
       "/owners/",
@@ -71,7 +72,7 @@ const useProtectedRoute = () => {
       const token = Cookies.get("token");
 
       if (token && !user) {
-        await fetchUserDetails(token); // Fetch user details if token exists but user data is missing
+        await fetchUserDetails(token);
       }
 
       const verificationStatus = getVerificationStatus();
