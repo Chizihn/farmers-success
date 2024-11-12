@@ -20,8 +20,8 @@ const useProtectedRoute = () => {
   // Define allowed paths for each verification status
   const allowedPaths: Record<VerificationStatus, string[]> = {
     [VerificationStatus.NoUser]: [
-      "/signin",
       "/",
+      "/signin",
       "/products/",
       "/category/",
       "/owners",
@@ -34,11 +34,15 @@ const useProtectedRoute = () => {
     [VerificationStatus.OtpPending]: ["/verify-otp", "/"],
     [VerificationStatus.Verified]: [
       "/",
+      "/products/",
+      "/products/category",
       "/category/",
       "/account",
-      "/edit-profile",
+      "/update-profile",
       "/orders",
       "/orders/",
+      "/products/owners",
+      "/owners/",
     ],
   };
 

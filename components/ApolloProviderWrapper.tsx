@@ -3,7 +3,7 @@
 import { ReactNode } from "react";
 import { ApolloProvider } from "@apollo/client";
 import client from "../lib/apolloClient";
-import useProtectedRoute from "@/hooks/useProtectedRoute";
+// import useProtectedRoute from "@/hooks/useProtectedRoute";
 // import LoadingState from "./Loading";
 
 interface ApolloProviderWrapperProps {
@@ -11,7 +11,7 @@ interface ApolloProviderWrapperProps {
 }
 
 const ApolloProviderWrapper = ({ children }: ApolloProviderWrapperProps) => {
-  useProtectedRoute();
+  // useProtectedRoute();
   // const { loading } = useProtectedRoute();
   // if (loading) return <LoadingState />;
 
