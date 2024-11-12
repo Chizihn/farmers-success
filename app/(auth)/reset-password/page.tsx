@@ -19,7 +19,7 @@ const ResetPasswordPage = () => {
       setToken(retrievedToken);
     }
     setLoading(false);
-  }, []);
+  }, [identifier]);
 
   if (loading) return <LoadingState />;
   if (!token || !identifier) return redirect("/signin");

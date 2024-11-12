@@ -19,31 +19,11 @@ const useProtectedRoute = () => {
 
   // Define allowed paths for each verification status
   const allowedPaths: Record<VerificationStatus, string[]> = {
-    [VerificationStatus.NoUser]: [
-      "/",
-      "/signin",
-      "/products/",
-      "/category/",
-      "/owners",
-      "/search",
-      "/signup",
-      "/forgot-password",
-    ],
+    [VerificationStatus.NoUser]: [],
     [VerificationStatus.EmailUnverified]: ["/verify-email", "/"],
     [VerificationStatus.PhoneUnverified]: ["/verify-phone", "/"],
     [VerificationStatus.OtpPending]: ["/verify-otp", "/"],
-    [VerificationStatus.Verified]: [
-      "/",
-      "/products/",
-      "/products/category",
-      "/category/",
-      "/account",
-      "/update-profile",
-      "/orders",
-      "/orders/",
-      "/products/owners",
-      "/owners/",
-    ],
+    [VerificationStatus.Verified]: [],
   };
 
   // Determine verification status
