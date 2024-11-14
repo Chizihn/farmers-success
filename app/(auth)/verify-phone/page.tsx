@@ -1,12 +1,24 @@
 "use client";
 import OTPVerification from "@/components/auth/OtpVerification";
 import useAuthStore from "@/store/useAuthStore";
+import Cookies from "js-cookie";
+import { redirect } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const VerifyPhoneOtpPage = () => {
-  const { token, user } = useAuthStore((state) => ({
-    token: state.token,
-    user: state.user,
-  }));
+  const [token, setToken] = useState<string | null>(null);
+
+  const user = useAuthStore((state) => state.user);
+
+  useEffect(() => {
+    const retrievedToken = Cookies.get("token");
+
+    if (retrievedToken) {
+      setToken(retrievedToken);
+    } else {
+      redirect("/signin");
+    }
+  }, []);
 
   if (user?.isPhoneVerified) {
     return (
@@ -18,9 +30,9 @@ const VerifyPhoneOtpPage = () => {
     );
   }
 
-  return (
-    <OTPVerification verificationType="verifyPhone" token={token as string} />
-  );
+  return token ? (
+    <OTPVerification verificationType="verifyPhone" token={token} />
+  ) : null;
 };
 
 export default VerifyPhoneOtpPage;

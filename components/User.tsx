@@ -57,7 +57,7 @@ const User: React.FC = () => {
           {isAuthenticated ? (
             <div className="space-y-4">
               <Link
-                href="/account/update-profile"
+                href="/account/"
                 className="block mb-2 hover:text-green-600"
               >
                 My Account

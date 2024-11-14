@@ -88,14 +88,13 @@ const Category: React.FC<CategoryProps> = ({ categories }) => {
                 onClick={() => scroll("left")}
                 className="absolute left-[-10px] z-10 p-2 bg-white/90 rounded-full shadow-lg hover:bg-gray-50 transition-all"
               >
-                clearCart();
                 <ChevronLeft className="w-6 h-6 text-gray-600" />
               </button>
             )}
 
             <div
               ref={containerRef}
-              className="flex overflow-x-auto w-full scroll-smooth scroll hide-scrollbar"
+              className="flex overflow-x-auto w-full scroll-smooth scroll hide-scrollbar no-scrollbar"
               onScroll={checkScrollButtons}
             >
               <ul className="flex gap-3 px-4 mx-auto mb-2">

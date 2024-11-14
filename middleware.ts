@@ -1,42 +1,31 @@
+// app/_middleware.ts (or at root for older Next.js versions)
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import {
-  getVerificationStatus,
-  isPathAllowed,
-  VerificationStatus,
-} from "./utils/auth";
-import { AuthHook } from "./hooks/useAuth";
 
-export async function middleware(request: NextRequest) {
-  const { user, token } = await AuthHook();
-  const verificationStatus = getVerificationStatus(user);
+export function middleware(request: NextRequest) {
+  const token = request.cookies.get("token")?.value; // Adjust according to your auth implementation
 
-  // Define allowed paths for each verification status
-  const allowedPaths: Record<VerificationStatus, string[]> = {
-    [VerificationStatus.NoUser]: ["/", "/signin", "/signup", "/products/*"],
-    [VerificationStatus.EmailUnverified]: ["/verify-email", "/"],
-    [VerificationStatus.PhoneUnverified]: ["/verify-phone", "/"],
-    [VerificationStatus.OtpPending]: ["/verify-otp", "/"],
-    [VerificationStatus.Verified]: ["/account", "/checkout", "/*"],
-  };
+  // Define protected paths
+  const protectedPaths = [
+    "verify-email",
+    "verify-phone",
+    "verify-otp",
+    "/reset-password",
+    "/account",
+    "products/category",
+  ];
 
-  // Check if the current path is allowed for the user's verification status
-  const isAllowedPath = isPathAllowed(
-    request.nextUrl.pathname,
-    allowedPaths,
-    verificationStatus
-  );
-
-  // If the path is not allowed, redirect the user to the appropriate path
-  if (!isAllowedPath && token) {
-    const defaultRedirect = allowedPaths[verificationStatus]?.[0] || "/signin";
-    return NextResponse.redirect(new URL(defaultRedirect, request.url));
+  if (
+    protectedPaths.some((path) => request.nextUrl.pathname.startsWith(path))
+  ) {
+    // Redirect to signin if token is missing (user not authenticated)
+    if (!token) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/unauthorized";
+      return NextResponse.redirect(url);
+    }
   }
 
-  // Allow access to allowed paths
+  // If user is authenticated, allow the request
   return NextResponse.next();
 }
-
-export const config = {
-  matcher: ["/account/:path*", "/checkout/:path*"],
-};

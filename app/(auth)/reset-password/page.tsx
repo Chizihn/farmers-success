@@ -22,7 +22,7 @@ const ResetPasswordPage = () => {
   }, [identifier]);
 
   if (loading) return <LoadingState />;
-  if (!token || !identifier) return redirect("/signin");
+  if (!token || !identifier) return redirect("/unauthorized");
 
   return <ResetPassword token={token} />;
 };

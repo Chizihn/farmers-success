@@ -1,12 +1,26 @@
 "use client";
 import OTPVerification from "@/components/auth/OtpVerification";
 import useAuthStore from "@/store/useAuthStore";
+import Cookies from "js-cookie";
+import { redirect } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const VerifyEmailPage = () => {
-  const { token, user } = useAuthStore((state) => ({
-    token: state.token,
-    user: state.user,
-  }));
+  const [token, setToken] = useState<string | null>(null);
+
+  const user = useAuthStore((state) => state.user);
+  const { logout } = useAuthStore();
+
+  useEffect(() => {
+    const retrievedToken = Cookies.get("token");
+
+    if (retrievedToken) {
+      setToken(retrievedToken);
+    } else {
+      redirect("/signin"); // Redirect after logging out
+      logout(); // Logout first
+    }
+  }, [logout]);
 
   if (user?.isEmailVerified) {
     return (
@@ -18,9 +32,10 @@ const VerifyEmailPage = () => {
     );
   }
 
-  return (
-    <OTPVerification verificationType="verifyEmail" token={token as string} />
-  );
+  // Render OTPVerification only if the token is set
+  return token ? (
+    <OTPVerification verificationType="verifyEmail" token={token} />
+  ) : null;
 };
 
 export default VerifyEmailPage;
