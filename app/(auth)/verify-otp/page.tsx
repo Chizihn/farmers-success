@@ -1,10 +1,9 @@
 "use client";
+import { useEffect, useState } from "react";
 import OTPVerification from "@/components/auth/OtpVerification";
 import LoadingState from "@/components/Loading";
 import Cookies from "js-cookie";
-import { useRouter } from "next/router";
-
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 const VerifyPhoneSignInOtpPage = () => {
   const router = useRouter();
@@ -13,7 +12,6 @@ const VerifyPhoneSignInOtpPage = () => {
 
   useEffect(() => {
     const retrievedToken = Cookies.get("token");
-
     if (retrievedToken) {
       setToken(retrievedToken);
       setIsLoading(false);
