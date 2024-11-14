@@ -6,14 +6,15 @@ import useOrderStore, {
   ProductPaymentMethod,
   CreateOrder,
 } from "@/store/useOrderStore";
-import { useRouter, useSearchParams } from "next/navigation";
-import PaymentSuccess from "./PaymentSuccess";
+
 import PaymentFailure from "./PaymentFailure";
 import { formatPrice } from "@/utils/checkout";
 import CheckoutHeader from "./checkout/CheckoutHeader";
 import OrderSummary from "./checkout/OrderSummary";
 import useGuestCartStore from "@/store/useGuestCartStore";
 import useModalStore from "@/store/useModalStore";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 const GuestCheckout: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -52,7 +53,15 @@ const GuestCheckout: React.FC = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    if (!firstName || !lastName || !email || !phone || !address) {
+    const formattedPhoneNumber = "+" + phone;
+
+    if (
+      !firstName ||
+      !lastName ||
+      !email ||
+      !formattedPhoneNumber ||
+      !address
+    ) {
       setError("Please fill in all required fields.");
       setIsLoading(false);
       return;
@@ -80,7 +89,7 @@ const GuestCheckout: React.FC = () => {
           paymentMethod === "paystack"
             ? ProductPaymentMethod.ONLINE_PAYMENT
             : ProductPaymentMethod.PAYMENT_ON_DELIVERY,
-        phoneNumber: phone,
+        phoneNumber: formattedPhoneNumber,
         shippingAddress: address,
       };
 
@@ -147,12 +156,23 @@ const GuestCheckout: React.FC = () => {
 
         <div>
           <label className="block mb-2">Phone Number</label>
-          <input
-            type="tel"
+          <PhoneInput
+            country={"ng"}
             value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            className="w-full p-3 border rounded-lg"
-            required
+            onChange={(value: any) => setPhone(value)}
+            inputStyle={{
+              width: "100%",
+              padding: "1.5rem 4rem",
+              border: "1px solid #ccc",
+              borderRadius: "4px",
+              transition: "border-color 0.2s",
+            }}
+            containerStyle={{
+              marginBottom: "10px",
+            }}
+            buttonStyle={{
+              borderRadius: "4px 0 0 4px",
+            }}
           />
         </div>
 

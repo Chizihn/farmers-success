@@ -1,15 +1,13 @@
-// pages/products/owners.tsx
 "use client";
-
-import { useFetchProducts } from "@/hooks/useFetchProducts";
 import Image from "next/image";
 import Link from "next/link";
 import { ProductOwner } from "@/types";
+import { DEFAULT_PROFILE_IMAGE_URL } from "@/constants/default";
+import { capitalizeFirstChar } from "@/utils";
+import { useFetchOwners } from "@/hooks/useOwners";
 
 const Owners: React.FC = () => {
-  const { products } = useFetchProducts();
-
-  const owners = Array.from(new Set(products.map((product) => product.user)));
+  const owners = useFetchOwners();
 
   return (
     <section className="w-full min-h-screen pt-3 bg-gray-50 flex justify-center">
@@ -32,18 +30,21 @@ const Owners: React.FC = () => {
             >
               <div className="relative h-40 mb-4 rounded-lg overflow-hidden">
                 <Image
-                  src={owner.profileImageUrl}
+                  src={owner.profileImageUrl || DEFAULT_PROFILE_IMAGE_URL}
                   alt={`${owner.firstName} ${owner.lastName}`}
-                  layout="fill"
-                  objectFit="cover"
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  style={{ objectFit: "cover" }}
                   className="rounded-md"
+                  priority
                 />
               </div>
               <h3 className="text-lg font-semibold mb-2 text-gray-700">
-                {owner.firstName} {owner.lastName}
+                {capitalizeFirstChar(owner.firstName)}{" "}
+                {capitalizeFirstChar(owner.lastName)}
               </h3>
 
-              <Link href={`/owners/${owner.id}`}>
+              <Link href={`/products/owners/${owner.id}`}>
                 <button className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition-colors font-medium text-sm">
                   View Owner
                 </button>

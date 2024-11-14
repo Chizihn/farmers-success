@@ -17,8 +17,8 @@ const ResetPasswordPage = () => {
 
     if (retrievedToken) {
       setToken(retrievedToken);
+      setLoading(false);
     }
-    setLoading(false);
   }, [identifier]);
 
   if (loading) return <LoadingState />;

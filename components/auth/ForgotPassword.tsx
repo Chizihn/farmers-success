@@ -1,58 +1,53 @@
 "use client";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { forgotPasswordSchema, ForgotPasswordFormType } from "@/types/forms";
 import Logo from "../Logo";
 import useSecureStore from "@/store/useSecure";
+import InputField from "../ui/InputField";
+import toast from "react-hot-toast";
 
 const ForgotPassword = () => {
   const router = useRouter();
   const { forgotPassword, setIdentifier, loading, error } = useSecureStore();
+  const [email, setEmail] = useState<string>("");
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<ForgotPasswordFormType>({
-    resolver: zodResolver(forgotPasswordSchema),
-  });
-
-  const onSubmit = async (data: ForgotPasswordFormType) => {
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) {
+      toast.error("Please fill the required field.");
+    }
     try {
-      await forgotPassword(data.email);
-      setIdentifier(data.email);
-      console.log("identifier frim forgot page", data.email);
-      router.push("/reset-password");
-      console.log("OTP sent");
+      const success = await forgotPassword(email);
+      if (success) {
+        setIdentifier(email);
+        toast.success("OTP sent successfully.");
+        router.push("/reset-password");
+      }
     } catch (err) {
-      console.error("Password reset failed:", error);
+      console.error("Password reset failed:", err);
+      toast.error("Password reset failed. Please try again.");
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 lg:bg-gray-50">
       <div className="w-full lg:max-w-lg p-6 bg-white lg:shadow-md lg:rounded-lg md:w-[40rem] flex flex-col justify-center items-center gap-2">
-        <div>
-          <h1 className="text-2xl font-bold text-green-600 mb-4 text-center">
-            Reset Your Password
-          </h1>
-          <p className="text-gray-600 mb-6 text-center">
-            Enter your email to receive a password reset link.
-          </p>
-        </div>
+        <h1 className="text-2xl font-bold text-green-600 mb-4 text-center">
+          Reset Your Password
+        </h1>
+        <p className="text-gray-600 mb-6 text-center">
+          Enter your email to receive a password reset link.
+        </p>
 
         <div className="max-w-sm">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <input
+          <form onSubmit={onSubmit} className="space-y-4">
+            <InputField
               type="email"
+              label="Email"
               placeholder="Enter your email"
-              {...register("email")}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-green-600"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
-            {errors.email && (
-              <p className="text-red-500">{errors.email.message}</p>
-            )}
 
             <button
               type="submit"
@@ -61,8 +56,9 @@ const ForgotPassword = () => {
             >
               {loading ? "Sending reset code..." : "Send Reset code"}
             </button>
-            {error && <p className="text-red-500 text-center">{error}</p>}
           </form>
+
+          {error && <p className="text-red-500 text-center">{error}</p>}
 
           <div className="mt-6">
             <p className="text-center text-gray-600">

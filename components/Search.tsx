@@ -43,7 +43,7 @@ const ProductSearch: React.FC = () => {
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         className="w-full border-2 border-gray-300 p-2 rounded-3xl"
-        placeholder="Search products..."
+        placeholder="Search product..."
       />
       <button
         type="submit"

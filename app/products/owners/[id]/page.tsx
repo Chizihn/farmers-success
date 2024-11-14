@@ -1,7 +1,9 @@
-import React from "react";
+import OwnerDetails from "@/components/OwnerDetails";
 
-const OwnerDetailPage = () => {
-  return <div>OwnerDetailPage</div>;
-};
+interface OwnerDetailPageProps {
+  params: { id: string };
+}
 
-export default OwnerDetailPage;
+export default function OwnerDetailPage({ params }: OwnerDetailPageProps) {
+  return <OwnerDetails id={params.id} />;
+}

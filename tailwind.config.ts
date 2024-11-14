@@ -10,6 +10,10 @@ const config: Config = {
     extend: {
       colors: {},
     },
+    fontFamily: {
+      nunito: ["Nunito", "sans-serif"],
+      montserrat: ["Montserrat", "sans-serif"],
+    },
   },
   plugins: [],
 };

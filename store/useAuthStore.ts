@@ -39,6 +39,9 @@ const useAuthStore = create<AuthState>()(
         token: cookieStorage.getItem("token") || null,
         loading: false,
         error: null,
+        setError: (error) => {
+          set({ error });
+        },
         identifier: "",
         setIdentifier: (identifier) => {
           set({ identifier });
@@ -61,6 +64,7 @@ const useAuthStore = create<AuthState>()(
               cookieStorage.setItem("token", token);
               await useAuthStore.getState().fetchUserDetails(token);
               console.log("Signin was successful");
+              return true;
             } else {
               throw new Error("Failed to retrieve token");
             }
@@ -68,6 +72,7 @@ const useAuthStore = create<AuthState>()(
             set({ error: (error as Error).message, loading: false });
             console.error("Signin failed:", error);
           }
+          return false;
         },
 
         signInWithPhone: async (phoneNumber: string) => {
@@ -85,12 +90,14 @@ const useAuthStore = create<AuthState>()(
               cookieStorage.setItem("token", token);
               await useAuthStore.getState().fetchUserDetails(token);
               console.log("Signin was successful with phone number");
+              return true;
             } else {
               throw new Error("Failed to retrieve token");
             }
           } catch (error) {
             set({ error: (error as Error).message, loading: false });
             console.error("Signin failed with phone number", error);
+            return false;
           }
         },
 
@@ -109,12 +116,14 @@ const useAuthStore = create<AuthState>()(
               cookieStorage.setItem("token", token);
               cookieStorage.setItem("user", JSON.stringify(user));
               console.log("Signup successful");
+              return true;
             } else {
               throw new Error("Failed to retrieve user or token");
             }
           } catch (error) {
             set({ error: (error as Error).message, loading: false });
             console.error("Signup failed:", error);
+            return false;
           }
         },
 
@@ -136,12 +145,14 @@ const useAuthStore = create<AuthState>()(
               cookieStorage.setItem("token", token);
               cookieStorage.setItem("user", JSON.stringify(user));
               console.log("Signup successful");
+              return true;
             } else {
               throw new Error("Failed to retrieve user or token");
             }
           } catch (error) {
             set({ error: (error as Error).message, loading: false });
             console.error("Signup failed:", error);
+            return false;
           }
         },
 

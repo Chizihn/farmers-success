@@ -1,64 +1,64 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import Cookies from "js-cookie";
-import { zodResolver } from "@hookform/resolvers/zod";
 import Logo from "../Logo";
 import useAuthStore from "@/store/useAuthStore";
-import {
-  emailSigninSchema,
-  phoneSigninSchema,
-  EmailSigninFormType,
-  PhoneSigninFormType,
-} from "@/types/forms";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import InputField from "../ui/InputField";
+import toast from "react-hot-toast";
+import { capitalizeFirstChar } from "@/utils";
+
 const Signin = () => {
   const router = useRouter();
   const [loginMethod, setLoginMethod] = useState<"email" | "phone">("email");
-  const { signInWithEmail, signInWithPhone, loading, error } = useAuthStore();
+  const { signInWithEmail, signInWithPhone, loading, error, setError } =
+    useAuthStore();
   const { setIdentifier } = useAuthStore();
 
-  const emailForm = useForm<EmailSigninFormType>({
-    resolver: zodResolver(emailSigninSchema),
-  });
-  const phoneForm = useForm<PhoneSigninFormType>({
-    resolver: zodResolver(phoneSigninSchema),
-  });
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
 
-  const handleEmailSignIn = async (data: EmailSigninFormType) => {
-    try {
-      const { email, password } = data;
-      await signInWithEmail(email, password);
+  const handleEmailSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !password) {
+      toast.error("Please fill in all required fields.");
+    }
+    const success = await signInWithEmail(email, password);
+    if (success) {
+      toast.success("Successfully signed in with email!");
       router.push("/");
-    } catch (err) {
-      console.error("Email signin failed:", err);
+    } else {
+      toast.error(error);
     }
   };
 
-  const handlePhoneSignIn = async (data: PhoneSigninFormType) => {
-    try {
-      const { phoneNumber } = data;
-      console.log("inputted phone", phoneNumber);
+  const handlePhoneSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-      // Extract country code and local number
-      const countryCodeWithoutPlus = phoneNumber.slice(0, 3);
-      const localNumber = phoneNumber.slice(3);
-      const formattedPhoneNumber = countryCodeWithoutPlus + localNumber;
-      setIdentifier(formattedPhoneNumber);
-      await signInWithPhone(formattedPhoneNumber);
+    const formattedPhoneNumber = phoneNumber;
+    if (!formattedPhoneNumber) {
+      toast.error("Please fill in the required field.");
+    }
+    setIdentifier(formattedPhoneNumber);
+    const success = await signInWithPhone(formattedPhoneNumber);
+    console.log(formattedPhoneNumber);
+
+    if (success) {
+      toast.success("Successfully signed in with number!");
       router.push("/verify-otp");
-    } catch (err) {
-      console.error("Phone signin failed:", err);
+    } else {
+      toast.error(error);
     }
   };
 
   const handleLoginMethodChange = (method: "email" | "phone") => {
     setLoginMethod(method);
-    emailForm.reset();
-    phoneForm.reset();
+    setEmail("");
+    setPassword("");
+    setPhoneNumber("");
+    setError(null);
   };
 
   return (
@@ -99,26 +99,21 @@ const Signin = () => {
 
         <div className="max-w-sm">
           {loginMethod === "email" ? (
-            <form
-              onSubmit={emailForm.handleSubmit(handleEmailSignIn)}
-              className="space-y-4"
-            >
+            <form onSubmit={handleEmailSignIn} className="space-y-4">
               <InputField
                 type="email"
                 label="Email"
                 placeholder="Enter your email"
-                register={emailForm.register("email")}
-                error={emailForm.formState.errors.email?.message}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
-
               <InputField
                 type="password"
                 label="Password"
                 placeholder="Enter your password"
-                register={emailForm.register("password")}
-                error={emailForm.formState.errors.password?.message}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
-
               <div className="mt-3">
                 <a
                   href="/forgot-password"
@@ -136,13 +131,11 @@ const Signin = () => {
               </button>
             </form>
           ) : (
-            <form
-              onSubmit={phoneForm.handleSubmit(handlePhoneSignIn)}
-              className="space-y-4"
-            >
+            <form onSubmit={handlePhoneSignIn} className="space-y-4">
               <PhoneInput
                 country={"ng"}
-                onChange={(value) => phoneForm.setValue("phoneNumber", value)}
+                value={phoneNumber}
+                onChange={(value) => setPhoneNumber(value)}
                 inputStyle={{
                   width: "100%",
                   padding: "1.5rem 4rem",
@@ -175,8 +168,6 @@ const Signin = () => {
               </button>
             </form>
           )}
-
-          {error && <p className="text-red-500 text-center">{error}</p>}
 
           <div className="mt-6">
             <p className="text-center text-gray-600">

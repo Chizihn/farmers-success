@@ -2,11 +2,11 @@ import { AssetType } from "./category";
 import { OtpActivity } from "./forms";
 
 export interface AuthState extends PersistedAuthState {
-  signInWithEmail: (email: string, password: string) => Promise<void>;
-  signInWithPhone: (phoneNumber: string) => Promise<void>;
+  signInWithEmail: (email: string, password: string) => Promise<boolean>;
+  signInWithPhone: (phoneNumber: string) => Promise<boolean>;
   fetchUserDetails: (token: string) => Promise<void>;
-  signUpWithEmail: (email: string, password: string) => Promise<void>;
-  signUpWithPhone: (phoneNumber: string) => Promise<void>;
+  signUpWithEmail: (email: string, password: string) => Promise<boolean>;
+  signUpWithPhone: (phoneNumber: string) => Promise<boolean>;
   verifyEmailOTP: (otp: number, token: string) => Promise<void>;
   verifyOTP: (otp: number, token: string) => Promise<void>;
   verifyPhoneOTP: (otp: number, token: string) => Promise<void>;
@@ -138,6 +138,7 @@ export interface PersistedAuthState {
   token: string | null;
   loading: boolean;
   error: string | null;
+  setError: (error: string | null) => void;
   identifier: string;
   setIdentifier: (identifier: string) => void;
 }

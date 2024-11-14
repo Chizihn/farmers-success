@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import ApolloProviderWrapper from "@/components/ApolloProviderWrapper";
 import { Suspense } from "react";
+import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
   title: "FarmersSuccess | Grow with us",
@@ -24,6 +25,7 @@ export default function RootLayout({
           <ApolloProviderWrapper>
             {children}
             {modal}
+            <Toaster position="top-right" reverseOrder={false} />
           </ApolloProviderWrapper>
         </Suspense>
       </body>

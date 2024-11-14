@@ -65,12 +65,12 @@ const User: React.FC = () => {
               <Link href="/orders" className="block mb-2 hover:text-green-600">
                 My Orders
               </Link>
-              <Link
+              {/* <Link
                 href="/track-order"
                 className="block mb-2 hover:text-green-600 cursor-pointer"
               >
                 Track Order
-              </Link>
+              </Link> */}
               <button
                 className="block w-full text-left hover:text-green-600"
                 onClick={handleLogout}
@@ -80,15 +80,15 @@ const User: React.FC = () => {
             </div>
           ) : (
             <div className="space-y-4">
-              <Link href="/signin" className="block mb-2 hover:text-green-600">
+              <Link href="/signin" className="block hover:text-green-600">
                 Sign in
               </Link>
-              <Link
+              {/* <Link
                 href="/track-order"
                 className="block mb-2 hover:text-green-600 cursor-pointer"
               >
                 Track Order
-              </Link>
+              </Link> */}
             </div>
           )}
         </div>

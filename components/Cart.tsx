@@ -5,6 +5,8 @@ import useCartStore from "@/store/useCartStore";
 import useModalStore from "@/store/useModalStore";
 import useGuestCartStore from "@/store/useGuestCartStore";
 import useAuthStore from "@/store/useAuthStore";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 export const Cart: React.FC = () => {
   const { openModal } = useModalStore();

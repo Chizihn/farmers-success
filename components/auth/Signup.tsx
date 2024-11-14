@@ -1,82 +1,67 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/style.css";
-
 import Logo from "../Logo";
 import useAuthStore from "@/store/useAuthStore";
-import {
-  emailSignupSchema,
-  phoneSignupSchema,
-  EmailSignupFormType,
-  PhoneSignupFormType,
-} from "@/types/forms";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 import InputField from "../ui/InputField";
+import toast from "react-hot-toast";
+import { capitalizeFirstChar } from "@/utils";
 
 const Signup = () => {
   const router = useRouter();
   const [signupMethod, setSignupMethod] = useState<"email" | "phone">("email");
-  const { signUpWithEmail, signUpWithPhone, loading, error } = useAuthStore();
+  const { signUpWithEmail, signUpWithPhone, loading, error, setError } =
+    useAuthStore();
   const { setIdentifier } = useAuthStore();
 
-  // Separate form handlers for email and phone
-  const emailForm = useForm<EmailSignupFormType>({
-    resolver: zodResolver(emailSignupSchema),
-  });
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
 
-  const phoneForm = useForm<PhoneSignupFormType>({
-    resolver: zodResolver(phoneSignupSchema),
-  });
+  useEffect(() => {
+    if (error) {
+      toast.error(capitalizeFirstChar(error));
+    }
+  }, [error]);
 
-  const handleEmailSignUp = async (data: EmailSignupFormType) => {
-    try {
-      const { email, password } = data;
-      setIdentifier(email);
-      await signUpWithEmail(email, password);
+  const handleEmailSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIdentifier(email);
+    const success = await signUpWithEmail(email, password);
+    if (success) {
       router.push("/verify-email");
-    } catch (err) {
-      console.error("Email signup failed:", err);
     }
   };
 
-  const handlePhoneSignUp = async (data: PhoneSignupFormType) => {
-    try {
-      const { phoneNumber } = data;
-      console.log("inputted phone", phoneNumber);
-
-      // Extract country code and local number
-      const countryCodeWithoutPlus = phoneNumber.slice(0, 3); // Assuming it's "+234"
-      const localNumber = phoneNumber.slice(3);
-      const formattedPhoneNumber = countryCodeWithoutPlus + localNumber;
-
-      setIdentifier(formattedPhoneNumber);
-      await signUpWithPhone(formattedPhoneNumber);
+  const handlePhoneSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const formattedPhoneNumber = phoneNumber.replace(/^\+/, "");
+    setIdentifier(formattedPhoneNumber);
+    const success = await signUpWithPhone(formattedPhoneNumber);
+    if (success) {
       router.push("/verify-phone");
-    } catch (err) {
-      console.error("Phone signup failed:", err);
     }
   };
 
   const handleSignupMethodChange = (method: "email" | "phone") => {
     setSignupMethod(method);
-    emailForm.reset();
-    phoneForm.reset();
+    setEmail("");
+    setPassword("");
+    setPhoneNumber("");
+    setError(null); // Reset error when switching methods
   };
 
   return (
-    <div className="flex items-center justify-center w-full h-screen lg:bg-gray-50">
-      <div className="w-full lg:max-w-lg p-6 bg-white lg:shadow-md lg:rounded-lg md:w-[40rem] flex flex-col justify-center items-center gap-2">
-        <div>
-          <h1 className="text-2xl font-bold text-green-600 mb-2 text-center">
-            Create Your Farmers Success Marketplace Account
-          </h1>
-          <p className="text-gray-600 mb-4 text-center">
-            Please fill in the details below to create an account.
-          </p>
-        </div>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 lg:bg-gray-50">
+      <div className="w-full h-full lg:max-w-lg p-6 bg-white lg:shadow-md lg:rounded-lg md:w-[40rem] flex flex-col justify-center items-center gap-2">
+        <h1 className="text-2xl font-bold text-green-600 text-center">
+          Create Your Farmers Success Marketplace Account
+        </h1>
+        <p className="text-gray-600 mb-3 text-center">
+          Sign up with either email or phone to create an account.
+        </p>
 
         <div className="flex justify-center mb-4">
           <button
@@ -88,7 +73,7 @@ const Signup = () => {
             }`}
             onClick={() => handleSignupMethodChange("email")}
           >
-            Signup with email
+            Email Address
           </button>
           <button
             type="button"
@@ -99,32 +84,27 @@ const Signup = () => {
             }`}
             onClick={() => handleSignupMethodChange("phone")}
           >
-            Signup with phone
+            Phone Number
           </button>
         </div>
 
         <div className="max-w-sm">
           {signupMethod === "email" ? (
-            <form
-              onSubmit={emailForm.handleSubmit(handleEmailSignUp)}
-              className="space-y-4"
-            >
+            <form onSubmit={handleEmailSignUp} className="space-y-4">
               <InputField
                 type="email"
                 label="Email"
                 placeholder="Enter your email"
-                register={emailForm.register("email")}
-                error={emailForm.formState.errors.email?.message}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
-
               <InputField
                 type="password"
                 label="Password"
                 placeholder="Enter your password"
-                register={emailForm.register("password")}
-                error={emailForm.formState.errors.email?.message}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
-
               <button
                 type="submit"
                 className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition duration-200"
@@ -134,13 +114,11 @@ const Signup = () => {
               </button>
             </form>
           ) : (
-            <form
-              onSubmit={phoneForm.handleSubmit(handlePhoneSignUp)}
-              className="space-y-4"
-            >
+            <form onSubmit={handlePhoneSignUp} className="space-y-4">
               <PhoneInput
-                country={`ng`}
-                onChange={(value) => phoneForm.setValue("phoneNumber", value)}
+                country={"ng"}
+                value={phoneNumber}
+                onChange={(value) => setPhoneNumber(value)}
                 inputStyle={{
                   width: "100%",
                   padding: "1.5rem 4rem",
@@ -155,11 +133,6 @@ const Signup = () => {
                   borderRadius: "4px 0 0 4px",
                 }}
               />
-              {phoneForm.formState.errors.phoneNumber && (
-                <p className="text-red-500">
-                  {phoneForm.formState.errors.phoneNumber.message}
-                </p>
-              )}
               <button
                 type="submit"
                 className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition duration-200"
@@ -169,8 +142,6 @@ const Signup = () => {
               </button>
             </form>
           )}
-
-          {error && <p className="text-red-500 text-center">{error}</p>}
 
           <div className="mt-6">
             <p className="text-center text-gray-600">
@@ -192,8 +163,7 @@ const Signup = () => {
             >
               Terms and Conditions
             </a>
-            . {` `}
-            For further support, visit the Help Center or contact our customer
+            . For further support, visit the Help Center or contact our customer
             service team.
           </p>
         </div>

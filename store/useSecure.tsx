@@ -13,7 +13,7 @@ import { OtpActivity } from "@/types/forms";
 const EXPIRE_MINUTES = 5;
 
 interface SecureState extends PersistedAuthState {
-  forgotPassword: (email: string) => Promise<void>;
+  forgotPassword: (email: string) => Promise<boolean>;
   resendOTP: (identifier: string, activity: OtpActivity) => Promise<void>;
   resetPassword: (
     otp: number,
@@ -29,6 +29,9 @@ const useSecureStore = create<SecureState>()((set) => ({
   token: null,
   loading: false,
   error: null,
+  setError: (error) => {
+    set({ error });
+  },
   identifier: "",
   setIdentifier: (identifier) => {
     set({ identifier });
@@ -54,10 +57,12 @@ const useSecureStore = create<SecureState>()((set) => ({
         expires: EXPIRE_MINUTES / (24 * 60),
       });
       console.log("reset token", data.forgotPassword.token);
+      return true;
     } catch (error) {
       set({
         error: error instanceof Error ? error.message : "Error occurred",
       });
+      return false;
     } finally {
       set({ loading: false });
     }
