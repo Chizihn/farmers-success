@@ -10,8 +10,8 @@ export interface OrderState {
 }
 
 export enum PaymentMethod {
-  Cash_On_Delivery = "cod",
-  Online = "in_app",
+  ONLINE_PAYMENT = "online_payment",
+  PAYMENT_ON_DELIVERY = "payment_on_delivery",
 }
 
 export enum OrderItemState {
