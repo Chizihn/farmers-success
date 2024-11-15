@@ -1,10 +1,8 @@
 "use client";
-import { useQuery } from "@apollo/client";
-import { GET_ORDER_ITEMS } from "@/graphql/queries";
 import { Package, Calendar, MapPin, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { OrderStatus } from "@/types/order";
+import { Status } from "@/types/order";
 import LoadingState from "../Loading";
 import useOrderStore from "@/store/useOrderStore";
 
@@ -25,7 +23,7 @@ const OrderList: React.FC = () => {
     );
   }
 
-  const getLatestStatus = (statuses: OrderStatus[]) => {
+  const getLatestStatus = (statuses: Status[]) => {
     return statuses.sort(
       (a, b) =>
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()

@@ -117,24 +117,23 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
               </div>
             </div>
 
-            {!isCategoryPage ||
-              (isAuthenticated && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Category
-                  </label>
-                  <Dropdown
-                    options={categories.map((category) => ({
-                      value: category.name,
-                      label: capitalizeWords(category.name),
-                    }))}
-                    onChange={handleCategorySelect}
-                    value={filters.type || "Select a category"}
-                    placeholder="Select a category"
-                    className="w-full p-2 border rounded-md"
-                  />
-                </div>
-              ))}
+            {!isCategoryPage && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Category
+                </label>
+                <Dropdown
+                  options={categories.map((category) => ({
+                    value: category.name,
+                    label: capitalizeWords(category.name),
+                  }))}
+                  onChange={handleCategorySelect}
+                  value={filters.type || "Select a category"}
+                  placeholder="Select a category"
+                  className="w-full p-2 border rounded-md"
+                />
+              </div>
+            )}
 
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">

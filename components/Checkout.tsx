@@ -3,10 +3,7 @@ import { useState, useEffect } from "react";
 import { Loader } from "lucide-react";
 import useCartStore from "@/store/useCartStore";
 import useAuthStore from "@/store/useAuthStore";
-import useOrderStore, {
-  ProductPaymentMethod,
-  CreateOrder,
-} from "@/store/useOrderStore";
+import useOrderStore, { CreateOrder } from "@/store/useOrderStore";
 // import { PaystackButton } from "react-paystack";
 import { formatPrice } from "@/utils/checkout";
 import CheckoutHeader from "./checkout/CheckoutHeader";
@@ -14,6 +11,7 @@ import OrderSummary from "./checkout/OrderSummary";
 import useModalStore from "@/store/useModalStore";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
+import { PaymentMethod } from "@/types/order";
 
 const Checkout: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -88,8 +86,8 @@ const Checkout: React.FC = () => {
         lastName,
         paymentMethod:
           paymentMethod === "paystack"
-            ? ProductPaymentMethod.ONLINE_PAYMENT
-            : ProductPaymentMethod.PAYMENT_ON_DELIVERY,
+            ? PaymentMethod.Online
+            : PaymentMethod.Cash_On_Delivery,
         phoneNumber: formattedPhoneNumber,
         shippingAddress: address,
       };

@@ -2,13 +2,7 @@ import { create } from "zustand";
 import client from "@/lib/apolloClient";
 import { GET_ORDER_ITEMS } from "@/graphql/queries";
 import { CREATE_ORDER } from "@/graphql/mutations";
-import { OrderState } from "@/types/order";
-
-export enum ProductPaymentMethod {
-  ONLINE_PAYMENT = "online_payment",
-  PAYMENT_ON_DELIVERY = "payment_on_delivery",
-}
-
+import { OrderState, PaymentMethod } from "@/types/order";
 export interface GuestCart {
   productId: string;
   quantity: number;
@@ -19,7 +13,7 @@ export interface CreateOrder {
   firstName: string;
   guestCart: GuestCart[];
   lastName: string;
-  paymentMethod: ProductPaymentMethod;
+  paymentMethod: PaymentMethod;
   phoneNumber: string;
   shippingAddress: string;
 }

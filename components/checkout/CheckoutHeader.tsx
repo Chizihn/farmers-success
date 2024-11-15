@@ -3,7 +3,6 @@ import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 const CheckoutHeader = () => {
-  const router = useRouter();
   const { closeCheckoutModal, openModal } = useModalStore();
   const handleModals = () => {
     closeCheckoutModal();

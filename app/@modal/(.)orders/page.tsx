@@ -4,8 +4,10 @@ import OrderList from "@/components/user-orders/OrderList";
 
 export default function OrdersModal() {
   return (
-    <>
-      <OrderList />
-    </>
+    <section className="min-h-screen h-full ">
+      <div className="p-4">
+        <OrderList />
+      </div>
+    </section>
   );
 }

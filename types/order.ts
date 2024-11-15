@@ -1,75 +1,49 @@
 import { CreateOrder } from "@/store/useOrderStore";
 import { UserProfile } from ".";
 
-export enum OrderItemState {
-  Confirmed = "confirmed",
-  InProgress = "in_progress",
-  Delivered = "delivered",
-  Returned = "returned",
-  Cancelled = "cancelled",
-}
-
-export enum PaymentMethod {
-  Cash_On_Delivery = "cod",
-  Online = "in_app",
-}
-export interface UserOrder {
-  address: string;
-  amount: number;
-  createdAt: Date;
-  discount: number;
-  id: string;
-  orderItems: OrderItem;
-  paymentMethod: PaymentMethod;
-}
-
 export interface OrderState {
-  orderItems: OrderItemData[];
+  orderItems: UserOrderItem[];
   loading: boolean;
   error: Error | null;
   createOrder: (input: CreateOrder) => Promise<void>;
   fetchOrderItems: (filter: any) => Promise<void>;
 }
 
-type OrderStatus = {
-  createdAt: string;
+export enum PaymentMethod {
+  Cash_On_Delivery = "cod",
+  Online = "in_app",
+}
+
+export enum OrderItemState {
+  CONFIRMED = "confirmed",
+  IN_PROGESS = "in_progress",
+  DELIVERED = "delivered",
+  RETURNED = "returned",
+  CANCELLED = "cancelled",
+}
+
+export type Status = {
+  createdAt: Date;
   date: string;
   id: string;
   orderItemId: string;
-  status: string;
-  updatedAt: string;
-};
-interface OrderItem {
-  buyer: UserProfile;
-  buyerId: string;
-  createdAt: string;
-  deliveryInfo: string;
-  endDate: Date;
-  id: string;
-  location: string;
-  order: UserOrder;
-  orderId: string;
-  seller: UserProfile;
-  sellerId: string;
-  startDate: string;
-  status: OrderStatus[];
+  status: OrderItemState;
   updatedAt: Date;
-}
+};
 
-interface Order {
+export interface UserOrder {
   address: string;
   amount: number;
   createdAt: string;
   discount: number;
   id: string;
   orderItems: OrderItem[];
-  paymentMethod: string;
+  paymentMethod: PaymentMethod;
   updatedAt: string;
   user: UserProfile;
   userId: string;
 }
-
-interface OrderItemData {
+export interface UserOrderItem {
   buyer: UserProfile;
   buyerId: string;
   createdAt: string;
@@ -79,23 +53,33 @@ interface OrderItemData {
   location: string;
   marketPlaceId: string;
   orderId: string;
-  order: Order;
+  order: UserOrder;
   seller: UserProfile;
   sellerId: string;
   startDate: string;
   state: string;
-  status: OrderStatus[];
+  status: Status[];
+  updatedAt: string;
+}
+export interface OrderItem {
+  buyer: UserProfile;
+  buyerId: string;
+  createdAt: string;
+  deliveryInfo: string;
+  endDate: string;
+  id: string;
+  location: string;
+  marketPlaceId: string;
+  order: UserOrderItem;
+  orderId: string;
+  seller: UserProfile;
+  sellerId: string;
+  startDate: string;
+  state: string;
+  status: Status[];
   updatedAt: string;
 }
 
-interface GetOrderItemsResponse {
-  getOrderItems: OrderItemData[];
-}
-
-export type {
-  OrderStatus,
-  OrderItem,
-  Order,
-  OrderItemData,
-  GetOrderItemsResponse,
-};
+// interface GetOrderItemsResponse {
+//   getOrderItems: OrderItemData[];
+// }

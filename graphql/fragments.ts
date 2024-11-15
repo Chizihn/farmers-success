@@ -53,3 +53,24 @@ export const ORDER_ITEM_DATA_FRAGMENT = gql`
   }
   ${USER_DATA_FRAGMENT}
 `;
+
+export const USER_ORDER_DATA_FRAGMENT = gql`
+  fragment UserOrderData on UserOrder {
+    address
+    amount
+    createdAt
+    discount
+    id
+    orderItems {
+      ...UserOrderItem
+    }
+    paymentMethod
+    updatedAt
+    user {
+      ...UserData
+    }
+    userId
+  }
+  ${ORDER_ITEM_DATA_FRAGMENT}
+  ${USER_DATA_FRAGMENT}
+`;
