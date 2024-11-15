@@ -85,8 +85,8 @@ const GuestCheckout: React.FC = () => {
         lastName,
         paymentMethod:
           paymentMethod === "paystack"
-            ? PaymentMethod.Online
-            : PaymentMethod.Cash_On_Delivery,
+            ? PaymentMethod.ONLINE_PAYMENT
+            : PaymentMethod.PAYMENT_ON_DELIVERY,
         phoneNumber: formattedPhoneNumber,
         shippingAddress: address,
       };
