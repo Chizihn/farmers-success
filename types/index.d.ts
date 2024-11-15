@@ -8,7 +8,7 @@ export interface AuthState extends PersistedAuthState {
   signUpWithEmail: (email: string, password: string) => Promise<boolean>;
   signUpWithPhone: (phoneNumber: string) => Promise<boolean>;
   verifyEmailOTP: (otp: number, token: string) => Promise<void>;
-  verifyOTP: (otp: number, token: string) => Promise<void>;
+  verifyOTP: (otp: number, token: string) => Promise<boolean>;
   verifyPhoneOTP: (otp: number, token: string) => Promise<void>;
   resendOTP: (identifier: string, activity: OtpActivity) => Promise<void>;
   logout: () => void;
@@ -64,38 +64,6 @@ export interface MarketPlace {
   pageSize: number;
   pageNumber: number;
   filter: Filter;
-}
-
-export interface ProductOwner {
-  firstName: string;
-  id: string;
-  lastName: string;
-  profileImageUrl: string;
-}
-
-export interface ProductCategory {
-  categoryId: string;
-  categoryType: AssetType;
-  name: string;
-  productId: string;
-}
-
-export interface Product {
-  categories: ProductCategory[];
-  city: string;
-  createdAt: Date;
-  description: string;
-  id: string;
-  images: string[];
-  location: string;
-  name: string;
-  price: number;
-  quantity: number;
-  state: string;
-  status: ProductStatus;
-  updatedAt: Date;
-  user: ProductOwner;
-  userId: string;
 }
 
 type ProductCardProps = {

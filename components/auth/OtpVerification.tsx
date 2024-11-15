@@ -59,7 +59,7 @@ const OTPVerification: React.FC<{
           Verify Your OTP
         </h1>
         <p className="text-gray-600 mb-6 text-center">
-          Please enter the OTP sent to your{" "}
+          Please enter the zzz sent to your{" "}
           {verificationType === "verifyEmail" ? "email" : "phone number"}.
         </p>
 

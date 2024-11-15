@@ -221,6 +221,7 @@ const useAuthStore = create<AuthState>()(
               cookieStorage.setItem("token", token); // Store token
               await useAuthStore.getState().fetchUserDetails(token); // Fetch user details if needed
               console.log("OTP verified successfully, user signed in");
+              return true;
             } else {
               throw new Error("OTP verification failed");
             }
@@ -230,6 +231,7 @@ const useAuthStore = create<AuthState>()(
               loading: false,
             });
             console.error("OTP verification failed:", error);
+            return false;
           }
         },
 

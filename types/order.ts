@@ -1,13 +1,6 @@
 import { CreateOrder } from "@/store/useOrderStore";
 import { UserProfile } from ".";
-
-export interface OrderState {
-  orderItems: UserOrderItem[];
-  loading: boolean;
-  error: Error | null;
-  createOrder: (input: CreateOrder) => Promise<void>;
-  fetchOrderItems: (filter: any) => Promise<void>;
-}
+import { Product, ProductOwner } from "./product";
 
 export enum PaymentMethod {
   ONLINE_PAYMENT = "online_payment",
@@ -43,41 +36,50 @@ export interface UserOrder {
   user: UserProfile;
   userId: string;
 }
-export interface UserOrderItem {
-  buyer: UserProfile;
-  buyerId: string;
-  createdAt: string;
-  deliveryInfo: string;
-  endDate: string;
+export interface Order {
   id: string;
-  location: string;
-  marketPlaceId: string;
-  orderId: string;
-  order: UserOrder;
-  seller: UserProfile;
-  sellerId: string;
-  startDate: string;
-  state: string;
-  status: Status[];
-  updatedAt: string;
+  user: UserProfile; // User who placed the order
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  shippingAddress: string;
+  paymentMethod: string; // e.g., credit card, PayPal
+  status: string; // e.g., pending, completed
+  total: number; // Total cost of the order
+  orderItems: OrderItem[]; // Array of order items
+  createdAt: string; // ISO date string
 }
+
 export interface OrderItem {
-  buyer: UserProfile;
-  buyerId: string;
-  createdAt: string;
-  deliveryInfo: string;
-  endDate: string;
-  id: string;
-  location: string;
-  marketPlaceId: string;
-  order: UserOrderItem;
   orderId: string;
-  seller: UserProfile;
-  sellerId: string;
-  startDate: string;
-  state: string;
-  status: Status[];
-  updatedAt: string;
+  price: number;
+  product: Product;
+  quantity: number;
+}
+
+export interface GetProductOrders {
+  createdAt: Date;
+  email: string;
+  firstName: string;
+  id: string;
+  lastName: string;
+  orderItems: OrderItem[];
+  paymentMethod: PaymentMethod;
+  phoneNumber: string;
+  shippingAddress: string;
+  status: Status;
+  total: number;
+  user: ProductOwner;
+}
+export enum OrderStatus {
+  PROCESSING = "processing",
+  CANCELLED = "canceled",
+  COMPLETED = "completed",
+}
+
+export interface GetOrdersFilter {
+  status: OrderStatus;
 }
 
 // interface GetOrderItemsResponse {

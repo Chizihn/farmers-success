@@ -1,5 +1,21 @@
 import { gql } from "@apollo/client";
 
+export const PRODUCT_OWNER_FRAGMENT = gql`
+  fragment ProductOwnerFields on ProductOwner {
+    firstName
+    id
+    lastName
+    profileImageURL
+  }
+`;
+export const PRODUCT_CATEGORY_FRAGMENT = gql`
+  fragment ProductCategoryFields on ProductCategory {
+    categoryId
+    categoryType
+    name
+    productId
+  }
+`;
 export const USER_DATA_FRAGMENT = gql`
   fragment UserData on User {
     address
@@ -21,6 +37,32 @@ export const USER_DATA_FRAGMENT = gql`
     updatedAt
     userType
   }
+`;
+
+export const PRODUCT_FRAGMENT = gql`
+  fragment ProductFields on Product {
+    categories {
+      ...ProductCategoryFields
+    }
+    city
+    createdAt
+    description
+    id
+    images
+    location
+    name
+    price
+    quantity
+    state
+    status
+    updatedAt
+    user {
+      ...ProductOwnerFields
+    }
+    userId
+  }
+  ${PRODUCT_OWNER_FRAGMENT}
+  ${PRODUCT_CATEGORY_FRAGMENT}
 `;
 
 export const ORDER_ITEM_DATA_FRAGMENT = gql`

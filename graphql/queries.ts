@@ -1,5 +1,11 @@
 import { gql } from "@apollo/client";
-import { ORDER_ITEM_DATA_FRAGMENT, USER_DATA_FRAGMENT } from "./fragments";
+import {
+  ORDER_ITEM_DATA_FRAGMENT,
+  PRODUCT_CATEGORY_FRAGMENT,
+  PRODUCT_FRAGMENT,
+  PRODUCT_OWNER_FRAGMENT,
+  USER_DATA_FRAGMENT,
+} from "./fragments";
 
 // Get user products
 export const GET_USER_PRODUCTS = gql`
@@ -24,20 +30,6 @@ export const GET_USER_PRODUCTS = gql`
 
 // Get products
 export const GET_PRODUCTS = gql`
-  fragment ProductOwnerFields on ProductOwner {
-    firstName
-    id
-    lastName
-    profileImageURL
-  }
-
-  fragment ProductCategoryFields on ProductCategory {
-    categoryId
-    categoryType
-    name
-    productId
-  }
-
   query GetProducts($input: GetProductsFilter) {
     getProducts(input: $input) {
       categories {
@@ -61,6 +53,8 @@ export const GET_PRODUCTS = gql`
       userId
     }
   }
+  ${PRODUCT_OWNER_FRAGMENT}
+  ${PRODUCT_CATEGORY_FRAGMENT}
 `;
 
 // Get product
@@ -129,6 +123,58 @@ export const GET_CART_ITEM = gql`
       cartId
       createdAt
       id
+      updatedAt
+    }
+  }
+`;
+
+// Get order Item
+export const GET_USER_ORDER_ITEMS = gql`
+  ${USER_DATA_FRAGMENT}
+  ${ORDER_ITEM_DATA_FRAGMENT}
+
+  query GetUserOrderItems($userId: String!) {
+    getUserOrderItems(userId: $userId) {
+      buyer {
+        ...UserData
+      }
+      buyerId
+      createdAt
+      deliveryInfo
+      endDate
+      id
+      location
+      orderId
+      order {
+        address
+        amount
+        createdAt
+        discount
+        id
+        orderItems {
+          ...OrderItemData
+        }
+        paymentMethod
+        updatedAt
+        user {
+          ...UserData
+        }
+        userId
+      }
+      seller {
+        ...UserData
+      }
+      sellerId
+      startDate
+      state
+      status {
+        createdAt
+        date
+        id
+        orderItemId
+        status
+        updatedAt
+      }
       updatedAt
     }
   }
@@ -258,38 +304,6 @@ export const GET_USER_CART = gql`
 `;
 
 // Get User Order Items
-export const GET_USER_ORDER_ITEMS = gql`
-  ${USER_DATA_FRAGMENT}
-
-  query GetUserOrderItems($userId: String!) {
-    getUserOrderItems(userId: $userId) {
-      buyer {
-        ...UserData
-      }
-      buyerId
-      createdAt
-      deliveryInfo
-
-      id
-      location
-      orderId
-      seller {
-        ...UserData
-      }
-      sellerId
-      state
-      status {
-        createdAt
-        date
-        id
-        orderItemId
-        status
-        updatedAt
-      }
-      updatedAt
-    }
-  }
-`;
 
 // Get Product Cart
 export const GET_PRODUCT_CART = gql`
@@ -335,6 +349,61 @@ export const GET_PRODUCT_CART = gql`
       }
       totalAmount
       totalQuantity
+    }
+  }
+`;
+
+export const GET_PRODUCT_ORDERS = gql`
+  query GetProductOrders {
+    getProductOrders {
+      id
+      user {
+        id
+        firstName
+        lastName
+        profileImageURL
+      }
+      firstName
+      lastName
+      email
+      phoneNumber
+      shippingAddress
+      paymentMethod
+      status
+      total
+      orderItems {
+        product {
+          id
+          name
+          userId
+          quantity
+          description
+          images
+          price
+          location
+          city
+          state
+          status
+          categories {
+            categoryId
+            productId
+            name
+            categoryType
+          }
+          user {
+            id
+            firstName
+            lastName
+            profileImageURL
+          }
+          createdAt
+          updatedAt
+        }
+        orderId
+        quantity
+        price
+      }
+      createdAt
     }
   }
 `;

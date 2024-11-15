@@ -1,128 +1,105 @@
 "use client";
-import { Package, Calendar, MapPin, AlertCircle } from "lucide-react";
+
+import { Package, Calendar, MapPin, CreditCard } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { Status } from "@/types/order";
 import LoadingState from "../Loading";
-import useOrderStore from "@/store/useOrderStore";
+import { useFetchOrders } from "@/hooks/useFetchOrders";
+import { capitalizeFirstChar } from "@/utils";
 
+// Main Component
 const OrderList: React.FC = () => {
-  const { orderItems, loading, error } = useOrderStore();
+  const { productOrders, loading, error } = useFetchOrders();
 
   if (loading) return <LoadingState />;
 
   if (error) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen text-red-500">
-        <AlertCircle className="w-8 h-8 mb-2" />
-        <p>Error loading orders: {error.message}</p>
-        <Link href="/" className="text-blue-500 mt-4 underline">
-          Back to Home
-        </Link>
-      </div>
-    );
+    return <ErrorState message={error.message} />;
   }
 
-  const getLatestStatus = (statuses: Status[]) => {
-    return statuses.sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    )[0];
-  };
-
-  const getStatusColor = (status: string) => {
-    const colors = {
-      PENDING: "bg-yellow-100 text-yellow-800",
-      CONFIRMED: "bg-blue-100 text-blue-800",
-      COMPLETED: "bg-green-100 text-green-800",
-      CANCELLED: "bg-red-100 text-red-800",
-      default: "bg-gray-100 text-gray-800",
-    };
-    return colors[status as keyof typeof colors] || colors.default;
-  };
-
   return (
-    <div>
+    <div className="p-6 bg-gray-50 min-h-screen">
       <h1 className="text-2xl font-bold mb-6">Your Orders</h1>
       <div className="space-y-4">
-        {orderItems.map((item) => {
-          const latestStatus = getLatestStatus(item.status);
-
-          return (
-            <Link
-              href={`/orders/${item.id}`}
-              key={item.id}
-              className="block bg-white rounded-lg shadow-sm hover:shadow-md transition"
-            >
-              <div className="p-6">
-                <div className="flex justify-between items-center mb-4">
-                  <span
-                    className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
-                      latestStatus.status
-                    )}`}
-                  >
-                    {latestStatus.status}
-                  </span>
-                  <p className="text-lg font-semibold">
-                    ${item.order.amount - item.order.discount}
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <InfoRow
-                    icon={Package}
-                    label="Delivery Info"
-                    text={item.deliveryInfo}
-                  />
-                  <InfoRow
-                    icon={MapPin}
-                    label="Location"
-                    text={item.location}
-                  />
-                  <InfoRow
-                    icon={Calendar}
-                    label="Duration"
-                    text={`${formatDate(item.startDate)} - ${formatDate(
-                      item.endDate
-                    )}`}
-                  />
-                </div>
-
-                <div className="mt-4 pt-4 border-t grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="flex items-center">
-                    <Image
-                      src={
-                        item.seller.profileImageURL || "/placeholder-avatar.png"
-                      }
-                      alt={`${item.seller.firstName} ${item.seller.lastName}`}
-                      className="w-10 h-10 rounded-full"
-                    />
-                    <div className="ml-3">
-                      <p className="text-sm font-medium">Seller</p>
-                      <p className="text-sm text-gray-500">
-                        {item.seller.firstName} {item.seller.lastName}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm font-medium">Payment Method</p>
-                    <p className="text-sm text-gray-500">
-                      {item.order.paymentMethod}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </Link>
-          );
-        })}
-
-        {orderItems.length === 0 && <NoOrders />}
+        {productOrders.length > 0 ? (
+          productOrders.map((order) => (
+            <OrderCard key={order.id} order={order} />
+          ))
+        ) : (
+          <NoOrders />
+        )}
       </div>
     </div>
   );
 };
 
-// Utility Component for consistent row layout
+// Error State Component
+const ErrorState: React.FC<{ message: string }> = ({ message }) => (
+  <div className="flex flex-col items-center justify-center min-h-screen text-red-500">
+    <p className="text-lg font-medium">Error loading orders: {message}</p>
+    <Link href="/" className="text-blue-500 mt-4 underline">
+      Back to Home
+    </Link>
+  </div>
+);
+
+// Order Card Component
+const OrderCard: React.FC<{ order: any }> = ({ order }) => (
+  <div className="bg-white rounded-lg shadow-sm p-4 hover:shadow-md transition">
+    <OrderHeader id={order.id} status={capitalizeFirstChar(order.status)} />
+    <OrderDetails order={order} />
+  </div>
+);
+
+// Order Header Component
+const OrderHeader: React.FC<{ id: string; status: string }> = ({
+  id,
+  status,
+}) => (
+  <div className="flex justify-between items-center border-b pb-2">
+    <h2 className="text-lg font-semibold">Order #{id}</h2>
+    <p className={`text-sm font-medium ${getStatusStyle(status)}`}>{status}</p>
+  </div>
+);
+
+// Order Details Component
+const OrderDetails: React.FC<{ order: any }> = ({ order }) => (
+  <div className="mt-4 ">
+    <OrderItems items={order.orderItems} />
+  </div>
+);
+
+// Order Items Component
+const OrderItems: React.FC<{ items: any[] }> = ({ items }) => (
+  <div className="mt-4">
+    <h3 className="text-md font-medium mb-2">Order Items:</h3>
+    <ul className="space-y-2">
+      {items.map((item) => (
+        <li key={item.orderId} className="flex items-start space-x-4">
+          <div className="relative w-16 h-16">
+            <Image
+              src={item.product.images[0] || "/placeholder.png"}
+              alt={item.product.name}
+              fill
+              className="object-cover rounded-md"
+              priority
+            />
+          </div>
+          <div>
+            <p className="font-medium">
+              {capitalizeFirstChar(item.product.name)}
+            </p>
+            <p className="text-sm text-gray-500">
+              Quantity: {item.quantity} | Price: N{item.price.toFixed(2)}
+            </p>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+);
+
+// Info Row Component
 const InfoRow: React.FC<{ icon: any; label: string; text: string }> = ({
   icon: Icon,
   label,
@@ -137,18 +114,24 @@ const InfoRow: React.FC<{ icon: any; label: string; text: string }> = ({
   </div>
 );
 
-// Utility Component for No Orders Found
+// No Orders Component
 const NoOrders = () => (
   <div className="text-center py-12 rounded-lg">
     <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
     <h3 className="text-lg font-medium text-gray-900">No orders found</h3>
-    <p className="mt-2 text-gray-500">You havent placed any orders yet.</p>
+    <p className="mt-2 text-gray-500">You haven’t placed any orders yet.</p>
   </div>
 );
 
-// Helper function to format date
-const formatDate = (date: string) => {
-  return new Date(date).toLocaleDateString();
+// Status Style Utility
+const getStatusStyle = (status: string) => {
+  const statusStyles: Record<string, string> = {
+    completed: "text-green-500",
+    pending: "text-yellow-500",
+    canceled: "text-red-500",
+  };
+
+  return statusStyles[status.toLowerCase()] || "text-gray-500";
 };
 
 export default OrderList;

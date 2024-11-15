@@ -1,8 +1,9 @@
 "use client";
 import { GET_PRODUCTS, GET_ASSET_INFO_TYPES } from "@/graphql/queries";
 import client from "@/lib/apolloClient";
-import { GetProductsFilter, Product } from "@/types";
+import { GetProductsFilter } from "@/types";
 import { AssetInfoType, AssetType } from "@/types/category";
+import { Product } from "@/types/product";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
