@@ -162,7 +162,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ id, type }) => {
                   {capitalizeFirstChar(description)}
                 </p>
               </div>
-              <p className="text-3xl font-semibold mb-4 text-green-600">
+              <p className="text-3xl font-black mb-4 text-green-800">
                 N {formatPrice(price || 0)}
               </p>
               <p>
@@ -187,35 +187,35 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ id, type }) => {
                 </Link>
               </p>
               <div className="flex flex-col space-y-6">
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-6">
                   <button
                     onClick={decrementQuantity}
-                    className="p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition-colors duration-200"
+                    className="p-3 rounded-lg bg-gray-200 hover:bg-gray-300 transition-colors duration-200"
                   >
-                    <Minus size={20} />
+                    <Minus size={22} />
                   </button>
                   <span className="text-xl font-semibold">{quantity}</span>
                   <button
                     onClick={incrementQuantity}
-                    className="p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition-colors duration-200"
+                    className="p-3 rounded-lg bg-gray-200 hover:bg-gray-300 transition-colors duration-200"
                   >
-                    <Plus size={20} />
+                    <Plus size={22} />
                   </button>
                 </div>
                 <button
                   onClick={
                     isAuthenticated ? handleAddToCart : handleGuestAddToCart
                   }
-                  className="flex items-center justify-center space-x-2 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors duration-200 w-full md:w-auto"
+                  className="flex items-center justify-center space-x-2 bg-green-700 text-white px-6 py-4 rounded-lg hover:bg-green-800 transition-colors duration-200 w-full md:w-auto"
                 >
-                  <ShoppingCart size={20} />
-                  <span className="font-semibold">Add to Cart</span>
+                  <ShoppingCart size={22} />
+                  <span className="font-semibold text-xl">Add to Cart</span>
                 </button>
               </div>
             </>
           ) : (
             <button
-              className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors font-semibold text-lg"
+              className="w-full bg-green-700 text-white py-3 rounded-lg hover:bg-green-800 transition-colors font-semibold text-lg"
               onClick={hanldeProductPage}
             >
               View Product

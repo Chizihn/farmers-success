@@ -30,7 +30,7 @@
 
 //   return (
 //     <div className="w-full p-6 bg-white">
-//       <h1 className="text-2xl font-bold text-green-600 mb-5 text-left">
+//       <h1 className="text-2xl font-bold text-green-700 mb-5 text-left">
 //         Track your order
 //       </h1>
 //       <p className="text-left text-gray-600 mb-4">
@@ -48,7 +48,7 @@
 //         />
 
 //         <button
-//           className="w-full flex items-center justify-center bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition duration-200"
+//           className="w-full flex items-center justify-center bg-green-700 text-white py-2 rounded-md hover:bg-green-800 transition duration-200"
 //           disabled={isLoading}
 //         >
 //           {isLoading ? <Loader className="animate-spin" /> : <p>Track Order</p>}

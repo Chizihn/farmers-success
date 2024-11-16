@@ -1,17 +1,33 @@
 "use client";
-
-import { Package, Calendar, MapPin, CreditCard } from "lucide-react";
+import { Package } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import LoadingState from "../Loading";
-import { useFetchOrders } from "@/hooks/useFetchOrders";
 import { capitalizeFirstChar } from "@/utils";
+import useOrderStore from "@/store/useOrderStore";
+import useAuthStore from "@/store/useAuthStore";
+import { useEffect, useState } from "react";
 
-// Main Component
 const OrderList: React.FC = () => {
-  const { productOrders, loading, error } = useFetchOrders();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const {
+    productOrders: orders,
+    fetchProductOrders,
+    loading,
+    error,
+  } = useOrderStore();
+  const [isInitialized, setIsInitialized] = useState(false);
 
-  if (loading) return <LoadingState />;
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchProductOrders().catch(console.error);
+      setIsInitialized(true);
+    }
+  }, [fetchProductOrders, isAuthenticated]);
+
+  if (loading || !isInitialized) {
+    return <LoadingState />;
+  }
 
   if (error) {
     return <ErrorState message={error.message} />;
@@ -21,19 +37,26 @@ const OrderList: React.FC = () => {
     <div className="p-6 bg-gray-50 min-h-screen">
       <h1 className="text-2xl font-bold mb-6">Your Orders</h1>
       <div className="space-y-4">
-        {productOrders.length > 0 ? (
-          productOrders.map((order) => (
-            <OrderCard key={order.id} order={order} />
-          ))
+        {orders.length === 0 ? (
+          <div className="text-center py-12 rounded-lg">
+            <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900">
+              No orders found
+            </h3>
+            <p className="mt-2 text-gray-500">
+              You haven{}t placed any orders yet.
+            </p>
+          </div>
         ) : (
-          <NoOrders />
+          orders.map((order) => (
+            <OrderCard key={order.id} order={order} orderId={order.id} />
+          ))
         )}
       </div>
     </div>
   );
 };
 
-// Error State Component
 const ErrorState: React.FC<{ message: string }> = ({ message }) => (
   <div className="flex flex-col items-center justify-center min-h-screen text-red-500">
     <p className="text-lg font-medium">Error loading orders: {message}</p>
@@ -43,15 +66,25 @@ const ErrorState: React.FC<{ message: string }> = ({ message }) => (
   </div>
 );
 
-// Order Card Component
-const OrderCard: React.FC<{ order: any }> = ({ order }) => (
-  <div className="bg-white rounded-lg shadow-sm p-4 hover:shadow-md transition">
-    <OrderHeader id={order.id} status={capitalizeFirstChar(order.status)} />
-    <OrderDetails order={order} />
-  </div>
-);
+const OrderCard: React.FC<{ order: any; orderId: string }> = ({
+  order,
+  orderId,
+}) => {
+  return (
+    <div className="bg-white rounded-lg shadow-sm p-4 hover:shadow-md transition">
+      <OrderHeader id={order.id} status={capitalizeFirstChar(order.status)} />
+      <OrderDetails order={order} />
+      <div className="mt-2">
+        <Link href={`/orders/${orderId}`}>
+          <button className="w-full bg-green-700 text-white font-bold py-3 rounded-lg hover:bg-green-800 transition-colors duration-200">
+            View order
+          </button>
+        </Link>
+      </div>
+    </div>
+  );
+};
 
-// Order Header Component
 const OrderHeader: React.FC<{ id: string; status: string }> = ({
   id,
   status,
@@ -62,21 +95,21 @@ const OrderHeader: React.FC<{ id: string; status: string }> = ({
   </div>
 );
 
-// Order Details Component
 const OrderDetails: React.FC<{ order: any }> = ({ order }) => (
   <div className="mt-4 ">
     <OrderItems items={order.orderItems} />
   </div>
 );
 
-// Order Items Component
 const OrderItems: React.FC<{ items: any[] }> = ({ items }) => (
   <div className="mt-4">
-    <h3 className="text-md font-medium mb-2">Order Items:</h3>
     <ul className="space-y-2">
       {items.map((item) => (
-        <li key={item.orderId} className="flex items-start space-x-4">
-          <div className="relative w-16 h-16">
+        <li
+          key={item.orderId}
+          className="flex items-start space-x-4 shadow-md "
+        >
+          <div className="relative w-16 h-16 border-[1px]  ">
             <Image
               src={item.product.images[0] || "/placeholder.png"}
               alt={item.product.name}
@@ -86,7 +119,7 @@ const OrderItems: React.FC<{ items: any[] }> = ({ items }) => (
             />
           </div>
           <div>
-            <p className="font-medium">
+            <p className="font-semibold">
               {capitalizeFirstChar(item.product.name)}
             </p>
             <p className="text-sm text-gray-500">
@@ -99,7 +132,6 @@ const OrderItems: React.FC<{ items: any[] }> = ({ items }) => (
   </div>
 );
 
-// Info Row Component
 const InfoRow: React.FC<{ icon: any; label: string; text: string }> = ({
   icon: Icon,
   label,
@@ -114,19 +146,9 @@ const InfoRow: React.FC<{ icon: any; label: string; text: string }> = ({
   </div>
 );
 
-// No Orders Component
-const NoOrders = () => (
-  <div className="text-center py-12 rounded-lg">
-    <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-    <h3 className="text-lg font-medium text-gray-900">No orders found</h3>
-    <p className="mt-2 text-gray-500">You haven’t placed any orders yet.</p>
-  </div>
-);
-
-// Status Style Utility
 const getStatusStyle = (status: string) => {
   const statusStyles: Record<string, string> = {
-    completed: "text-green-500",
+    completed: "text-green-700",
     pending: "text-yellow-500",
     canceled: "text-red-500",
   };

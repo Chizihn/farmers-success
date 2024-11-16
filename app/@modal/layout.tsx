@@ -25,7 +25,9 @@ export default function ModalLayout({
 
   // Check if the current path should open the modal
   const isModalVisible =
-    modalPaths.includes(pathname) || /^\/products\/[^\/]+$/.test(pathname);
+    modalPaths.includes(pathname) ||
+    /^\/products\/[^\/]+$/.test(pathname) ||
+    /^\/orders\/[^\/]+$/.test(pathname);
 
   const handleCloseModal = () => {
     window.history.back();

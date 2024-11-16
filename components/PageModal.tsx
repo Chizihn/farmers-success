@@ -11,7 +11,8 @@ interface PageModalProps {
 
 const PageModal: React.FC<PageModalProps> = ({ isOpen, children, onClose }) => {
   const pathname = usePathname();
-  const isUpdateProfilePage = pathname === "/account/update-profile";
+  const isUpdateProfilePage =
+    pathname === "/account/update-profile" || pathname.includes("/orders/");
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();

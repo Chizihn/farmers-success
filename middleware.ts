@@ -3,9 +3,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
-  const token = request.cookies.get("token")?.value; // Adjust according to your auth implementation
-
-  // Define protected paths
+  const token = request.cookies.get("token")?.value;
   const protectedPaths = [
     "verify-email",
     "verify-phone",
@@ -18,7 +16,6 @@ export function middleware(request: NextRequest) {
   if (
     protectedPaths.some((path) => request.nextUrl.pathname.startsWith(path))
   ) {
-    // Redirect to signin if token is missing (user not authenticated)
     if (!token) {
       const url = request.nextUrl.clone();
       url.pathname = "/unauthorized";
@@ -26,6 +23,5 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  // If user is authenticated, allow the request
   return NextResponse.next();
 }

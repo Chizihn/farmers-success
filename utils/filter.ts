@@ -1,5 +1,5 @@
 // src/utils/filterProducts.ts
-import { Product } from "@/types";
+import { Product } from "@/types/product";
 
 export interface Filters {
   city: string;

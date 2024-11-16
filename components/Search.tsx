@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { SearchIcon } from "lucide-react";
-import { Product } from "@/types";
+import { Product } from "@/types/product";
 import useProductStore from "@/store/useProductStore";
 
 const ProductSearch: React.FC = () => {
@@ -47,7 +47,7 @@ const ProductSearch: React.FC = () => {
       />
       <button
         type="submit"
-        className="absolute top-0 right-0 flex items-center gap-1 py-3 md:py-2 px-4 md:px-6 bg-green-600 rounded-3xl transition-colors duration-150 hover:bg-green-700"
+        className="absolute top-0 right-0 flex items-center gap-1 py-3 md:py-2 px-4 md:px-6 bg-green-700 rounded-3xl transition-colors duration-150 hover:bg-green-800"
       >
         <SearchIcon className="text-white" size={20} />
         <p className="text-white text-sm md:text-lg">Search</p>

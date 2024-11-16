@@ -2,7 +2,6 @@
 
 import { useFetchProducts } from "@/hooks/useFetchProducts";
 import { useState, useEffect, useCallback } from "react";
-import { Product } from "@/types";
 import ProductCard from "./ProductCard";
 import LoadingState from "./Loading";
 import { SlidersHorizontal } from "lucide-react";
@@ -11,6 +10,7 @@ import ProductFilter from "./ProductFilter";
 import { AssetType } from "@/types/category";
 import { useFetchCategories } from "@/hooks/useFetchCategories";
 import MobileProductFilter from "./MobileProductFilter";
+import { Product } from "@/types/product";
 
 const Products: React.FC = () => {
   const { products, loading, error } = useFetchProducts();
@@ -75,7 +75,7 @@ const Products: React.FC = () => {
             </h2>
             <div className="flex items-center gap-6">
               <button
-                className="flex lg:hidden items-center gap-2 text-green-600 hover:text-green-700 transition-colors"
+                className="flex lg:hidden items-center gap-2 text-green-700 hover:text-green-700 transition-colors"
                 onClick={handleOpenFilter}
               >
                 <SlidersHorizontal size={20} />

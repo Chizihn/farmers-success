@@ -407,3 +407,58 @@ export const GET_PRODUCT_ORDERS = gql`
     }
   }
 `;
+
+export const GET_PRODUCT_ORDER_BY_ID = gql`
+  query GetProductOrderById($orderId: String!) {
+    getProductOrderById(orderId: $orderId) {
+      id
+      user {
+        id
+        firstName
+        lastName
+        profileImageURL
+      }
+      firstName
+      lastName
+      email
+      phoneNumber
+      shippingAddress
+      paymentMethod
+      status
+      total
+      orderItems {
+        product {
+          id
+          name
+          userId
+          quantity
+          description
+          images
+          price
+          location
+          city
+          state
+          status
+          categories {
+            categoryId
+            productId
+            name
+            categoryType
+          }
+          user {
+            id
+            firstName
+            lastName
+            profileImageURL
+          }
+          createdAt
+          updatedAt
+        }
+        orderId
+        quantity
+        price
+      }
+      createdAt
+    }
+  }
+`;

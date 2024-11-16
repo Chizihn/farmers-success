@@ -1,6 +1,6 @@
 // src/components/MobileProductFilter.tsx
 import React, { useState, useEffect, useMemo } from "react";
-import { Product } from "@/types";
+import { Product } from "@/types/product";
 import { X } from "lucide-react";
 import Dropdown from "react-dropdown";
 import "react-dropdown/style.css";

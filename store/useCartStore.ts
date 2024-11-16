@@ -5,7 +5,7 @@ import {
   ADD_PRODUCT_TO_CART,
   REMOVE_PRODUCT_FROM_CART,
 } from "@/graphql/mutations";
-import { Product } from "@/types";
+import { Product } from "@/types/product";
 import { GET_PRODUCT_CART } from "@/graphql/queries";
 export interface CartItem {
   product: Product;

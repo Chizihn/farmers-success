@@ -9,11 +9,12 @@ import {
   CreditCard,
   LogOut,
   User,
+  FilePenLine,
 } from "lucide-react";
 import useAuthStore from "@/store/useAuthStore";
 import { useRouter } from "next/navigation";
 import { DEFAULT_PROFILE_IMAGE_URL } from "@/constants/default";
-import { capitalizeWords } from "@/utils";
+import { capitalizeFirstChar, capitalizeWords } from "@/utils";
 
 const Account: React.FC = () => {
   const { user, logout } = useAuthStore();
@@ -62,10 +63,11 @@ const Account: React.FC = () => {
           </div>
 
           <button
-            className=" bg-slate-200 text-black border-[2px] border-gray-400 py-2.5 px-4 rounded-full font-medium "
+            className="  text-black font-medium flex items-center gap-1 hover:text-green-600 "
             onClick={handleUpdateProfile}
           >
-            Update profile
+            <FilePenLine size={25} />
+            <p className="text-lg"> Edit</p>
           </button>
         </div>
 
@@ -122,12 +124,14 @@ const Account: React.FC = () => {
               </div>
               <div>
                 <p className="text-sm text-gray-500">City</p>
-                <p className="text-gray-900">{user?.city || "No city added"}</p>
+                <p className="text-gray-900">
+                  {capitalizeFirstChar(user?.city) || "No city added"}
+                </p>
               </div>
               <div>
                 <p className="text-sm text-gray-500">State</p>
                 <p className="text-gray-900">
-                  {user?.state || "No state added"}
+                  {capitalizeFirstChar(user?.state) || "No state added"}
                 </p>
               </div>
             </div>

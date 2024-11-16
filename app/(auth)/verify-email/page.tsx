@@ -34,12 +34,12 @@ const VerifyEmailPage = () => {
       <section className="bg-white lg:bg-transparent min-h-screen h-full flex justify-center items-center">
         <div className="bg-white lg:shadow-xl lg:rounded-xl flex flex-col items-center justify-center h-full p-8 gap-4">
           <CheckCircle size={60} className="text-green-700" />
-          <h1 className="text-2xl font-bold text-green-600 text-center">
+          <h1 className="text-2xl font-bold text-green-700 text-center">
             Your email has already been verified!
           </h1>
           <button
             onClick={handleGoBack}
-            className="px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 focus:outline-none focus:ring focus:ring-green-300"
+            className="px-6 py-3 bg-green-700 text-white font-semibold rounded-lg hover:bg-green-800 focus:outline-none focus:ring focus:ring-green-300"
           >
             Return to home
           </button>

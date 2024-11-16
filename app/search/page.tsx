@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Product } from "@/types";
+import { Product } from "@/types/product";
 import useProductStore from "@/store/useProductStore";
 
 import ProductCard from "@/components/ProductCard";
@@ -46,7 +46,7 @@ const SearchPage: React.FC = () => {
                 Try searching for a different term or browse our catalog.
               </p>
               <button
-                className="bg-green-600 text-white px-4 py-2 rounded-md mt-4 hover:bg-green-700"
+                className="bg-green-600 text-white px-4 py-2 rounded-md mt-4 hover:bg-green-800"
                 onClick={() => router.push("/")}
               >
                 Go to Home
@@ -64,7 +64,7 @@ const SearchPage: React.FC = () => {
             </h2>
             <div className="flex justify-center ">
               <button
-                className="bg-green-600 text-white p-4 rounded-md mt-4 hover:bg-green-700 font-semibold "
+                className="bg-green-600 text-white p-4 rounded-md mt-4 hover:bg-green-800 font-semibold "
                 onClick={() => router.push("/")}
               >
                 Return to Home

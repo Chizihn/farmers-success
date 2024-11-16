@@ -14,7 +14,7 @@ const CreateAccount = () => {
     <div className="flex items-center justify-center w-full h-screen bg-gray-50">
       <div className="w-full max-w-md p-6 bg-white shadow-md rounded-lg md:w-[40rem]">
         {/* Header */}
-        <h1 className="text-2xl font-bold text-green-600 mb-4 text-center">
+        <h1 className="text-2xl font-bold text-green-700 mb-4 text-center">
           Create Your Farmers Success Marketplace Account
         </h1>
         <p className="text-gray-600 mb-6 text-center">
@@ -45,7 +45,7 @@ const CreateAccount = () => {
           />
           <button
             type="submit"
-            className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition duration-200"
+            className="w-full bg-green-700 text-white py-2 rounded-md hover:bg-green-800 transition duration-200"
           >
             Create Account
           </button>

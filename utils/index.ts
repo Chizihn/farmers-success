@@ -27,3 +27,10 @@ export const capitalizeWords = (string: any) => {
 export const getCategoryPath = (category: string): string => {
   return category.trim().split(" ")[0].toLowerCase();
 };
+
+export function formatPaymentMethod(input: string): string {
+  return input
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ");
+}

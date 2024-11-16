@@ -55,7 +55,7 @@ const OTPVerification: React.FC<{
   return (
     <div className="flex items-center justify-center w-full h-screen lg:bg-gray-50">
       <div className="w-full lg:max-w-lg p-6 bg-white lg:shadow-md lg:rounded-lg md:w-[40rem] flex flex-col justify-center items-center gap-2">
-        <h1 className="text-2xl font-bold text-green-600 mb-4 text-center">
+        <h1 className="text-2xl font-bold text-green-700 mb-4 text-center">
           Verify Your OTP
         </h1>
         <p className="text-gray-600 mb-6 text-center">
@@ -80,7 +80,7 @@ const OTPVerification: React.FC<{
 
           <button
             type="submit"
-            className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition duration-200"
+            className="w-full bg-green-700 text-white py-2 rounded-md hover:bg-green-800 transition duration-200"
             disabled={!isOtpComplete}
           >
             Verify

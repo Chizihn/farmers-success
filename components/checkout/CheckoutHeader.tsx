@@ -10,7 +10,7 @@ const CheckoutHeader = () => {
   };
   return (
     <div className="flex items-center justify-between mb-4">
-      <h1 className="text-2xl font-bold text-green-600 text-left">Checkout</h1>{" "}
+      <h1 className="text-2xl font-bold text-green-700 text-left">Checkout</h1>{" "}
       <button onClick={handleModals} className=" flex gap-1.5">
         <ChevronLeft />
         <span>Back</span>

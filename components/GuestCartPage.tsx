@@ -131,7 +131,7 @@ const GuestCartPage: React.FC = () => {
 
               <button
                 onClick={handleCheckout}
-                className="w-full bg-green-600 text-white font-semibold py-3 rounded-lg hover:bg-green-700 transition-colors duration-200"
+                className="w-full bg-green-700 text-white font-semibold py-3 rounded-lg hover:bg-green-800 transition-colors duration-200"
               >
                 Proceed to Checkout
               </button>

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { Product } from "@/types";
 import { useFetchProducts } from "@/hooks/useFetchProducts";
 import { useFetchCategories } from "@/hooks/useFetchCategories";
 import { AssetType } from "@/types/category";
@@ -9,6 +8,7 @@ import { capitalizeFirstChar } from "@/utils";
 import ProductCard from "./ProductCard";
 import Category from "./Category";
 import { Loader2, LoaderCircle } from "lucide-react";
+import { Product } from "@/types/product";
 
 interface CategoryProductsProps {
   categoryId: string;

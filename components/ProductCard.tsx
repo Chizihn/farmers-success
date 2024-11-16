@@ -3,7 +3,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { Plus, Minus, ShoppingCart } from "lucide-react";
 import useCartStore from "@/store/useCartStore";
-import { Product } from "@/types";
+import { Product } from "@/types/product";
 import { DEFAULT_IMAGE_URL } from "@/constants/default";
 import Link from "next/link";
 import { capitalizeFirstChar } from "@/utils";
@@ -89,11 +89,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           </p>
         </div>
 
-        <div className="flex flex-wrap flex-row md:flex-col lg:flex-row justify-between md:justify-center lg:justify-between items-center mt-4 space-y-2">
+        <div className="flex flex-wrap flex-row md:flex-col justify-between md:justify-center items-center mt-4 space-y-3">
           <div className="flex items-center space-x-2">
             <button
               onClick={decrementQuantity}
-              className="p-1 rounded-full bg-gray-200 hover:bg-gray-300 transition-colors duration-200"
+              className="p-2 rounded-lg bg-gray-200 hover:bg-gray-300 transition-colors duration-200"
             >
               <Minus size={16} />
             </button>
@@ -101,29 +101,19 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
             <button
               onClick={incrementQuantity}
-              className="p-1 rounded-full bg-gray-200 hover:bg-gray-300 transition-colors duration-200"
+              className="p-2 rounded-lg bg-gray-200 hover:bg-gray-300 transition-colors duration-200"
             >
               <Plus size={16} />
             </button>
           </div>
 
-          {isAuthenticated ? (
-            <button
-              onClick={handleAddToCart}
-              className="flex items-center space-x-1 bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200"
-            >
-              <ShoppingCart size={16} />
-              <span className="text-sm">Add to Cart</span>
-            </button>
-          ) : (
-            <button
-              onClick={handleGuestAddToCart}
-              className="flex items-center space-x-1 bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200"
-            >
-              <ShoppingCart size={16} />
-              <span className="text-sm">Add to Cart</span>
-            </button>
-          )}
+          <button
+            onClick={isAuthenticated ? handleAddToCart : handleGuestAddToCart}
+            className="flex items-center space-x-1 bg-green-700 text-white p-3 rounded-lg hover:bg-green-800 transition-colors duration-200"
+          >
+            <ShoppingCart size={16} />
+            <span className="text-sm font-semibold">Add to Cart</span>
+          </button>
         </div>
       </div>
     </div>

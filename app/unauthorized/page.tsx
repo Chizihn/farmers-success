@@ -17,7 +17,7 @@ const UnauthorizedPage = () => {
       </p>
       <button
         onClick={handleGoBack}
-        className="px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 focus:outline-none focus:ring focus:ring-green-300"
+        className="px-6 py-3 bg-green-700 text-white font-semibold rounded-lg hover:bg-green-800 focus:outline-none focus:ring focus:ring-green-300"
       >
         Return to home
       </button>

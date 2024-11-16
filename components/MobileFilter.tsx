@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useMemo } from "react";
 import { X } from "lucide-react";
-import { Product } from "@/types";
+import { Product } from "@/types/product";
 import Dropdown from "react-dropdown";
 import "react-dropdown/style.css";
 import { capitalizeWords } from "@/utils";

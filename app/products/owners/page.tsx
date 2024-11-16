@@ -1,10 +1,10 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { ProductOwner } from "@/types";
 import { DEFAULT_PROFILE_IMAGE_URL } from "@/constants/default";
 import { capitalizeFirstChar } from "@/utils";
 import { useFetchOwners } from "@/hooks/useOwners";
+import { ProductOwner } from "@/types/product";
 
 const Owners: React.FC = () => {
   const owners = useFetchOwners();
@@ -45,7 +45,7 @@ const Owners: React.FC = () => {
               </h3>
 
               <Link href={`/products/owners/${owner.id}`}>
-                <button className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition-colors font-medium text-sm">
+                <button className="w-full bg-green-700 text-white py-2 rounded-md hover:bg-green-800 transition-colors font-medium text-sm">
                   View Owner
                 </button>
               </Link>

@@ -24,18 +24,6 @@ export type Status = {
   updatedAt: Date;
 };
 
-export interface UserOrder {
-  address: string;
-  amount: number;
-  createdAt: string;
-  discount: number;
-  id: string;
-  orderItems: OrderItem[];
-  paymentMethod: PaymentMethod;
-  updatedAt: string;
-  user: UserProfile;
-  userId: string;
-}
 export interface Order {
   id: string;
   user: UserProfile; // User who placed the order
