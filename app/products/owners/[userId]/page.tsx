@@ -1,9 +1,9 @@
 import OwnerDetails from "@/components/OwnerDetails";
 
 interface OwnerDetailPageProps {
-  params: { id: string };
+  params: { userId: string };
 }
 
 export default function OwnerDetailPage({ params }: OwnerDetailPageProps) {
-  return <OwnerDetails id={params.id} />;
+  return <OwnerDetails userId={params.userId} />;
 }

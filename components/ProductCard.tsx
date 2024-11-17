@@ -80,16 +80,18 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               {capitalizeFirstChar(name)}
             </h3>
           </Link>
-          <span className="text-green-600 font-bold">N {price}</span>
+          <div className="w-full flex items-center justify-between ">
+            <span className="text-green-600 font-bold">N {price}</span>
+            <p className="text-sm text-green-800 line-clamp-2">
+              Stock: <span>{availableQuantity}</span>
+            </p>
+          </div>
           <p className="text-sm text-gray-600 line-clamp-2">
             {capitalizeFirstChar(description)}
           </p>
-          <p className="text-sm text-gray-600 line-clamp-2">
-            Available: <span>{availableQuantity}</span>
-          </p>
         </div>
 
-        <div className="flex flex-wrap flex-row md:flex-col justify-between md:justify-center items-center mt-4 space-y-3">
+        <div className="flex  md:flex-col justify-between md:justify-center items-center mt-4 space-y-3">
           <div className="flex items-center space-x-2">
             <button
               onClick={decrementQuantity}
@@ -109,7 +111,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
           <button
             onClick={isAuthenticated ? handleAddToCart : handleGuestAddToCart}
-            className="flex items-center space-x-1 bg-green-700 text-white p-3 rounded-lg hover:bg-green-800 transition-colors duration-200"
+            className=" w-1/2 md:w-full flex justify-center items-center space-x-1 bg-green-700 text-white p-3 rounded-lg hover:bg-green-800 transition-colors duration-200"
           >
             <ShoppingCart size={16} />
             <span className="text-sm font-semibold">Add to Cart</span>

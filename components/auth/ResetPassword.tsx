@@ -15,7 +15,6 @@ interface ResetPasswordProps {
 const ResetPassword: React.FC<ResetPasswordProps> = ({ token }) => {
   const { resetPassword, loading } = useSecureStore();
   const router = useRouter();
-
   const [otp, setOtp] = useState(["", "", "", ""]);
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);

@@ -47,8 +47,11 @@ const CartPage: React.FC = () => {
     <div className="h-full flex flex-col">
       <div className="p-4 border-b flex justify-between items-center">
         <h2 className="text-2xl font-bold">Your Cart</h2>
-        <button onClick={handleCloseCartPage}>
-          <X size={35} />
+        <button
+          className="h-10 w-10 rounded-full flex items-center justify-center bg-white border-[2px] border-gray-300 text-gray-500 hover:bg-gray-100 hover:border-gray-400 hover:text-gray-800 shadow-md transition-all duration-200 ease-in-out"
+          onClick={handleCloseCartPage}
+        >
+          <X size={24} />
         </button>
       </div>
 
@@ -88,7 +91,7 @@ const CartPage: React.FC = () => {
                           Math.max(0, item.quantity - 1)
                         )
                       }
-                      className="p-1 rounded-full bg-gray-200 hover:bg-gray-300"
+                      className="p-1 rounded-xl bg-gray-200 hover:bg-gray-300"
                     >
                       <Minus size={16} />
                     </button>
@@ -100,7 +103,7 @@ const CartPage: React.FC = () => {
                       onClick={() =>
                         updateQuantity(item.product.id, item.quantity + 1)
                       }
-                      className="p-1 rounded-full bg-gray-200 hover:bg-gray-300"
+                      className="p-1 rounded-xl bg-gray-200 hover:bg-gray-300"
                     >
                       <Plus size={16} />
                     </button>

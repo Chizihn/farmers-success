@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { DEFAULT_PROFILE_IMAGE_URL } from "@/constants/default";
 import { capitalizeFirstChar } from "@/utils";
-import { useFetchOwners } from "@/hooks/useOwners";
+import { useFetchOwners } from "@/hooks/useFetchOwners";
 import { ProductOwner } from "@/types/product";
 
 const Owners: React.FC = () => {
@@ -18,7 +18,9 @@ const Owners: React.FC = () => {
 
       <div className="container space-y-6 h-full overflow-y-auto flex-grow p-4">
         <div className="text-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-700">Owner Details</h2>
+          <h2 className="text-2xl font-bold text-gray-700">
+            List Product Owners
+          </h2>
           <p className="text-gray-500">Explore products by different owners</p>
         </div>
 

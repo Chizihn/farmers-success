@@ -5,6 +5,7 @@ import { ApolloProvider } from "@apollo/client";
 import client from "../lib/apolloClient";
 import useCartStore from "@/store/useCartStore";
 import useAuthStore from "@/store/useAuthStore";
+// import Footer from "./Footer";
 // import LoadingState from "./Loading";
 
 interface ApolloProviderWrapperProps {
@@ -27,3 +28,10 @@ const ApolloProviderWrapper = ({ children }: ApolloProviderWrapperProps) => {
 };
 
 export default ApolloProviderWrapper;
+
+{
+  /* <div className="min-h-screen h-full flex flex-col justify-between">
+        <div>{children}</div>
+        <Footer />
+      </div> */
+}

@@ -9,12 +9,10 @@ import {
   VERIFY_PHONE_NUMBER_OTP,
   SIGN_IN_WITH_PHONE,
   SIGN_UP_WITH_PHONE,
-  RESEND_OTP,
 } from "@/graphql/mutations";
 import client from "@/lib/apolloClient";
 import { GET_USER } from "@/graphql/queries";
 import { AuthState, UserProfile } from "@/types";
-import { OtpActivity } from "@/types/forms";
 
 // Custom storage object for cookies
 const cookieStorage = {
@@ -232,30 +230,6 @@ const useAuthStore = create<AuthState>()(
             });
             console.error("OTP verification failed:", error);
             return false;
-          }
-        },
-
-        resendOTP: async (identifier: string, activity: OtpActivity) => {
-          try {
-            set({ loading: true, error: null });
-            const response = await client.mutate({
-              mutation: RESEND_OTP,
-              variables: { identifier, activity },
-            });
-
-            if (response.data?.resendOTP?.token) {
-              const token = response.data.resendOTP.token;
-              set({
-                loading: false,
-                token: token,
-              });
-              console.log("OTP resent successfully");
-            } else {
-              throw new Error("Failed to resend OTP");
-            }
-          } catch (error) {
-            set({ error: (error as Error).message, loading: false });
-            console.error("Failed to resend OTP:", error);
           }
         },
 

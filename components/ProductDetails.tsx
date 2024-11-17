@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Minus, Plus, ShoppingCart, X } from "lucide-react";
 import Image from "next/image";
 import useCartStore from "@/store/useCartStore";
@@ -36,7 +36,8 @@ interface ProductDetailsProps {
 
 const ProductDetails: React.FC<ProductDetailsProps> = ({ id, type }) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const { products } = useProductStore();
+  const { product, loading, initialized, error, setInitialized, fetchProduct } =
+    useProductStore();
   const [quantity, setQuantity] = useState<number>(0);
   const [selectedImageIndex, setSelectedImageIndex] = useState<number>(0);
   const [activeTab, setActiveTab] = useState<string>("Description");
@@ -45,11 +46,31 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ id, type }) => {
 
   const guestAddToCart = useGuestCartStore((state) => state.guestAddToCart);
 
-  const product = products.find((p) => p.id === id);
+  useEffect(() => {
+    fetchProduct(id);
+    setInitialized;
+  }, [fetchProduct, id, setInitialized]);
 
-  if (!product) {
+  if (loading || !initialized) {
     return <LoadingState />;
   }
+
+  if (error) {
+    return (
+      <>
+        <div className="flex flex-col items-center justify-center min-h-screen p-4">
+          <div className="text-center">
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
+              Error Loading Product
+            </h3>
+            <p className="text-gray-500 mb-4">{error.message}</p>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  if (!product) return <p>No product found</p>;
 
   const {
     images,
@@ -91,7 +112,11 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ id, type }) => {
   };
 
   return (
-    <div className="max-w-screen-2xl w-full mx-auto bg-white py-4 px-4">
+    <div
+      className={`max-w-screen-2xl w-full mx-auto bg-white py-4 ${
+        type === "view" ? "px-4 md:px-10 lg:px-3" : "px-4"
+      } `}
+    >
       {type === "view" && (
         <div className="py-2 px-2">
           <Cart />
@@ -109,7 +134,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ id, type }) => {
         >
           <div
             className={`relative border-[4px] border-green-600 rounded-lg ${
-              type === "full" ? "h-[450px]" : "h-[330px]"
+              type === "full" ? "h-[350px] lg:h-[450px]" : "h-[330px]"
             } w-full`}
           >
             <Image
@@ -227,7 +252,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ id, type }) => {
         <div className="mt-[3rem] flex flex-col md:flex-row gap-8">
           <section className="w-full md:w-2/3">
             <div className="flex justify-start space-x-4 mb-4">
-              {["Description", "Review", "About Farm"].map((tab) => (
+              {["Description", "Review", "About Owner"].map((tab) => (
                 <h2
                   key={tab}
                   onClick={() => setActiveTab(tab)}

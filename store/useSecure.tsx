@@ -14,7 +14,7 @@ const EXPIRE_MINUTES = 5;
 
 interface SecureState extends PersistedAuthState {
   forgotPassword: (email: string) => Promise<boolean>;
-  resendOTP: (identifier: string, activity: OtpActivity) => Promise<void>;
+  resendOTP: (identifier: string, activity: OtpActivity) => Promise<boolean>;
   resetPassword: (
     otp: number,
     password: string,
@@ -73,24 +73,24 @@ const useSecureStore = create<SecureState>()((set) => ({
       set({ loading: true, error: null });
       const response = await client.mutate({
         mutation: RESEND_OTP,
-        fetchPolicy: "no-cache",
         variables: { identifier, activity },
       });
 
       if (response.data?.resendOTP?.token) {
-        const { token } = response.data.resendOTP.token;
+        const token = response.data.resendOTP.token;
         set({
           loading: false,
           token: token,
         });
         console.log("OTP resent successfully");
-        console.log(identifier);
+        return true;
       } else {
         throw new Error("Failed to resend OTP");
       }
     } catch (error) {
       set({ error: (error as Error).message, loading: false });
       console.error("Failed to resend OTP:", error);
+      return false;
     }
   },
   resetPassword: async (otp: number, password: string) => {

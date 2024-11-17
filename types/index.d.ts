@@ -10,7 +10,6 @@ export interface AuthState extends PersistedAuthState {
   verifyEmailOTP: (otp: number, token: string) => Promise<void>;
   verifyOTP: (otp: number, token: string) => Promise<boolean>;
   verifyPhoneOTP: (otp: number, token: string) => Promise<void>;
-  resendOTP: (identifier: string, activity: OtpActivity) => Promise<void>;
   logout: () => void;
 }
 
@@ -50,6 +49,7 @@ export interface GetProductsFilter {
   state?: string;
   type?: string;
   priceRange?: PriceRange;
+  userId?: string;
 }
 
 export interface Filter {
@@ -85,20 +85,6 @@ export interface AssetInfo {
   name: string;
 }
 
-export interface Farm {
-  address: string;
-  city: string;
-  createdAt: string;
-  cropCount: number;
-  farmImage: string;
-  id: string;
-  livestockCount: number;
-  name: string;
-  size: number;
-  state: string;
-  userId: String;
-  updatedAt: Date;
-}
 export interface PersistedAuthState {
   user: UserProfile | null;
   isAuthenticated: boolean;

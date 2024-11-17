@@ -47,7 +47,7 @@ const useOrderStore = create<OrderState>((set) => ({
     } catch (error) {
       console.error("Error creating order:", error);
       set({ error: error as Error });
-      throw error; // Rethrow to handle further if needed
+      throw error;
     } finally {
       set({ loading: false });
     }
@@ -78,7 +78,7 @@ const useOrderStore = create<OrderState>((set) => ({
       const { data } = await client.query({
         query: GET_PRODUCT_ORDER_BY_ID,
         variables: { orderId },
-        fetchPolicy: "no-cache",
+        fetchPolicy: "network-only",
       });
 
       console.log("Query response:", data);

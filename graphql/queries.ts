@@ -2,28 +2,39 @@ import { gql } from "@apollo/client";
 import {
   ORDER_ITEM_DATA_FRAGMENT,
   PRODUCT_CATEGORY_FRAGMENT,
-  PRODUCT_FRAGMENT,
   PRODUCT_OWNER_FRAGMENT,
   USER_DATA_FRAGMENT,
 } from "./fragments";
 
 // Get user products
 export const GET_USER_PRODUCTS = gql`
-  query GetUserProducts {
-    getUserProducts {
-      createdAt
-      deliveryMethod
-      description
+  query GetUserProducts($input: GetUserProductsFilter) {
+    getUserProducts(input: $input) {
       id
-      images
-      location
       name
-      price
-      quantity
-      status
-      type
-      updatedAt
       userId
+      quantity
+      description
+      images
+      price
+      location
+      city
+      state
+      status
+      categories {
+        categoryId
+        productId
+        name
+        categoryType
+      }
+      user {
+        id
+        firstName
+        lastName
+        profileImageURL
+      }
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -59,21 +70,33 @@ export const GET_PRODUCTS = gql`
 
 // Get product
 export const GET_PRODUCT = gql`
-  query GetProduct($id: String!) {
-    getProduct(id: $id) {
+  query GetProduct($getProductId: String!) {
+    getProduct(id: $getProductId) {
       id
       name
-      description
-      price
-      images
+      userId
       quantity
+      description
+      images
+      price
       location
-      deliveryMethod
-      type
+      city
+      state
       status
+      categories {
+        categoryId
+        productId
+        name
+        categoryType
+      }
+      user {
+        id
+        firstName
+        lastName
+        profileImageURL
+      }
       createdAt
       updatedAt
-      userId
     }
   }
 `;

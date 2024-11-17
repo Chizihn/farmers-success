@@ -1,37 +1,34 @@
 import { useState } from "react";
 import { OtpActivity } from "@/types/forms";
 import useSecureStore from "@/store/useSecure";
+import toast from "react-hot-toast";
 
 export interface ResendOtpProps {
   activity: OtpActivity;
 }
 
 const ResendOtp: React.FC<ResendOtpProps> = ({ activity }) => {
-  const { resendOTP, identifier } = useSecureStore();
-  const [loading, setLoading] = useState(false);
+  const { resendOTP, identifier, loading, error } = useSecureStore();
   const [message, setMessage] = useState<string | null>(null);
 
-  const handleResend = async () => {
-    setLoading(true);
+  const handleResend = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     setMessage(null);
 
-    try {
-      await resendOTP(identifier, activity);
-      setMessage("OTP resent successfully.");
-      console.log("identifier from resent otp form", identifier);
-      console.log("activity from resend otp form", activity);
-    } catch (error) {
-      console.error("Failed to resend OTP:", error);
-      setMessage("Failed to resend OTP. Please try again.");
-    } finally {
-      setLoading(false);
+    const success = await resendOTP(identifier, activity);
+    if (success) {
+      toast.success("OTP code resent successfully.");
+    } else {
+      toast.error(error);
     }
   };
 
   return (
     <>
       <div className="flex gap-1 items-center">
-        <p className="text-center text-gray-600">Didn’t receive an OTP? </p>{" "}
+        <p className="text-center text-gray-600">
+          Didn’t receive the 4-digit OTP?{" "}
+        </p>{" "}
         <button
           onClick={handleResend}
           disabled={loading}

@@ -13,17 +13,15 @@ import MobileProductFilter from "./MobileProductFilter";
 import { Product } from "@/types/product";
 
 const Products: React.FC = () => {
-  const { products, loading, error } = useFetchProducts();
+  const { products, loading, initialized, error } = useFetchProducts();
   const { categories } = useFetchCategories(AssetType.CROP);
   const [showFilter, setShowFilter] = useState<boolean>(false);
   const [displayProducts, setDisplayProducts] = useState<Product[]>([]);
-  const [isInitialized, setIsInitialized] = useState(false);
 
   // Initialize display products when products first load
   useEffect(() => {
     if (products?.length > 0) {
       setDisplayProducts(products);
-      setIsInitialized(true);
     }
   }, [products]);
 
@@ -37,7 +35,7 @@ const Products: React.FC = () => {
   );
 
   // Show loading state until products are initialized
-  if (loading || !isInitialized) {
+  if (loading || !initialized) {
     return <LoadingState />;
   }
 
