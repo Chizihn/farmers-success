@@ -15,7 +15,7 @@ const ResendOtp: React.FC<ResendOtpProps> = ({ activity }) => {
     e.preventDefault();
     setMessage(null);
 
-    const success = await resendOTP(identifier, activity);
+    const success = await resendOTP(identifier as string, activity);
     if (success) {
       toast.success("OTP code resent successfully.");
     } else {
@@ -26,9 +26,7 @@ const ResendOtp: React.FC<ResendOtpProps> = ({ activity }) => {
   return (
     <>
       <div className="flex gap-1 items-center">
-        <p className="text-center text-gray-600">
-          Didn’t receive the 4-digit OTP?{" "}
-        </p>{" "}
+        <p className="text-center text-gray-600">Didn’t receive the code? </p>{" "}
         <button
           onClick={handleResend}
           disabled={loading}

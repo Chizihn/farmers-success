@@ -90,11 +90,11 @@ export interface PersistedAuthState {
   isAuthenticated: boolean;
   setAuthenticated: (isAuthenticated: boolean) => void;
   token: string | null;
+  phoneVerified?: boolean;
   loading: boolean;
   error: string | null;
   setError: (error: string | null) => void;
-  identifier: string;
-  setIdentifier: (identifier: string) => void;
+  identifier: string | null;
 }
 
 export interface ForgotPasswordResponse {

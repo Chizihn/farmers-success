@@ -31,7 +31,7 @@ const PageModal: React.FC<PageModalProps> = ({ isOpen, children, onClose }) => {
 
       {/* Modal Container */}
       <div
-        className="fixed top-0 right-0 w-full h-full lg:w-[32rem] bg-white shadow-xl z-50 flex flex-col overflow-y-auto"
+        className="fixed top-0 right-0 w-full max-h-screen h-full lg:w-[32rem] bg-white shadow-xl z-50 flex flex-col overflow-y-auto"
         role="dialog"
         aria-modal="true"
       >

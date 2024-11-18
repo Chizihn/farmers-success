@@ -33,10 +33,7 @@ const useSecureStore = create<SecureState>()((set) => ({
     set({ error });
   },
   identifier: "",
-  setIdentifier: (identifier) => {
-    set({ identifier });
-    console.log(identifier);
-  },
+
   setAuthenticated: (isAuthenticated) => set({ isAuthenticated }),
 
   forgotPassword: async (email: string) => {
@@ -60,6 +57,7 @@ const useSecureStore = create<SecureState>()((set) => ({
       return true;
     } catch (error) {
       set({
+        identifier: email,
         error: error instanceof Error ? error.message : "Error occurred",
       });
       return false;

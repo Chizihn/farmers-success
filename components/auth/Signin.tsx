@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Logo from "../Logo";
 import useAuthStore from "@/store/useAuthStore";
@@ -14,7 +14,6 @@ const Signin = () => {
   const [loginMethod, setLoginMethod] = useState<"email" | "phone">("email");
   const { signInWithEmail, signInWithPhone, loading, error, setError } =
     useAuthStore();
-  const { setIdentifier } = useAuthStore();
 
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -27,10 +26,10 @@ const Signin = () => {
     }
     const success = await signInWithEmail(email, password);
     if (success) {
-      toast.success("Successfully signed in with email!");
+      toast.success("Successfully signed in!");
       router.push("/");
     } else {
-      toast.error(error);
+      toast.error(capitalizeFirstChar(error) || "Incorrect credentials");
     }
   };
 
@@ -41,15 +40,14 @@ const Signin = () => {
     if (!formattedPhoneNumber) {
       toast.error("Please fill in the required field.");
     }
-    setIdentifier(formattedPhoneNumber);
     const success = await signInWithPhone(formattedPhoneNumber);
     console.log(formattedPhoneNumber);
 
     if (success) {
-      toast.success("Successfully signed in with number!");
+      toast.success("Successfully signed in!");
       router.push("/verify-otp");
     } else {
-      toast.error(error);
+      toast.error(capitalizeFirstChar(error));
     }
   };
 

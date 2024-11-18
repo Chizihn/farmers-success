@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Logo from "../Logo";
 import useSecureStore from "@/store/useSecure";
@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 
 const ForgotPassword = () => {
   const router = useRouter();
-  const { forgotPassword, setIdentifier, loading, error } = useSecureStore();
+  const { forgotPassword, loading, error } = useSecureStore();
   const [email, setEmail] = useState<string>("");
 
   const onSubmit = async (e: React.FormEvent) => {
@@ -19,7 +19,6 @@ const ForgotPassword = () => {
     try {
       const success = await forgotPassword(email);
       if (success) {
-        setIdentifier(email);
         toast.success("OTP sent successfully.");
         router.push("/reset-password");
       }

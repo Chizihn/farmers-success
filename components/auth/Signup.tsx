@@ -14,7 +14,6 @@ const Signup = () => {
   const [signupMethod, setSignupMethod] = useState<"email" | "phone">("email");
   const { signUpWithEmail, signUpWithPhone, loading, error, setError } =
     useAuthStore();
-  const { setIdentifier } = useAuthStore();
 
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -28,7 +27,6 @@ const Signup = () => {
 
   const handleEmailSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIdentifier(email);
     const success = await signUpWithEmail(email, password);
     if (success) {
       router.push("/verify-email");
@@ -38,7 +36,6 @@ const Signup = () => {
   const handlePhoneSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     const formattedPhoneNumber = phoneNumber.replace(/^\+/, "");
-    setIdentifier(formattedPhoneNumber);
     const success = await signUpWithPhone(formattedPhoneNumber);
     if (success) {
       router.push("/verify-phone");

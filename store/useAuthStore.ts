@@ -13,6 +13,7 @@ import {
 import client from "@/lib/apolloClient";
 import { GET_USER } from "@/graphql/queries";
 import { AuthState, UserProfile } from "@/types";
+import { error } from "console";
 
 // Custom storage object for cookies
 const cookieStorage = {
@@ -35,15 +36,14 @@ const useAuthStore = create<AuthState>()(
         user: null,
         isAuthenticated: false,
         token: cookieStorage.getItem("token") || null,
+        phoneVerified: false,
+        identifier: null,
         loading: false,
         error: null,
         setError: (error) => {
           set({ error });
         },
-        identifier: "",
-        setIdentifier: (identifier) => {
-          set({ identifier });
-        },
+
         setAuthenticated: (isAuthenticated: boolean) => {
           set({ isAuthenticated });
         },
@@ -58,7 +58,13 @@ const useAuthStore = create<AuthState>()(
             // Check if the response contains the token
             if (response.data?.signInWithEmail?.token) {
               const { token } = response.data.signInWithEmail;
-              set({ token, isAuthenticated: true, loading: false });
+              set({
+                token,
+                isAuthenticated: true,
+                identifier: email,
+                loading: false,
+                error: "Incorrect credentials",
+              });
               cookieStorage.setItem("token", token);
               await useAuthStore.getState().fetchUserDetails(token);
               console.log("Signin was successful");
@@ -84,7 +90,13 @@ const useAuthStore = create<AuthState>()(
             // Check if the response contains the token
             if (response.data?.loginUser?.token) {
               const { token } = response.data.loginUser;
-              set({ token, isAuthenticated: true, loading: false });
+              set({
+                token,
+                isAuthenticated: true,
+                identifier: phoneNumber,
+                loading: false,
+                error: "Incorrect credential",
+              });
               cookieStorage.setItem("token", token);
               await useAuthStore.getState().fetchUserDetails(token);
               console.log("Signin was successful with phone number");
@@ -110,7 +122,13 @@ const useAuthStore = create<AuthState>()(
             // Check if the response contains the user and token
             if (response.data?.signUp?.token && response.data?.signUp?.user) {
               const { user, token } = response.data.signUp;
-              set({ user, token, isAuthenticated: true, loading: false });
+              set({
+                user,
+                token,
+                isAuthenticated: true,
+                identifier: email,
+                loading: false,
+              });
               cookieStorage.setItem("token", token);
               cookieStorage.setItem("user", JSON.stringify(user));
               console.log("Signup successful");
@@ -139,7 +157,13 @@ const useAuthStore = create<AuthState>()(
               response.data?.createAccount?.user
             ) {
               const { user, token } = response.data.createAccount;
-              set({ user, token, isAuthenticated: true, loading: false });
+              set({
+                user,
+                token,
+                isAuthenticated: true,
+                identifier: phoneNumber,
+                loading: false,
+              });
               cookieStorage.setItem("token", token);
               cookieStorage.setItem("user", JSON.stringify(user));
               console.log("Signup successful");
@@ -212,6 +236,7 @@ const useAuthStore = create<AuthState>()(
             if (response.data?.verifyOTP?.token) {
               const token = response.data.verifyOTP.token;
               set({
+                phoneVerified: true,
                 loading: false,
                 isAuthenticated: true,
                 token: token,
@@ -273,6 +298,7 @@ const useAuthStore = create<AuthState>()(
           user: state.user,
           token: state.token,
           isAuthenticated: state.isAuthenticated,
+          identifier: state.identifier,
         }),
       }
     )
