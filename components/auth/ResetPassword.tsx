@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import Logo from "../Logo";
@@ -7,19 +7,18 @@ import ResendOtp from "./ResendOtp";
 import useSecureStore from "@/store/useSecure";
 
 import { capitalizeFirstChar } from "@/utils";
+import toast from "react-hot-toast";
 
 interface ResetPasswordProps {
   token: string;
 }
 
 const ResetPassword: React.FC<ResetPasswordProps> = ({ token }) => {
-  const { resetPassword, loading } = useSecureStore();
+  const { resetPassword, error } = useSecureStore();
   const router = useRouter();
-  const [otp, setOtp] = useState(["", "", "", ""]);
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
-
+  const [otp, setOtp] = useState<string[]>(["", "", "", ""]);
+  const [password, setPassword] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const handleOtpChange = (index: number, value: string) => {
     const newOtp = [...otp];
     newOtp[index] = value;
@@ -35,14 +34,13 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ token }) => {
       prevInput?.focus();
     }
   };
-
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
+    setLoading(true);
 
     // Simple validation
     if (otp.some((digit) => digit === "") || password === "") {
-      setError("Please fill in all fields.");
+      toast.error("Please fill in all fields.");
       return;
     }
 
@@ -50,15 +48,22 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ token }) => {
       const otpValue = parseInt(otp.join(""), 10);
       if (!token) throw new Error("Token not found");
 
-      await resetPassword(otpValue, password, token);
-      setMessage("Password reset successfully!");
-      Cookies.remove("reset_token");
-      router.push("/signin");
-    } catch (error) {
-      console.error("Password reset failed:", error);
-      setError("Password reset failed. Please check your OTP or try again.");
+      const success = await resetPassword(otpValue, password, token);
+
+      if (success) {
+        toast.success("Password reset successfully!");
+        Cookies.remove("reset_token");
+        router.push("/signin");
+      }
+    } catch (err) {
+      console.error("Password reset failed:", err);
+      toast.error(error);
+    } finally {
+      setLoading(false);
     }
   };
+
+  const isComplete = otp.every((value) => value !== "") && password !== "";
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 lg:bg-gray-50">
@@ -84,9 +89,6 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ token }) => {
               />
             ))}
           </div>
-          {error && (
-            <p className="text-red-500">{capitalizeFirstChar(error)}</p>
-          )}
 
           <input
             type="password"
@@ -99,13 +101,12 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ token }) => {
           <button
             type="submit"
             className="w-full bg-green-700 text-white py-2 rounded-md hover:bg-green-800 transition duration-200"
-            disabled={loading}
+            disabled={!isComplete}
           >
             {loading ? "Resetting..." : "Reset password"}
           </button>
         </form>
 
-        {message && <p className="text-green-600 mt-2">{message}</p>}
         <ResendOtp activity="forgot_password" />
         <Logo />
       </div>

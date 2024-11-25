@@ -31,11 +31,11 @@ const ForgotPassword = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 lg:bg-gray-50">
       <div className="w-full lg:max-w-lg p-6 bg-white lg:shadow-md lg:rounded-lg md:w-[40rem] flex flex-col justify-center items-center gap-2">
-        <h1 className="text-2xl font-bold text-green-700 mb-4 text-center">
-          Reset Your Password
+        <h1 className="text-2xl font-bold text-green-700 mb-1 text-center">
+          Forgot Your Password
         </h1>
         <p className="text-gray-600 mb-6 text-center">
-          Enter your email to receive a password reset link.
+          Enter your email to receive a 4-digit code to reset your password.
         </p>
 
         <div className="max-w-sm">
@@ -53,7 +53,7 @@ const ForgotPassword = () => {
               className="w-full bg-green-700 text-white py-2 rounded-md hover:bg-green-800 transition duration-200"
               disabled={loading}
             >
-              {loading ? "Sending reset code..." : "Send Reset code"}
+              {loading ? "Sending code..." : "Send code"}
             </button>
           </form>
 

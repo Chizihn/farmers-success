@@ -9,7 +9,7 @@ import useSecureStore from "@/store/useSecure";
 const ResetPasswordPage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [token, setToken] = useState<string | null>(null);
-  const identifier = useSecureStore((state) => state.identifier);
+  const { identifier } = useSecureStore();
 
   useEffect(() => {
     const retrievedToken = Cookies.get("reset_token") as string | null;

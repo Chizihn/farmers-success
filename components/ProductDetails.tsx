@@ -36,7 +36,7 @@ interface ProductDetailsProps {
 
 const ProductDetails: React.FC<ProductDetailsProps> = ({ id, type }) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const { product, loading, initialized, error, setInitialized, fetchProduct } =
+  const { product, loading, initialized, error, fetchProduct } =
     useProductStore();
   const [quantity, setQuantity] = useState<number>(0);
   const [selectedImageIndex, setSelectedImageIndex] = useState<number>(0);
@@ -48,10 +48,9 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ id, type }) => {
 
   useEffect(() => {
     fetchProduct(id);
-    setInitialized;
-  }, [fetchProduct, id, setInitialized]);
+  }, [fetchProduct, id]);
 
-  if (loading || !initialized) {
+  if (loading && !initialized) {
     return <LoadingState />;
   }
 
@@ -142,7 +141,6 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ id, type }) => {
               alt={name || "Product"}
               fill
               style={{ objectFit: "cover" }}
-              className="rounded-lg"
             />
           </div>
           {productImages.length > 1 && type === "full" && (

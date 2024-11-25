@@ -1,35 +1,38 @@
 "use client";
 import OTPVerification from "@/components/auth/OtpVerification";
 import LoadingState from "@/components/Loading";
+import NoAccess from "@/components/NoAccess";
 import useAuthStore from "@/store/useAuthStore";
-import Cookies from "js-cookie";
+import { UserProfile } from "@/types";
 import { CheckCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const VerifyPhoneOtpPage = () => {
+  const [initialized, setInitialized] = useState<boolean>(false);
   const router = useRouter();
-  const [token, setToken] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const user = useAuthStore((state) => state.user);
+  const token = useAuthStore((state) => state.token);
+  const user = useAuthStore((state) => state.user) as UserProfile;
+  const method = useAuthStore((state) => state.method);
 
   useEffect(() => {
-    const retrievedToken = Cookies.get("token");
-
-    if (retrievedToken) {
-      setToken(retrievedToken);
-      setIsLoading(false);
-    } else {
+    if (!token) {
       router.replace("/signin");
     }
-  }, [router]);
-  if (isLoading) return <LoadingState />;
+    setInitialized(true);
+  }, [router, token]);
 
   const handleGoBack = () => {
     router.replace("/");
   };
 
-  if (user?.isPhoneVerified) {
+  if (!token || !initialized) return <LoadingState />;
+
+  if (method !== "phone-signup") {
+    return <NoAccess onClick={handleGoBack} />;
+  }
+
+  if (user.isPhoneVerified) {
     return (
       <section className="bg-white lg:bg-transparent min-h-screen h-full flex justify-center items-center">
         <div className="bg-white lg:shadow-xl lg:rounded-xl flex flex-col items-center justify-center h-full p-8 gap-4">
@@ -48,9 +51,7 @@ const VerifyPhoneOtpPage = () => {
     );
   }
 
-  return token ? (
-    <OTPVerification verificationType="verifyPhone" token={token} />
-  ) : null;
+  return <OTPVerification verificationType="verifyEmail" token={token} />;
 };
 
 export default VerifyPhoneOtpPage;

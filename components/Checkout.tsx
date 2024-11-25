@@ -12,6 +12,7 @@ import useModalStore from "@/store/useModalStore";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { PaymentMethod } from "@/types/order";
+import InputField from "./ui/InputField";
 
 const Checkout: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -24,20 +25,20 @@ const Checkout: React.FC = () => {
   const [error, setError] = useState<string>("");
 
   const { cartItems, totalItems, totalPrice, clearCart } = useCartStore();
-  const { user, isAuthenticated } = useAuthStore();
+  const { user, token } = useAuthStore();
   const { createOrder, loading: orderLoading } = useOrderStore();
 
   const { closeCheckoutModal, openPaymentSuccess } = useModalStore();
 
   useEffect(() => {
-    if (typeof window !== null && isAuthenticated && user) {
+    if (typeof window !== null && token && user) {
       setFirstName(user.firstName);
       setLastName(user.lastName);
       setEmail(user.email);
       setPhone(user.phoneNumber);
       setAddress(user.address);
     }
-  }, [isAuthenticated, user]);
+  }, [token, user]);
 
   if (totalItems === 0) {
     return (
@@ -120,35 +121,32 @@ const Checkout: React.FC = () => {
 
         <div className="flex gap-1">
           <div>
-            <label className="block mb-2">First Name</label>
-            <input
+            <InputField
               type="text"
+              label="First name"
+              placeholder="First name"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
-              className="w-full p-3 border rounded-lg"
-              required
             />
           </div>
           <div>
-            <label className="block mb-2">Last Name</label>
-            <input
+            <InputField
               type="text"
               value={lastName}
+              label="Last name"
+              placeholder="Last name"
               onChange={(e) => setLastName(e.target.value)}
-              className="w-full p-3 border rounded-lg"
-              required
             />
           </div>
         </div>
 
         <div>
-          <label className="block mb-2">Email</label>
-          <input
+          <InputField
             type="email"
             value={email}
+            label="Email"
+            placeholder="Email"
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-3 border rounded-lg"
-            required
           />
         </div>
 
@@ -176,13 +174,12 @@ const Checkout: React.FC = () => {
         </div>
 
         <div>
-          <label className="block mb-2">Delivery Address</label>
-          <input
+          <InputField
             type="text"
             value={address}
+            label="Delivery Address"
+            placeholder="Delivery address"
             onChange={(e) => setAddress(e.target.value)}
-            className="w-full p-3 border rounded-lg"
-            required
           />
         </div>
 
@@ -201,7 +198,7 @@ const Checkout: React.FC = () => {
         {paymentMethod !== "paystack" && (
           <button
             type="submit"
-            className="bg-green-600 text-white p-3 rounded-lg w-full flex items-center justify-center"
+            className="bg-green-700 font-semibold text-white p-3 rounded-lg w-full flex items-center justify-center"
             disabled={isLoading || orderLoading}
           >
             {isLoading || orderLoading ? (

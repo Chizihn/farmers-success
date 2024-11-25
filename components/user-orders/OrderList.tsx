@@ -4,28 +4,12 @@ import Link from "next/link";
 import Image from "next/image";
 import LoadingState from "../Loading";
 import { capitalizeFirstChar } from "@/utils";
-import useOrderStore from "@/store/useOrderStore";
-import useAuthStore from "@/store/useAuthStore";
-import { useEffect, useState } from "react";
+import { useFetchOrders } from "@/hooks/useFetchOrders";
 
 const OrderList: React.FC = () => {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const {
-    productOrders: orders,
-    fetchProductOrders,
-    loading,
-    error,
-  } = useOrderStore();
-  const [isInitialized, setIsInitialized] = useState(false);
+  const { productOrders: orders, initialized, error } = useFetchOrders();
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      fetchProductOrders().catch(console.error);
-      setIsInitialized(true);
-    }
-  }, [fetchProductOrders, isAuthenticated]);
-
-  if (loading || !isInitialized) {
+  if (!initialized) {
     return <LoadingState />;
   }
 
@@ -34,7 +18,7 @@ const OrderList: React.FC = () => {
   }
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="p-3 bg-gray-50 min-h-screen">
       <h1 className="text-2xl font-bold mb-6">Your Orders</h1>
       <div className="space-y-4">
         {orders.length === 0 ? (
@@ -60,8 +44,8 @@ const OrderList: React.FC = () => {
 const ErrorState: React.FC<{ message: string }> = ({ message }) => (
   <div className="flex flex-col items-center justify-center min-h-screen text-red-500">
     <p className="text-lg font-medium">Error loading orders: {message}</p>
-    <Link href="/" className="text-blue-500 mt-4 underline">
-      Back to Home
+    <Link href="/" className="bg-green-700 p-3 text-white rounded-lg mt-2">
+      Back to home
     </Link>
   </div>
 );
@@ -71,15 +55,17 @@ const OrderCard: React.FC<{ order: any; orderId: string }> = ({
   orderId,
 }) => {
   return (
-    <div className="bg-white rounded-lg shadow-sm p-4 hover:shadow-md transition">
-      <OrderHeader id={order.id} status={capitalizeFirstChar(order.status)} />
-      <OrderDetails order={order} />
-      <div className="mt-2">
-        <Link href={`/orders/${orderId}`}>
-          <button className="w-full bg-green-700 text-white font-bold py-3 rounded-lg hover:bg-green-800 transition-colors duration-200">
-            View order
-          </button>
-        </Link>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="bg-white rounded-lg shadow-sm p-4 hover:shadow-md transition">
+        <OrderHeader id={order.id} status={capitalizeFirstChar(order.status)} />
+        <OrderDetails order={order} />
+        <div className="mt-2">
+          <Link href={`/orders/${orderId}`}>
+            <button className="w-full bg-green-700 text-white font-bold py-3 rounded-lg hover:bg-green-800 transition-colors duration-200">
+              View order
+            </button>
+          </Link>
+        </div>
       </div>
     </div>
   );
@@ -96,7 +82,7 @@ const OrderHeader: React.FC<{ id: string; status: string }> = ({
 );
 
 const OrderDetails: React.FC<{ order: any }> = ({ order }) => (
-  <div className="mt-4 ">
+  <div className="mt-4">
     <OrderItems items={order.orderItems} />
   </div>
 );

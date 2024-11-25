@@ -25,6 +25,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ orderId, type }) => {
     singleOrder: order,
     loading,
     error,
+    initialized,
     fetchSingleOrder,
   } = useOrderStore();
 
@@ -35,10 +36,10 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ orderId, type }) => {
   }, [orderId, fetchSingleOrder]);
 
   const handleBack = () => {
-    router.replace("/orders");
+    router.back();
   };
 
-  if (loading) return <LoadingState />;
+  if (loading && !initialized) return <LoadingState />;
 
   if (error) {
     return <ErrorState message={error.message} onBack={handleBack} />;

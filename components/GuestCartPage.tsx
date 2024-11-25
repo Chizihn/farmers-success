@@ -10,6 +10,7 @@ import { useEffect } from "react";
 import dynamic from "next/dynamic";
 import CheckoutModal from "./CheckoutModal";
 import useGuestCartStore from "@/store/useGuestCartStore";
+import CloseButton from "./ui/CloseButton";
 const GuestCheckout = dynamic(() => import("./GuestCheckout"), { ssr: false });
 
 const GuestCartPage: React.FC = () => {
@@ -49,9 +50,7 @@ const GuestCartPage: React.FC = () => {
       <div className="h-full flex flex-col">
         <div className="p-4 border-b flex justify-between items-center">
           <h2 className="text-2xl font-bold">Your Cart</h2>
-          <button onClick={handleCloseGuestCartPage}>
-            <X size={35} />
-          </button>
+          <CloseButton onClick={handleCloseGuestCartPage} />
         </div>
 
         {guestCartItems.length === 0 ? (

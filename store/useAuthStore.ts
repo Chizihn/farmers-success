@@ -13,7 +13,6 @@ import {
 import client from "@/lib/apolloClient";
 import { GET_USER } from "@/graphql/queries";
 import { AuthState, UserProfile } from "@/types";
-import { error } from "console";
 
 // Custom storage object for cookies
 const cookieStorage = {
@@ -32,12 +31,20 @@ const cookieStorage = {
 const useAuthStore = create<AuthState>()(
   devtools(
     persist(
-      (set) => ({
+      (set, get) => ({
         user: null,
+        setUser: (user: UserProfile) => set({ user }),
         isAuthenticated: false,
         token: cookieStorage.getItem("token") || null,
-        phoneVerified: false,
-        identifier: null,
+        isPhoneVerified: false,
+        setPhoneVerified: (isPhoneVerified) => {
+          set({ isPhoneVerified });
+        },
+        identifier: "",
+        method: null,
+        setMethod: (method) => {
+          set({ method });
+        },
         loading: false,
         error: null,
         setError: (error) => {
@@ -58,15 +65,19 @@ const useAuthStore = create<AuthState>()(
             // Check if the response contains the token
             if (response.data?.signInWithEmail?.token) {
               const { token } = response.data.signInWithEmail;
+
+              cookieStorage.setItem("token", token);
+              await get().fetchUserDetails(token);
+
               set({
                 token,
                 isAuthenticated: true,
                 identifier: email,
                 loading: false,
-                error: "Incorrect credentials",
+                method: "email",
+                error: "Invalid credentials",
               });
-              cookieStorage.setItem("token", token);
-              await useAuthStore.getState().fetchUserDetails(token);
+
               console.log("Signin was successful");
               return true;
             } else {
@@ -90,15 +101,17 @@ const useAuthStore = create<AuthState>()(
             // Check if the response contains the token
             if (response.data?.loginUser?.token) {
               const { token } = response.data.loginUser;
+              cookieStorage.setItem("token", token);
+              await get().fetchUserDetails(token);
+
               set({
                 token,
                 isAuthenticated: true,
                 identifier: phoneNumber,
+                method: "phone-signin",
                 loading: false,
-                error: "Incorrect credential",
               });
-              cookieStorage.setItem("token", token);
-              await useAuthStore.getState().fetchUserDetails(token);
+
               console.log("Signin was successful with phone number");
               return true;
             } else {
@@ -122,15 +135,19 @@ const useAuthStore = create<AuthState>()(
             // Check if the response contains the user and token
             if (response.data?.signUp?.token && response.data?.signUp?.user) {
               const { user, token } = response.data.signUp;
+
+              cookieStorage.setItem("token", token);
+              cookieStorage.setItem("user", JSON.stringify(user));
+
               set({
                 user,
                 token,
                 isAuthenticated: true,
                 identifier: email,
+                method: "email",
                 loading: false,
               });
-              cookieStorage.setItem("token", token);
-              cookieStorage.setItem("user", JSON.stringify(user));
+
               console.log("Signup successful");
               return true;
             } else {
@@ -157,15 +174,19 @@ const useAuthStore = create<AuthState>()(
               response.data?.createAccount?.user
             ) {
               const { user, token } = response.data.createAccount;
+
+              cookieStorage.setItem("token", token);
+              cookieStorage.setItem("user", JSON.stringify(user));
+
               set({
                 user,
                 token,
                 isAuthenticated: true,
                 identifier: phoneNumber,
+                method: "phone-signup",
                 loading: false,
               });
-              cookieStorage.setItem("token", token);
-              cookieStorage.setItem("user", JSON.stringify(user));
+
               console.log("Signup successful");
               return true;
             } else {
@@ -188,16 +209,19 @@ const useAuthStore = create<AuthState>()(
 
             if (response.data?.verifyEmailOTP) {
               set((state) => ({
-                loading: false,
                 user: { ...state.user, isEmailVerified: true } as UserProfile,
               }));
               console.log("Email OTP verified successfully");
+              return true;
             } else {
               throw new Error("OTP verification failed");
             }
           } catch (error) {
-            set({ error: (error as Error).message, loading: false });
+            set({ error: (error as Error).message });
             console.error("Email OTP verification failed:", error);
+            return false;
+          } finally {
+            set({ loading: false });
           }
         },
 
@@ -211,16 +235,19 @@ const useAuthStore = create<AuthState>()(
 
             if (response.data?.verifyPhoneNumberOTP) {
               set((state) => ({
-                loading: false,
                 user: { ...state.user, isPhoneVerified: true } as UserProfile,
               }));
               console.log("Phone OTP verified successfully");
+              return true;
             } else {
               throw new Error("OTP verification failed");
             }
           } catch (error) {
-            set({ error: (error as Error).message, loading: false });
+            set({ error: (error as Error).message });
             console.error("Phone OTP verification failed:", error);
+            return false;
+          } finally {
+            set({ loading: false });
           }
         },
 
@@ -232,17 +259,16 @@ const useAuthStore = create<AuthState>()(
               variables: { otp, token },
             });
 
-            // Assuming verifyOtpSuccess contains the token if OTP is valid
+            // verifyOtpSuccess contains the token if OTP is valid
             if (response.data?.verifyOTP?.token) {
               const token = response.data.verifyOTP.token;
               set({
-                phoneVerified: true,
-                loading: false,
+                isPhoneVerified: true,
                 isAuthenticated: true,
                 token: token,
               });
-              cookieStorage.setItem("token", token); // Store token
-              await useAuthStore.getState().fetchUserDetails(token); // Fetch user details if needed
+              cookieStorage.setItem("token", token);
+              await useAuthStore.getState().fetchUserDetails(token);
               console.log("OTP verified successfully, user signed in");
               return true;
             } else {
@@ -251,10 +277,11 @@ const useAuthStore = create<AuthState>()(
           } catch (error) {
             set({
               error: (error as Error).message || "OTP verification failed",
-              loading: false,
             });
             console.error("OTP verification failed:", error);
             return false;
+          } finally {
+            set({ loading: false });
           }
         },
 
@@ -268,11 +295,11 @@ const useAuthStore = create<AuthState>()(
                 },
               },
             });
-            const user = userResponse.data.user;
-            set({ user, isAuthenticated: true });
+            const fetchedUser = userResponse.data.user;
+            set({ user: fetchedUser, isAuthenticated: true });
 
             // Save user to localStorage for persistence
-            cookieStorage.setItem("user", JSON.stringify(user));
+            cookieStorage.setItem("user", JSON.stringify(fetchedUser));
           } catch (error) {
             set({ error: (error as Error).message });
           }
@@ -280,7 +307,15 @@ const useAuthStore = create<AuthState>()(
         logout: () => {
           cookieStorage.removeItem("token");
           cookieStorage.removeItem("user");
-          set({ user: null, token: null, isAuthenticated: false, error: null });
+          set({
+            user: null,
+            token: null,
+            isAuthenticated: false,
+            identifier: "",
+            method: null,
+            isPhoneVerified: false,
+            error: null,
+          });
           window.location.reload();
         },
       }),
@@ -299,6 +334,8 @@ const useAuthStore = create<AuthState>()(
           token: state.token,
           isAuthenticated: state.isAuthenticated,
           identifier: state.identifier,
+          isPhoneVerified: state.isPhoneVerified,
+          method: state.method,
         }),
       }
     )

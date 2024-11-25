@@ -5,7 +5,6 @@ import {
   RESET_PASSWORD,
 } from "@/graphql/mutations";
 import client from "@/lib/apolloClient";
-
 import { ForgotPasswordResponse, PersistedAuthState } from "@/types";
 import Cookies from "js-cookie";
 import { OtpActivity } from "@/types/forms";
@@ -19,12 +18,13 @@ interface SecureState extends PersistedAuthState {
     otp: number,
     password: string,
     token: string
-  ) => Promise<void>;
+  ) => Promise<boolean>;
   clearResetState: () => void;
 }
 
-const useSecureStore = create<SecureState>()((set) => ({
+const useSecureStore = create<SecureState>()((set, get) => ({
   user: null,
+  setUser: (user) => set({ user }),
   isAuthenticated: false,
   token: null,
   loading: false,
@@ -47,13 +47,17 @@ const useSecureStore = create<SecureState>()((set) => ({
       if (!data?.forgotPassword.token) {
         throw new Error("No token received from server");
       }
-
+      set({
+        identifier: email,
+      });
       Cookies.set("reset_token", data.forgotPassword.token, {
         secure: true,
         sameSite: "strict",
         expires: EXPIRE_MINUTES / (24 * 60),
       });
+      localStorage.setItem("identifier", email);
       console.log("reset token", data.forgotPassword.token);
+      console.log("identifier", email);
       return true;
     } catch (error) {
       set({
@@ -109,11 +113,14 @@ const useSecureStore = create<SecureState>()((set) => ({
 
       // Clear token after successful reset
       Cookies.remove("reset_token");
+      set({ identifier: "" });
+      return true;
     } catch (error) {
       set({
         error:
           error instanceof Error ? error.message : "Failed to reset password",
       });
+      return false;
     } finally {
       set({ loading: false });
     }

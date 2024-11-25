@@ -7,12 +7,14 @@ import Logo from "../Logo";
 import ResendOtp from "./ResendOtp";
 import { OtpFormType, otpSchema } from "@/types/forms";
 import useAuthStore from "@/store/useAuthStore";
+import toast from "react-hot-toast";
 
 const OTPVerification: React.FC<{
   verificationType: "verifyEmail" | "verifyPhone" | "verifySignIn";
   token: string;
 }> = ({ verificationType, token }) => {
-  const { verifyEmailOTP, verifyPhoneOTP, verifyOTP } = useAuthStore();
+  const { verifyEmailOTP, verifyPhoneOTP, verifyOTP, loading, error } =
+    useAuthStore();
   const router = useRouter();
 
   const {
@@ -30,23 +32,53 @@ const OTPVerification: React.FC<{
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
+
+    if (value.length === 1 && index < 3) {
+      const nextInput = document.getElementById(`otp-${index + 1}`);
+      nextInput?.focus();
+    }
+
+    if (value.length === 0 && index > 0) {
+      const prevInput = document.getElementById(`otp-${index - 1}`);
+      prevInput?.focus();
+    }
     setValue(`otp.${index}`, value);
   };
 
   const onSubmit = async (data: OtpFormType) => {
+    // Simple validation
+    if (otp.some((digit) => digit === "")) {
+      toast.error("Please fill in all fields.");
+      return;
+    }
     const otpValue = parseInt(data.otp.join(""));
+
     try {
-      if (verificationType === "verifyEmail") {
-        await verifyEmailOTP(otpValue, token);
-      } else if (verificationType === "verifyPhone") {
-        await verifyPhoneOTP(otpValue, token);
-      } else {
-        await verifyOTP(otpValue, token);
+      let success = false;
+
+      switch (verificationType) {
+        case "verifyEmail":
+          success = await verifyEmailOTP(otpValue, token);
+          break;
+
+        case "verifyPhone":
+          success = await verifyPhoneOTP(otpValue, token);
+          break;
+
+        default:
+          success = await verifyOTP(otpValue, token);
+          break;
       }
-      router.push("/");
-    } catch (error) {
-      console.error("Verification failed:", error);
-      alert("Verification failed. Please check your OTP or try again.");
+
+      if (success) {
+        toast.success("Verification successful!");
+        router.push("/");
+      } else {
+        toast.error("Verification failed. Please check your OTP or try again.");
+      }
+    } catch (err) {
+      console.error("Verification failed:", err);
+      toast.error(error || "An error occurred. Please try again.");
     }
   };
 
@@ -68,8 +100,10 @@ const OTPVerification: React.FC<{
             {otp.map((_, index) => (
               <input
                 key={index}
+                id={`otp-${index}`}
                 type="text"
                 maxLength={1}
+                value={otp[index]}
                 {...register(`otp.${index}` as const)}
                 onChange={(e) => handleOtpChange(index, e.target.value)}
                 className="w-1/4 h-20 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-green-600 text-center"
@@ -83,7 +117,7 @@ const OTPVerification: React.FC<{
             className="w-full bg-green-700 text-white py-2 rounded-md hover:bg-green-800 transition duration-200"
             disabled={!isOtpComplete}
           >
-            Verify
+            {loading ? "Verifying..." : "Verify"}
           </button>
         </form>
 

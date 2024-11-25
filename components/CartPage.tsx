@@ -9,6 +9,7 @@ import { capitalizeFirstChar } from "@/utils";
 import { useEffect } from "react";
 import dynamic from "next/dynamic";
 import CheckoutModal from "./CheckoutModal";
+import CloseButton from "./ui/CloseButton";
 
 const CheckoutPage = dynamic(() => import("./Checkout"), { ssr: false });
 
@@ -16,12 +17,7 @@ const CartPage: React.FC = () => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const {
-    closeModal,
-    isCheckoutModalOpen,
-    openCheckoutModal,
-    closeCheckoutModal,
-  } = useModalStore();
+  const { closeModal, openCheckoutModal } = useModalStore();
   const { cartItems, removeFromCart, updateQuantity, totalPrice } =
     useCartStore();
 
@@ -47,12 +43,7 @@ const CartPage: React.FC = () => {
     <div className="h-full flex flex-col">
       <div className="p-4 border-b flex justify-between items-center">
         <h2 className="text-2xl font-bold">Your Cart</h2>
-        <button
-          className="h-10 w-10 rounded-full flex items-center justify-center bg-white border-[2px] border-gray-300 text-gray-500 hover:bg-gray-100 hover:border-gray-400 hover:text-gray-800 shadow-md transition-all duration-200 ease-in-out"
-          onClick={handleCloseCartPage}
-        >
-          <X size={24} />
-        </button>
+        <CloseButton onClick={handleCloseCartPage} />
       </div>
 
       {cartItems.length === 0 ? (
@@ -71,9 +62,11 @@ const CartPage: React.FC = () => {
                   <Image
                     src={item.product.images[0]}
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     style={{ objectFit: "cover" }}
                     alt={item.product.name}
                     className="rounded-md"
+                    priority
                   />
                 </div>
                 <div className="flex-grow">

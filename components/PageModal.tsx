@@ -2,6 +2,7 @@
 import { X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
+import CloseButton from "./ui/CloseButton";
 
 interface PageModalProps {
   isOpen: boolean;
@@ -22,6 +23,18 @@ const PageModal: React.FC<PageModalProps> = ({ isOpen, children, onClose }) => {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden"; // Disable scrolling
+    } else {
+      document.body.style.overflow = ""; // Restore scrolling
+    }
+
+    return () => {
+      document.body.style.overflow = ""; // Clean up on unmount
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (
@@ -36,13 +49,9 @@ const PageModal: React.FC<PageModalProps> = ({ isOpen, children, onClose }) => {
         aria-modal="true"
       >
         {isUpdateProfilePage ? null : (
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 p-1 rounded-md hover:bg-gray-100"
-            aria-label="Close modal"
-          >
-            <X size={24} />
-          </button>
+          <div className="absolute top-4 right-4">
+            <CloseButton onClick={onClose} />
+          </div>
         )}
 
         {/* Modal Body */}

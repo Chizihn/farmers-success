@@ -7,9 +7,9 @@ export interface AuthState extends PersistedAuthState {
   fetchUserDetails: (token: string) => Promise<void>;
   signUpWithEmail: (email: string, password: string) => Promise<boolean>;
   signUpWithPhone: (phoneNumber: string) => Promise<boolean>;
-  verifyEmailOTP: (otp: number, token: string) => Promise<void>;
+  verifyEmailOTP: (otp: number, token: string) => Promise<boolean>;
   verifyOTP: (otp: number, token: string) => Promise<boolean>;
-  verifyPhoneOTP: (otp: number, token: string) => Promise<void>;
+  verifyPhoneOTP: (otp: number, token: string) => Promise<boolean>;
   logout: () => void;
 }
 
@@ -85,16 +85,22 @@ export interface AssetInfo {
   name: string;
 }
 
+export type AuthMethod = "email" | "phone-signup" | "phone-signin";
+
 export interface PersistedAuthState {
   user: UserProfile | null;
+  setUser: (user: UserProfile) => void;
   isAuthenticated: boolean;
   setAuthenticated: (isAuthenticated: boolean) => void;
   token: string | null;
-  phoneVerified?: boolean;
+  isPhoneVerified?: boolean;
+  setPhoneVerified?: (isPhoneVerified: boolean) => void;
   loading: boolean;
   error: string | null;
   setError: (error: string | null) => void;
-  identifier: string | null;
+  identifier: string;
+  method?: AuthMethod | null;
+  setMethod?: (method: AuthMethod | null) => void;
 }
 
 export interface ForgotPasswordResponse {

@@ -10,12 +10,13 @@ import Cookies from "js-cookie";
 const authLink = new ApolloLink((operation, forward) => {
   const token = Cookies.get("token");
 
-  operation.setContext({
-    headers: {
-      authorization: token ? `Bearer ${token}` : "",
-    },
-  });
-
+  if (token) {
+    operation.setContext({
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
   return forward(operation);
 });
 

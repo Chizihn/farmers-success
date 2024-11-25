@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 
 const User: React.FC = () => {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const token = useAuthStore((state) => state.token);
   const { logout } = useAuthStore();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -54,7 +54,7 @@ const User: React.FC = () => {
       </button>
       {isModalOpen && (
         <div className="absolute top-full right-[-5px] mt-2 bg-white shadow-md rounded-lg border-[1px] border-gray-200 p-4 w-48 z-50">
-          {isAuthenticated ? (
+          {token ? (
             <div className="space-y-4">
               <Link
                 href="/account/"

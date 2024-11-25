@@ -24,6 +24,8 @@ export interface OrderState {
   singleOrder: Order | null;
   loading: boolean;
   error: Error | null;
+  initialized?: boolean;
+  setInitialized?: (initialized: boolean) => void;
   createOrder: (input: CreateOrder) => Promise<void>;
   fetchProductOrders: (filter?: GetProductOrders) => Promise<void>;
   fetchSingleOrder: (orderId: string) => Promise<void>;
@@ -35,6 +37,10 @@ const useOrderStore = create<OrderState>((set) => ({
   singleOrder: null,
   loading: false,
   error: null,
+  initialized: false,
+  setInitialized: (initialized) => {
+    set({ initialized });
+  },
 
   createOrder: async (input: CreateOrder) => {
     set({ loading: true });
@@ -59,9 +65,9 @@ const useOrderStore = create<OrderState>((set) => ({
       const { data } = await client.query({
         query: GET_PRODUCT_ORDERS,
         variables: { input: filter },
-        fetchPolicy: "no-cache",
+        fetchPolicy: "network-only",
       });
-      set({ productOrders: data.getProductOrders });
+      set({ productOrders: data.getProductOrders, initialized: true });
     } catch (error) {
       console.error("Error fetching product orders:", error);
       set({ error: error as Error });
@@ -90,6 +96,7 @@ const useOrderStore = create<OrderState>((set) => ({
       set({
         singleOrder: data.getProductOrderById,
         loading: false,
+        initialized: true,
       });
     } catch (error) {
       console.error("Error in fetchSingleOrder:", error);

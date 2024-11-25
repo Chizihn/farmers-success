@@ -5,14 +5,11 @@ import { AssetType } from "@/types/category";
 import useAuthStore from "@/store/useAuthStore";
 
 export const useFetchCategories = (assetType: AssetType) => {
-  const { isAuthenticated } = useAuthStore();
   const { categories, loading, error, fetchCategories } = useProductStore();
 
   useEffect(() => {
-    if (!isAuthenticated) return;
-
     fetchCategories(assetType);
-  }, [fetchCategories, assetType, isAuthenticated]);
+  }, [fetchCategories, assetType]);
 
   return {
     categories,

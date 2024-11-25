@@ -24,77 +24,66 @@ interface ProductStore {
   fetchCategories: (assetType: AssetType) => Promise<void>;
 }
 
-const useProductStore = create<ProductStore>()(
-  persist(
-    (set) => ({
-      products: [],
-      product: null,
-      loading: false,
-      initialized: false,
-      error: null,
-      categories: [],
+const useProductStore = create<ProductStore>()((set) => ({
+  products: [],
+  product: null,
+  loading: false,
+  initialized: false,
+  error: null,
+  categories: [],
 
-      setInitialized: (initialized) => {
-        set({ initialized });
-      },
+  setInitialized: (initialized) => {
+    set({ initialized });
+  },
 
-      fetchProducts: async (filter = {}) => {
-        try {
-          set({ loading: true, error: null });
-          const { data } = await client.query({
-            query: GET_PRODUCTS,
-            variables: { input: filter },
-            fetchPolicy: "network-only",
-          });
-          set({ products: data.getProducts, initialized: true });
-        } catch (error) {
-          console.error("Error fetching products:", error);
-          set({ error: error as Error });
-        } finally {
-          set({ loading: false });
-        }
-      },
-
-      fetchProduct: async (getProductId: string) => {
-        set({ loading: true, initialized: false, error: null });
-        try {
-          const { data } = await client.query({
-            query: GET_PRODUCT,
-            variables: { getProductId },
-            fetchPolicy: "cache-first",
-          });
-          set({ product: data.getProduct, initialized: true });
-        } catch (error) {
-          console.error("Error fetching product:", error);
-          set({ error: error as Error });
-        } finally {
-          set({ loading: false });
-        }
-      },
-
-      fetchCategories: async (assetType: AssetType) => {
-        try {
-          set({ loading: true, error: null });
-          const { data } = await client.query({
-            query: GET_ASSET_INFO_TYPES,
-            fetchPolicy: "cache-first",
-            variables: { assetType },
-          });
-          set({ categories: data.getAssetInfoTypes, loading: false });
-        } catch (error) {
-          console.error("Error fetching categories:", error);
-          set({ error: error as Error, loading: false });
-        }
-      },
-    }),
-    {
-      name: "allproducts-storage",
-      storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({
-        products: state.products,
-      }),
+  fetchProducts: async (filter = {}) => {
+    try {
+      set({ loading: true, error: null });
+      const { data } = await client.query({
+        query: GET_PRODUCTS,
+        variables: { input: filter },
+        fetchPolicy: "cache-first",
+      });
+      set({ products: data.getProducts, initialized: true });
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      set({ error: error as Error });
+    } finally {
+      set({ loading: false });
     }
-  )
-);
+  },
+
+  fetchProduct: async (getProductId: string) => {
+    set({ loading: true, initialized: false, error: null });
+    try {
+      const { data } = await client.query({
+        query: GET_PRODUCT,
+        variables: { getProductId },
+        fetchPolicy: "network-only",
+      });
+      set({ product: data.getProduct, initialized: true });
+    } catch (error) {
+      console.error("Error fetching product:", error);
+      set({ error: error as Error });
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  fetchCategories: async (assetType: AssetType) => {
+    try {
+      set({ loading: true, error: null });
+      const { data } = await client.query({
+        query: GET_ASSET_INFO_TYPES,
+        fetchPolicy: "cache-first",
+        variables: { assetType },
+      });
+      set({ categories: data.getAssetInfoTypes, loading: false });
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      set({ error: error as Error, loading: false });
+    }
+  },
+}));
 
 export default useProductStore;

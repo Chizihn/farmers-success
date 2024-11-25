@@ -19,6 +19,8 @@ const Signin = () => {
   const [password, setPassword] = useState<string>("");
   const [phoneNumber, setPhoneNumber] = useState<string>("");
 
+  const loginError = capitalizeFirstChar(error);
+
   const handleEmailSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
@@ -29,7 +31,7 @@ const Signin = () => {
       toast.success("Successfully signed in!");
       router.push("/");
     } else {
-      toast.error(capitalizeFirstChar(error) || "Incorrect credentials");
+      toast.error(loginError || "Invalid credentials");
     }
   };
 
@@ -47,7 +49,7 @@ const Signin = () => {
       toast.success("Successfully signed in!");
       router.push("/verify-otp");
     } else {
-      toast.error(capitalizeFirstChar(error));
+      toast.error(loginError || "Invalid credential");
     }
   };
 
@@ -75,7 +77,7 @@ const Signin = () => {
             type="button"
             className={`px-4 py-2 rounded-l-md ${
               loginMethod === "email"
-                ? "bg-green-600 text-white"
+                ? "bg-green-700 text-white"
                 : "bg-gray-200"
             }`}
             onClick={() => handleLoginMethodChange("email")}
@@ -86,7 +88,7 @@ const Signin = () => {
             type="button"
             className={`px-4 py-2 rounded-r-md ${
               loginMethod === "phone"
-                ? "bg-green-600 text-white"
+                ? "bg-green-700 text-white"
                 : "bg-gray-200"
             }`}
             onClick={() => handleLoginMethodChange("phone")}
@@ -148,15 +150,6 @@ const Signin = () => {
                   borderRadius: "4px 0 0 4px",
                 }}
               />
-
-              <div className="mt-3">
-                <a
-                  href="/forgot-password"
-                  className="text-green-600 hover:text-green-700 transition duration-200"
-                >
-                  Forgot Password?
-                </a>
-              </div>
               <button
                 type="submit"
                 className="w-full bg-green-700 text-white py-2 rounded-md hover:bg-green-800 transition duration-200"

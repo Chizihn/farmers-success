@@ -28,7 +28,7 @@ const useCartStore = create<CartStore>()((set, get) => ({
   totalItems: 0,
   totalPrice: 0,
 
-  // Fetch cart data from GraphQL and merge with local storage
+  // Fetch cart data from GraphQL 
   fetchCart: async () => {
     try {
       const { data } = await client.query({

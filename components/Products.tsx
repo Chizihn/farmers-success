@@ -35,7 +35,7 @@ const Products: React.FC = () => {
   );
 
   // Show loading state until products are initialized
-  if (loading || !initialized) {
+  if (!initialized) {
     return <LoadingState />;
   }
 
