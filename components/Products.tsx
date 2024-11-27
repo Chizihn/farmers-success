@@ -11,12 +11,14 @@ import { AssetType } from "@/types/category";
 import { useFetchCategories } from "@/hooks/useFetchCategories";
 import MobileProductFilter from "./MobileProductFilter";
 import { Product } from "@/types/product";
+import Paginator from "./Paginator";
 
 const Products: React.FC = () => {
   const { products, loading, initialized, error } = useFetchProducts();
   const { categories } = useFetchCategories(AssetType.CROP);
   const [showFilter, setShowFilter] = useState<boolean>(false);
   const [displayProducts, setDisplayProducts] = useState<Product[]>([]);
+  const [paginatedProducts, setPaginatedProducts] = useState<Product[]>([]);
 
   // Initialize display products when products first load
   useEffect(() => {
@@ -52,6 +54,7 @@ const Products: React.FC = () => {
       </div>
     );
   }
+
   // Only render main content when we have products and aren't loading
   return (
     <main>
@@ -87,11 +90,20 @@ const Products: React.FC = () => {
               <p className="text-gray-500 text-lg">No products found</p>
             </div>
           ) : (
-            <div className="bg-gray-50 w-full h-full max-h-full overflow-y-auto grid gap-6 px-3 lg:px-0 grid-cols-1 md:grid-cols-3 lg:grid-cols-4">
-              {displayProducts.map((product: Product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
+            <>
+              <div className="bg-gray-50 w-full h-full max-h-full overflow-y-auto grid gap-6 px-3 lg:px-0 grid-cols-1 md:grid-cols-3 lg:grid-cols-4">
+                {paginatedProducts.map((product: Product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+
+              {/* Add Paginator */}
+              <Paginator
+                products={displayProducts}
+                onPageChange={setPaginatedProducts}
+                itemsPerPage={12} // Adjust based on your grid layout
+              />
+            </>
           )}
         </div>
 
