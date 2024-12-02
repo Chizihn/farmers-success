@@ -65,14 +65,13 @@ const useOrderStore = create<OrderState>((set) => ({
       const { data } = await client.query({
         query: GET_PRODUCT_ORDERS,
         variables: { input: filter },
-        fetchPolicy: "network-only",
       });
-      set({ productOrders: data.getProductOrders, initialized: true });
+      set({ productOrders: data.getProductOrders });
     } catch (error) {
       console.error("Error fetching product orders:", error);
       set({ error: error as Error });
     } finally {
-      set({ loading: false });
+      set({ loading: false, initialized: true });
     }
   },
   fetchSingleOrder: async (orderId: string) => {
@@ -84,7 +83,6 @@ const useOrderStore = create<OrderState>((set) => ({
       const { data } = await client.query({
         query: GET_PRODUCT_ORDER_BY_ID,
         variables: { orderId },
-        fetchPolicy: "network-only",
       });
 
       console.log("Query response:", data);
@@ -95,15 +93,14 @@ const useOrderStore = create<OrderState>((set) => ({
 
       set({
         singleOrder: data.getProductOrderById,
-        loading: false,
-        initialized: true,
       });
     } catch (error) {
       console.error("Error in fetchSingleOrder:", error);
       set({
         error: error as Error,
-        loading: false,
       });
+    } finally {
+      set({ loading: false, initialized: true });
     }
   },
 }));

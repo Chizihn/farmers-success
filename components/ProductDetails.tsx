@@ -69,7 +69,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ id, type }) => {
     );
   }
 
-  if (!product) return <p>No product found</p>;
+  if (!product) return <LoadingState />;
 
   const {
     images,

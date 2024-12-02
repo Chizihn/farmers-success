@@ -9,7 +9,6 @@ import { GetProductsFilter } from "@/types";
 import { AssetInfoType, AssetType } from "@/types/category";
 import { Product } from "@/types/product";
 import { create } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
 
 interface ProductStore {
   products: Product[];
@@ -42,7 +41,6 @@ const useProductStore = create<ProductStore>()((set) => ({
       const { data } = await client.query({
         query: GET_PRODUCTS,
         variables: { input: filter },
-        fetchPolicy: "cache-first",
       });
       set({ products: data.getProducts, initialized: true });
     } catch (error) {
@@ -59,7 +57,6 @@ const useProductStore = create<ProductStore>()((set) => ({
       const { data } = await client.query({
         query: GET_PRODUCT,
         variables: { getProductId },
-        fetchPolicy: "network-only",
       });
       set({ product: data.getProduct, initialized: true });
     } catch (error) {
@@ -75,7 +72,6 @@ const useProductStore = create<ProductStore>()((set) => ({
       set({ loading: true, error: null });
       const { data } = await client.query({
         query: GET_ASSET_INFO_TYPES,
-        fetchPolicy: "cache-first",
         variables: { assetType },
       });
       set({ categories: data.getAssetInfoTypes, loading: false });

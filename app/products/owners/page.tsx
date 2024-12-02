@@ -11,11 +11,6 @@ const Owners: React.FC = () => {
 
   return (
     <section className="w-full min-h-screen pt-3 bg-gray-50 flex justify-center">
-      <aside className="hidden lg:flex w-[20rem] h-screen sticky top-0 overflow-y-auto p-4 bg-white shadow-lg rounded-md">
-        <h2 className="text-lg font-semibold mb-4">Filter Section</h2>
-        {/* Add your filter UI here */}
-      </aside>
-
       <div className="container space-y-6 h-full overflow-y-auto flex-grow p-4">
         <div className="text-center mb-6">
           <h2 className="text-2xl font-bold text-gray-700">
