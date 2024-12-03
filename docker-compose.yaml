@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  marketplace:
+    container_name: farmer-success-marketplace
+    image: node:21.6.0-alpine3.19
+    command:
+      ['sh', '-c', 'npm install --force && npm run build && npm run start']
+    working_dir: /app
+    volumes:
+      - ./:/app
+    ports:
+      - '2201:3000'
+    restart: always
+
+  marketplace-backup:
+    container_name: farmer-success-marketplace-backup
+    image: node:21.6.0-alpine3.19
+    command:
+      ['sh', '-c', 'npm install --force && npm run build && npm run start']
+    working_dir: /app
+    volumes:
+      - ./:/app
+    ports:
+      - '2202:3000'
+    restart: always
