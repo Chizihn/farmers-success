@@ -10,6 +10,7 @@ import { capitalizeFirstChar } from "@/utils";
 import { useRouter } from "next/navigation";
 import useGuestCartStore from "@/store/useGuestCartStore";
 import useAuthStore from "@/store/useAuthStore";
+import { addedToCartFailure, addedToCartSuccess } from "@/utils/toast";
 
 type ProductCardProps = {
   product: Product;
@@ -46,17 +47,26 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   };
 
   const handleAddToCart = async () => {
-    if (quantity > 0 && quantity <= availableQuantity) {
-      addToCart(id, quantity);
+    if (quantity > 0) {
+      const success = await addToCart(product.id, quantity);
+      if (success) {
+        setQuantity(0);
+        addedToCartSuccess();
+      } else {
+        addedToCartFailure();
+      }
+    }
+  };
+  const handleGuestAddToCart = () => {
+    if (quantity > 0) {
+      guestAddToCart({ product, quantity });
       setQuantity(0);
+      addedToCartSuccess();
     }
   };
 
-  const handleGuestAddToCart = async () => {
-    if (quantity > 0 && quantity <= availableQuantity) {
-      guestAddToCart({ product, quantity });
-      setQuantity(0);
-    }
+  const handleViewProduct = (id: string) => {
+    router.push(`/products/${id}`);
   };
 
   return (
@@ -75,11 +85,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
       <div className="flex flex-col justify-between p-4 flex-grow">
         <div className="flex flex-col justify-start items-start space-y-2">
-          <Link href={`/products/${id}`} scroll={false} className="block group">
+          {/* <Link href={`/products/${id}`}  className="block group">
             <h3 className="text-md md:text-lg font-semibold text-gray-800 truncate hover:text-green-600 cursor-pointer">
               {capitalizeFirstChar(name)}
             </h3>
-          </Link>
+          </Link> */}
+          <button onClick={() => handleViewProduct(id)}>
+            <h3 className="text-md md:text-lg font-semibold text-gray-800 truncate hover:text-green-600 cursor-pointer">
+              {capitalizeFirstChar(name)}
+            </h3>
+          </button>
           <div className="w-full flex items-center justify-between ">
             <span className="text-green-600 font-bold">N {price}</span>
             <p className="text-sm text-green-800 line-clamp-2">

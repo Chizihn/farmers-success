@@ -22,7 +22,6 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
   onFilteredProductsChange,
 }) => {
   const pathname = usePathname();
-  const { isAuthenticated } = useAuthStore();
   const [filters, setFilters] = useState<Filters>({
     city: "",
     state: "",

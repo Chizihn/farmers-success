@@ -17,8 +17,8 @@ export interface CartStore {
   totalItems: number;
   totalPrice: number;
   fetchCart: () => Promise<void>;
-  addToCart: (productId: string, quantity: number) => Promise<void>;
-  removeFromCart: (productId: string) => Promise<void>;
+  addToCart: (productId: string, quantity: number) => Promise<boolean>;
+  removeFromCart: (productId: string) => Promise<boolean>;
   updateQuantity: (itemId: string, newQuantity: number) => void;
   clearCart: () => void;
 }
@@ -64,9 +64,11 @@ const useCartStore = create<CartStore>()((set, get) => ({
           quantity: newQuantity,
         },
       });
-      return await get().fetchCart();
+      await get().fetchCart();
+      return true;
     } catch (error) {
       console.error("Failed to add item to cart:", error);
+      return false;
     }
   },
 
@@ -92,9 +94,11 @@ const useCartStore = create<CartStore>()((set, get) => ({
             0
           ),
       }));
-      return await get().fetchCart();
+      await get().fetchCart();
+      return true;
     } catch (error) {
       console.error("Failed to remove item from cart:", error);
+      return false;
     }
   },
 

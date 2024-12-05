@@ -6,12 +6,12 @@ import useCartStore from "@/store/useCartStore";
 import useProductStore from "@/store/useProductStore";
 import { DEFAULT_IMAGE_URL } from "@/constants/default";
 import { capitalizeFirstChar, formatPrice } from "@/utils";
-import Cart from "./Cart";
 import useAuthStore from "@/store/useAuthStore";
 import useGuestCartStore from "@/store/useGuestCartStore";
 import LoadingState from "./Loading";
 import Link from "next/link";
 import ReviewsSummary from "./ReviewBar";
+import { addedToCartFailure, addedToCartSuccess } from "@/utils/toast";
 
 const mockReviews = [
   {
@@ -31,7 +31,6 @@ const mockReviews = [
 interface ProductDetailsProps {
   id: string;
   type: "full" | "view";
-  closeModal?: () => void;
 }
 
 const ProductDetails: React.FC<ProductDetailsProps> = ({ id, type }) => {
@@ -47,11 +46,20 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ id, type }) => {
   const guestAddToCart = useGuestCartStore((state) => state.guestAddToCart);
 
   useEffect(() => {
-    fetchProduct(id);
+    if (id) {
+      useProductStore.setState({ product: null });
+      fetchProduct(id);
+    }
   }, [fetchProduct, id]);
 
-  if (loading && !initialized) {
-    return <LoadingState />;
+  if (!product) return <LoadingState />;
+
+  if (!loading && !product && initialized) {
+    return (
+      <div className="h-screen w-full flex justify-center items-center">
+        <p>We could not find the product you were looking for.</p>
+      </div>
+    );
   }
 
   if (error) {
@@ -68,8 +76,6 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ id, type }) => {
       </>
     );
   }
-
-  if (!product) return <LoadingState />;
 
   const {
     images,
@@ -92,10 +98,15 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ id, type }) => {
     setQuantity((prev) => Math.min(prev + 1, availableQuantity || 1));
   const decrementQuantity = () => setQuantity((prev) => Math.max(prev - 1, 0)); // Prevent going below 0
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (quantity > 0) {
-      addToCart(product.id, quantity);
-      setQuantity(0);
+      const success = await addToCart(product.id, quantity);
+      if (success) {
+        setQuantity(0);
+        addedToCartSuccess();
+      } else {
+        addedToCartFailure();
+      }
     }
   };
 
@@ -103,6 +114,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ id, type }) => {
     if (quantity > 0) {
       guestAddToCart({ product, quantity });
       setQuantity(0);
+      addedToCartSuccess();
     }
   };
 
@@ -116,14 +128,14 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ id, type }) => {
         type === "view" ? "px-4 md:px-10 lg:px-3" : "px-4"
       } `}
     >
-      {type === "view" && (
+      {/* {type === "view" && (
         <div className="py-2 px-2">
           <Cart />
         </div>
-      )}
+      )} */}
       <div
         className={`flex ${
-          type === "full" ? "flex-col md:flex-row" : "flex-col"
+          type === "full" ? "flex-col md:flex-row" : "flex-col mt-10 "
         } justify-evenly gap-6`}
       >
         <div
@@ -133,7 +145,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ id, type }) => {
         >
           <div
             className={`relative border-[4px] border-green-600 rounded-lg ${
-              type === "full" ? "h-[350px] lg:h-[450px]" : "h-[330px]"
+              type === "full" ? "h-[280px] lg:h-[450px]" : "h-[330px]"
             } w-full`}
           >
             <Image
@@ -148,19 +160,19 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ id, type }) => {
               {productImages.map((img, index) => (
                 <div
                   key={index}
-                  className="w-1/4 cursor-pointer"
+                  className="w-1/3 h-20 lg:h-36 relative cursor-pointer"
                   onClick={() => setSelectedImageIndex(index)}
                 >
                   <Image
                     src={img}
                     alt={`${name} thumbnail`}
-                    width={100}
-                    height={100}
+                    fill
                     className={`rounded-lg ${
                       index === selectedImageIndex
                         ? "border-2 border-green-500"
                         : ""
                     }`}
+                    style={{ objectFit: "cover" }}
                   />
                 </div>
               ))}

@@ -5,9 +5,33 @@ import { DEFAULT_PROFILE_IMAGE_URL } from "@/constants/default";
 import { capitalizeFirstChar } from "@/utils";
 import { useFetchOwners } from "@/hooks/useFetchOwners";
 import { ProductOwner } from "@/types/product";
+import LoadingState from "@/components/Loading";
 
 const Owners: React.FC = () => {
-  const owners = useFetchOwners();
+  const { owners, loading, error, initialized } = useFetchOwners();
+
+  // Show loading state while data is being fetched
+  if (loading || !initialized) {
+    return <LoadingState />;
+  }
+
+  // Show error message if there was an error
+  if (error) {
+    return (
+      <div className="w-full min-h-screen flex justify-center items-center">
+        <p>Error loading product owners. Please try again later.</p>
+      </div>
+    );
+  }
+
+  // Show message if owners is empty or undefined
+  if (!owners || owners.length === 0) {
+    return (
+      <div className="w-full min-h-screen flex justify-center items-center">
+        <p>No product owners found.</p>
+      </div>
+    );
+  }
 
   return (
     <section className="w-full min-h-screen pt-3 bg-gray-50 flex justify-center">
@@ -41,7 +65,7 @@ const Owners: React.FC = () => {
                 {capitalizeFirstChar(owner.lastName)}
               </h3>
 
-              <Link href={`/products/owners/${owner.id}`}>
+              <Link href={`/products/owners/${owner.id}`} target="_blank">
                 <button className="w-full bg-green-700 text-white py-2 rounded-md hover:bg-green-800 transition-colors font-medium text-sm">
                   View Owner
                 </button>

@@ -1,11 +1,18 @@
 import { useFetchProducts } from "./useFetchProducts";
 
 export const useFetchOwners = () => {
-  const { products } = useFetchProducts();
+  const { products, loading, error, initialized } = useFetchProducts();
 
-  const owners = Array.from(new Set(products.map((product) => product.user)));
+  const owners = products
+    ? Array.from(new Set(products.map((product) => product.user)))
+    : [];
 
-  return owners;
+  return {
+    owners,
+    loading,
+    error,
+    initialized,
+  };
 };
 
 // import { ProductOwner } from "@/types/product";

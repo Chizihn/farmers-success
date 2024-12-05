@@ -90,9 +90,11 @@ const OwnerDetails = ({ userId }: OwnerDetailsProps) => {
       <div className="container space-y-2 h-full overflow-y-auto flex-grow pb-6">
         <div className="bg-white p-[0.8rem] shadow-md rounded-lg mb-3 flex flex-col lg:flex-row justify-between items-center">
           <h2 className="text-xl font-semibold mb-4 lg:mb-0">
-            {userId
+            {/* {userId
               ? `${capitalizeWords(fullName)}'s Products`
-              : `Available Products (${displayProducts.length})`}
+              : `Available Products (${displayProducts.length})`} */}
+            {`${capitalizeWords(fullName)}'s Products`}{" "}
+            {`(${displayProducts.length})`}
           </h2>
 
           <div className="flex items-center gap-6">
@@ -111,10 +113,7 @@ const OwnerDetails = ({ userId }: OwnerDetailsProps) => {
             ? paginatedProducts
             : displayProducts
           ).map((product: Product) => (
-            <div
-              key={product.id}
-              className="transform transition-all duration-300 hover:scale-[1.02]"
-            >
+            <div key={product.id}>
               <ProductCard product={product} />
             </div>
           ))}

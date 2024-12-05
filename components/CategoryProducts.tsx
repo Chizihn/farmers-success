@@ -7,7 +7,7 @@ import { AssetType } from "@/types/category";
 import { capitalizeFirstChar } from "@/utils";
 import ProductCard from "./ProductCard";
 import Category from "./Category";
-import { Loader2, LoaderCircle } from "lucide-react";
+import { LoaderCircle } from "lucide-react";
 import { Product } from "@/types/product";
 
 interface CategoryProductsProps {
@@ -44,6 +44,8 @@ const CategoryProducts: React.FC<CategoryProductsProps> = ({ categoryId }) => {
     [products, categoryId]
   );
 
+  const categoryName = capitalizeFirstChar(category?.name) as string;
+
   // Handle initial loading state
   useEffect(() => {
     if (!categoriesLoading && !productsLoading) {
@@ -69,11 +71,11 @@ const CategoryProducts: React.FC<CategoryProductsProps> = ({ categoryId }) => {
   );
 
   // Empty state component
-  const EmptyState = () => (
+  const EmptyState = ({ name }: { name: string }) => (
     <div className="flex flex-col items-center justify-center p-8 bg-gray-50 rounded-lg">
       <p className="text-gray-600 text-lg mb-2">No products available</p>
       <p className="text-gray-500 text-center">
-        Check back later for updates to this category.
+        Check back later for updates to {name}
       </p>
     </div>
   );
@@ -81,7 +83,7 @@ const CategoryProducts: React.FC<CategoryProductsProps> = ({ categoryId }) => {
   // Product grid component
   const ProductGrid = useCallback(
     ({ products }: { products: Product[] }) => (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 transition-all duration-300">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 transition-all duration-300 px-4 lg:px-0">
         {products.map((product) => (
           <div
             key={product.id}
@@ -98,11 +100,11 @@ const CategoryProducts: React.FC<CategoryProductsProps> = ({ categoryId }) => {
   // Header component
   const CategoryHeader = useCallback(
     ({ name, count }: { name?: string; count: number }) => (
-      <div className="bg-white p-6 rounded-lg shadow-lg mb-8 transition-all duration-300">
+      <div className="bg-white p-6 rounded-lg shadow-lg mb-4 transition-all duration-300">
         <h2 className="text-2xl font-semibold text-center text-gray-800">
           {capitalizeFirstChar(name || "Products")}
         </h2>
-        <p className="text-center text-gray-600 mt-2">
+        <p className="text-center text-gray-600 mt-0">
           {count} {count === 1 ? "product" : "products"} available
         </p>
       </div>
@@ -125,7 +127,7 @@ const CategoryProducts: React.FC<CategoryProductsProps> = ({ categoryId }) => {
     }
 
     if (!categoryProducts.length) {
-      return <EmptyState />;
+      return <EmptyState name={categoryName} />;
     }
 
     return (
@@ -138,10 +140,10 @@ const CategoryProducts: React.FC<CategoryProductsProps> = ({ categoryId }) => {
 
   return (
     <div className="">
-      <div className="mb-6">
+      <div className="">
         <Category categories={categories} />
       </div>
-      <div className="py-8">
+      <div className="py-1">
         <MainContent />
       </div>
     </div>

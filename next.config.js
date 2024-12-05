@@ -13,15 +13,16 @@ module.exports = {
       },
     ],
   },
-  // async redirects() {
-  //   return [
-  //     {
-  //       source: '/modal/:path*', // Matches any route under /modal
-  //       destination: '/404',     // Redirects to a 404 page
-  //       permanent: false,
-  //     },
-  //   ];
-  // },
 
   swcMinify: true,
 };
+
+// async redirects() {
+//   return [
+//     {
+//       source: '/modal/:path*', // Matches any route under /modal
+//       destination: '/404',     // Redirects to a 404 page
+//       permanent: false,
+//     },
+//   ];
+// },

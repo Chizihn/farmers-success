@@ -1,10 +1,9 @@
-// app/layout.js
-
 import type { Metadata } from "next";
 import "./globals.css";
 import ApolloProviderWrapper from "@/components/ApolloProviderWrapper";
 import { Suspense } from "react";
 import { Toaster } from "react-hot-toast";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "FarmersSuccess | Grow with us",
@@ -19,11 +18,12 @@ export default function RootLayout({
   modal: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="scroll-smooth">
       <body className="max-w-[1400px] w-full mx-auto bg-gray-100 relative">
         <Suspense>
           <ApolloProviderWrapper>
             {children}
+            <Footer />
             {modal}
             <Toaster position="top-right" reverseOrder={false} />
           </ApolloProviderWrapper>

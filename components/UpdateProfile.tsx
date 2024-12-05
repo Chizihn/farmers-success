@@ -7,7 +7,11 @@ import { UPDATE_USER_ACCOUNT } from "@/graphql/mutations";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-const UpdateProfile: React.FC = () => {
+interface UpdateProfileProps {
+  type: "full" | "view";
+}
+
+const UpdateProfile: React.FC<UpdateProfileProps> = ({ type }) => {
   const router = useRouter();
   const { user } = useAuthStore();
   const [updateUserAccount, { loading }] = useMutation(UPDATE_USER_ACCOUNT);
@@ -67,6 +71,9 @@ const UpdateProfile: React.FC = () => {
     router.replace("/account");
   };
 
+  const handleCancel = () => {
+    window.history.back();
+  };
   return (
     <div className=" bg-white overflow-hidden">
       {/* Header */}
@@ -101,7 +108,7 @@ const UpdateProfile: React.FC = () => {
 
       <form onSubmit={handleSubmit} className="p-6 space-y-6">
         {/* Profile Image */}
-        <div className="flex items-center gap-4">
+        {/* <div className="flex items-center gap-4">
           <div className="relative w-24 h-24 rounded-full overflow-hidden bg-gray-100">
             {formData.profileImageURL && (
               <Image
@@ -123,7 +130,7 @@ const UpdateProfile: React.FC = () => {
               placeholder="Enter image URL"
             />
           </div>
-        </div>
+        </div> */}
 
         {/* Personal Information */}
         <div className="space-y-6">
@@ -218,7 +225,7 @@ const UpdateProfile: React.FC = () => {
           <button
             type="button"
             className="px-6 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg mr-4 transition"
-            onClick={() => window.history.back()}
+            onClick={type === "full" ? handleViewProfile : handleCancel}
           >
             Cancel
           </button>

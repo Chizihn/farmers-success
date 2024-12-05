@@ -10,15 +10,34 @@ import "react-phone-input-2/lib/style.css";
 export const Cart: React.FC = () => {
   const { openModal } = useModalStore();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-
   const totalItems = useCartStore((state) => state.totalItems);
   const guestTotalItems = useGuestCartStore((state) => state.guestTotalItems);
+  const { fetchCart } = useCartStore();
 
   const [hasMounted, setHasMounted] = useState<boolean>(false);
 
   useEffect(() => {
-    setHasMounted(true);
-  }, []);
+    let isMounted = true;
+    const fetchCartForAuthUser = async () => {
+      try {
+        if (isMounted && isAuthenticated) {
+          await fetchCart();
+        }
+      } catch (error) {
+        if (isMounted) {
+          console.error("Error fetching cart:", error);
+        }
+      } finally {
+        if (isMounted) {
+          setHasMounted(true);
+        }
+      }
+    };
+    fetchCartForAuthUser();
+    return () => {
+      isMounted = false;
+    };
+  }, [fetchCart, isAuthenticated]);
 
   const handleOpenCart = () => {
     openModal();
@@ -31,9 +50,23 @@ export const Cart: React.FC = () => {
         onClick={handleOpenCart}
       >
         <ShoppingCart size={28} />
-        {hasMounted && (
-          <p className="absolute top-[-6px] right-[-7px] md:top-[-10px] md:right-[-10px] bg-red-600 w-[15px] h-[15px] md:w-[20px] md:h-[20px] rounded-full flex justify-center items-center text-white text-xs md:text-sm ">
-            <strong>{isAuthenticated ? totalItems : guestTotalItems}</strong>
+        {!hasMounted ? null : (
+          <p
+            className={`absolute top-[-6px] right-[-7px] md:top-[-10px] md:right-[-10px] 
+          bg-red-600 flex justify-center items-center text-white 
+          ${
+            (isAuthenticated ? totalItems : guestTotalItems) > 99
+              ? "w-[25px] h-[25px] md:w-[30px] md:h-[30px] text-[10px] md:text-sm"
+              : "w-[15px] h-[15px] md:w-[20px] md:h-[20px] text-xs md:text-sm"
+          } rounded-full`}
+          >
+            <strong>
+              {(isAuthenticated ? totalItems : guestTotalItems) > 99
+                ? "99+"
+                : isAuthenticated
+                ? totalItems
+                : guestTotalItems}
+            </strong>
           </p>
         )}
       </button>

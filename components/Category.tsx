@@ -6,7 +6,6 @@ import Dropdown from "react-dropdown";
 import { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { AssetInfoType } from "@/types/category";
-import useAuthStore from "@/store/useAuthStore";
 
 interface CategoryProps {
   categories: AssetInfoType[];
@@ -16,8 +15,8 @@ const Category: React.FC<CategoryProps> = ({ categories }) => {
   const router = useRouter();
   const pathname = usePathname();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [showLeftScroll, setShowLeftScroll] = useState(false);
-  const [showRightScroll, setShowRightScroll] = useState(false);
+  const [showLeftScroll, setShowLeftScroll] = useState<boolean>(false);
+  const [showRightScroll, setShowRightScroll] = useState<boolean>(false);
 
   const activeCategoryRef = useRef<HTMLButtonElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -71,6 +70,14 @@ const Category: React.FC<CategoryProps> = ({ categories }) => {
       return () => container.removeEventListener("scroll", checkScrollButtons);
     }
   }, []);
+
+  // Update selectedCategory based on pathname
+  useEffect(() => {
+    const activeCategory = categories.find(
+      (category) => `/products/category/${category.id}` === pathname
+    );
+    setSelectedCategory(activeCategory ? activeCategory.name : null);
+  }, [pathname, categories]);
 
   return (
     <>
@@ -148,7 +155,14 @@ const Category: React.FC<CategoryProps> = ({ categories }) => {
               label: capitalizeWords(category.name),
             }))}
             onChange={handleCategorySelect}
-            value={selectedCategory || "Select a category"}
+            value={
+              selectedCategory
+                ? {
+                    value: selectedCategory,
+                    label: capitalizeWords(selectedCategory),
+                  }
+                : "Select a category"
+            }
             placeholder="Select a category"
             className="w-full p-2 border rounded-md"
           />
