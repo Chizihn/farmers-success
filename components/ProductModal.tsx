@@ -26,7 +26,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, children }) => {
     <>
       <div className="fixed inset-0 bg-black bg-opacity-50 z-[9999]"></div>
 
-      <div className="bg-white w-full lg:w-[30rem] h-screen border-l-[3px] border-gray-300 fixed top-0 right-0  z-[10000] p-3">
+      <div className="bg-white w-full lg:w-[30rem] h-screen border-l-[3px] border-gray-300 fixed top-0 right-0  z-[10000] p-3 transition-all duration-300 ease-in-out ">
         {children}
       </div>
     </>

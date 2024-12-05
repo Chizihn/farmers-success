@@ -4,9 +4,10 @@ import Account from "@/components/Account";
 
 const AccountPage = () => {
   return (
-    <main className=" w-full min-h-screen h-full flex justify-center items-center">
-      <div className="max-w-xl "></div>
-      <Account />
+    <main className="min-h-screen h-full flex justify-center items-start lg:py-10">
+      <div className="max-w-xl w-full bg-white shadow-lg ">
+        <Account />
+      </div>
     </main>
   );
 };

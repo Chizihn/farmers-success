@@ -8,12 +8,15 @@ import "react-phone-input-2/lib/style.css";
 import InputField from "../ui/InputField";
 import toast from "react-hot-toast";
 import { capitalizeFirstChar } from "@/utils";
+import useCartStore from "@/store/useCartStore";
 
 const Signin = () => {
   const router = useRouter();
   const [loginMethod, setLoginMethod] = useState<"email" | "phone">("email");
   const { signInWithEmail, signInWithPhone, loading, error, setError } =
     useAuthStore();
+
+  const cartStore = useCartStore.getState();
 
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -29,6 +32,7 @@ const Signin = () => {
     const success = await signInWithEmail(email, password);
     if (success) {
       toast.success("Successfully signed in!");
+      await cartStore.mergeGuestCart();
       router.push("/");
     } else {
       toast.error(loginError || "Invalid credentials");
@@ -47,6 +51,7 @@ const Signin = () => {
 
     if (success) {
       toast.success("Successfully signed in!");
+      await cartStore.mergeGuestCart();
       router.push("/verify-otp");
     } else {
       toast.error(loginError || "Invalid credential");

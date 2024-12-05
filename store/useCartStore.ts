@@ -7,6 +7,7 @@ import {
 } from "@/graphql/mutations";
 import { Product } from "@/types/product";
 import { GET_PRODUCT_CART } from "@/graphql/queries";
+import useGuestCartStore from "./useGuestCartStore";
 export interface CartItem {
   product: Product;
   quantity: number;
@@ -21,6 +22,7 @@ export interface CartStore {
   removeFromCart: (productId: string) => Promise<boolean>;
   updateQuantity: (itemId: string, newQuantity: number) => void;
   clearCart: () => void;
+  mergeGuestCart: () => Promise<void>;
 }
 
 const useCartStore = create<CartStore>()((set, get) => ({
@@ -128,6 +130,22 @@ const useCartStore = create<CartStore>()((set, get) => ({
       totalItems: 0,
       totalPrice: 0,
     })),
+
+  mergeGuestCart: async () => {
+    const guestCartStore = useGuestCartStore.getState();
+
+    try {
+      // Iterate through guest cart items and add them to the main cart
+      for (const guestItem of guestCartStore.guestCartItems) {
+        await get().addToCart(guestItem.product.id, guestItem.quantity);
+      }
+
+      // Clear the guest cart after merging
+      guestCartStore.guestClearCart();
+    } catch (error) {
+      console.error("Failed to merge guest cart:", error);
+    }
+  },
 }));
 
 export default useCartStore;

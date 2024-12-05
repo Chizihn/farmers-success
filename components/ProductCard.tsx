@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import useGuestCartStore from "@/store/useGuestCartStore";
 import useAuthStore from "@/store/useAuthStore";
 import { addedToCartFailure, addedToCartSuccess } from "@/utils/toast";
+import useProductStore from "@/store/useProductStore";
 
 type ProductCardProps = {
   product: Product;
@@ -66,6 +67,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   };
 
   const handleViewProduct = (id: string) => {
+    useProductStore.setState({ product: null });
     router.push(`/products/${id}`);
   };
 

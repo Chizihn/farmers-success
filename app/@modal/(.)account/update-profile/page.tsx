@@ -5,7 +5,7 @@ import UpdateProfile from "@/components/UpdateProfile";
 export default function UpdateProfileModal() {
   return (
     <>
-      <UpdateProfile />
+      <UpdateProfile type="view" />
     </>
   );
 }

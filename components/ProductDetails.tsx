@@ -47,7 +47,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ id, type }) => {
 
   useEffect(() => {
     if (id) {
-      useProductStore.setState({ product: null });
+      // useProductStore.setState({ product: null });
       fetchProduct(id);
     }
   }, [fetchProduct, id]);
@@ -152,7 +152,10 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ id, type }) => {
               src={displayedImage}
               alt={name || "Product"}
               fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               style={{ objectFit: "cover" }}
+              className="transition-opacity duration-300 hover:opacity-90"
+              loading="lazy" // Enable lazy loading for the image
             />
           </div>
           {productImages.length > 1 && type === "full" && (
@@ -173,6 +176,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ id, type }) => {
                         : ""
                     }`}
                     style={{ objectFit: "cover" }}
+                    loading="lazy" // Enable lazy loading for thumbnail images
                   />
                 </div>
               ))}

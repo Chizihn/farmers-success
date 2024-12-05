@@ -28,7 +28,7 @@ const Account: React.FC = () => {
     router.push("/account/update-profile");
   };
   return (
-    <div className="relative">
+    <div className="relative w-full">
       {/* Profile Header */}
       <div className="relative h-32 bg-gradient-to-r from-green-600 to-green-700">
         <button

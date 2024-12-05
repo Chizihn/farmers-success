@@ -8,12 +8,15 @@ import "react-phone-input-2/lib/style.css";
 import InputField from "../ui/InputField";
 import toast from "react-hot-toast";
 import { capitalizeFirstChar } from "@/utils";
+import useCartStore from "@/store/useCartStore";
 
 const Signup = () => {
   const router = useRouter();
   const [signupMethod, setSignupMethod] = useState<"email" | "phone">("email");
   const { signUpWithEmail, signUpWithPhone, loading, error, setError } =
     useAuthStore();
+
+  const cartStore = useCartStore.getState();
 
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -29,6 +32,7 @@ const Signup = () => {
     e.preventDefault();
     const success = await signUpWithEmail(email, password);
     if (success) {
+      await cartStore.mergeGuestCart();
       router.push("/verify-email");
     }
   };
@@ -38,6 +42,7 @@ const Signup = () => {
     const formattedPhoneNumber = phoneNumber.replace(/^\+/, "");
     const success = await signUpWithPhone(formattedPhoneNumber);
     if (success) {
+      await cartStore.mergeGuestCart();
       router.push("/verify-phone");
     }
   };
