@@ -109,7 +109,7 @@ const GuestCheckout: React.FC = () => {
   };
 
   return (
-    <div className="px-1">
+    <div className="min-h-screen h-full w-full px-1">
       <CheckoutHeader />
       <OrderSummary cartItems={guestCartItems} />
       <div className="font-bold mt-2">

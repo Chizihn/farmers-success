@@ -85,7 +85,7 @@ const OTPVerification: React.FC<{
   const isOtpComplete = otp.every((value) => value !== "");
 
   return (
-    <div className="flex items-center justify-center w-full h-screen lg:bg-gray-50">
+    <div className="flex items-center justify-center w-full h-screen bg-white lg:bg-gray-50">
       <div className="w-full lg:max-w-lg p-6 bg-white lg:shadow-md lg:rounded-lg md:w-[40rem] flex flex-col justify-center items-center gap-2">
         <h1 className="text-2xl font-bold text-green-700 mb-4 text-center">
           Verify Your OTP
