@@ -220,7 +220,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ id, type }) => {
                 <span className="font-semibold">Product owner:</span>{" "}
                 <Link
                   href={`/products/owners/${user.id}`}
-                  className="text-green-600 font-semibold"
+                  className="text-green-600 font-semibold hover:text-green-700"
                 >
                   {fullName}
                 </Link>

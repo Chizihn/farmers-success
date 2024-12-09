@@ -7,6 +7,7 @@ import useModalStore from "@/store/useModalStore";
 import { capitalizeFirstChar } from "@/utils";
 import CloseButton from "./ui/CloseButton";
 import { deletedFromCartFailure, deletedFromCartSuccess } from "@/utils/toast";
+import { getVerificationMessage } from "@/utils/auth";
 
 const CartPage: React.FC = () => {
   const { closeModal, openCheckoutModal } = useModalStore();
@@ -36,59 +37,70 @@ const CartPage: React.FC = () => {
     }
   };
 
-  const getVerificationMessage = () => {
-    switch (method) {
-      case "email":
-        if (!user?.isEmailVerified) {
-          return {
-            message: "You need to verify your email address to view your cart.",
-            route: "/verify-email",
-            buttonText: "Verify Email",
-          };
-        }
-        break;
+  // const getVerificationMessage = () => {
+  //   switch (method) {
+  //     case "email":
+  //       if (!user?.isEmailVerified) {
+  //         return {
+  //           message: "You need to verify your email address to view your cart.",
+  //           route: "/verify-email",
+  //           buttonText: "Verify Email",
+  //         };
+  //       }
+  //       break;
 
-      case "phone-signup":
-        if (!user?.isPhoneVerified) {
-          return {
-            message:
-              "You need to verify your phone number to access your cart.",
-            route: "/verify-phone",
-            buttonText: "Verify Phone",
-          };
-        }
-        break;
+  //     case "phone-signup":
+  //       if (!isPhoneVerified) {
+  //         return {
+  //           message:
+  //             "You need to verify your phone number to access your cart.",
+  //           route: "/verify-phone",
+  //           buttonText: "Verify Phone",
+  //         };
+  //       }
+  //       break;
 
-      case "phone-signin":
-        if (isPhoneVerified) {
-          return {
-            message:
-              "You need to verify your login session to access your cart.",
-            route: "/verify-otp",
-            buttonText: "Verify",
-          };
-        }
-        break;
+  //     case "phone-signin":
+  //       if (!isPhoneVerified) {
+  //         return {
+  //           message:
+  //             "You need to authorize your login session to access your cart.",
+  //           route: "/verify-otp",
+  //           buttonText: "Verify",
+  //         };
+  //       }
+  //       break;
 
-      default:
-        return null;
-    }
-    return null;
-  };
+  //     default:
+  //       return null;
+  //   }
 
-  const verificationInfo = getVerificationMessage();
+  //   return null;
+  // };
+
+  const verificationInfo = getVerificationMessage(
+    method,
+    user,
+    isPhoneVerified,
+    "cart"
+  );
 
   return (
     <div className="h-full flex flex-col">
+      <div className="fixed right-4 top-4 ">
+        <CloseButton onClick={handleCloseCartPage} />
+      </div>
       {verificationInfo ? (
-        <div className="p-4 bg-red-100 text-red-700 rounded-lg mb-4">
-          <p>{verificationInfo.message}</p>
-          <button
-            onClick={() => (window.location.href = verificationInfo.route)}
-            className="mt-3 w-full bg-green-700 text-white font-semibold py-3 rounded-lg hover:bg-green-800 transition-colors duration-200"
-          >
-            {verificationInfo.buttonText}
-          </button>
+        <div className="h-full flex justify-center items-center">
+          <div className="p-4  text-red-700 rounded-lg mb-4">
+            <p className="">{verificationInfo.message}</p>
+            <button
+              onClick={() => (window.location.href = verificationInfo.route)}
+              className="mt-3 w-full bg-green-700 text-white font-semibold py-3 rounded-lg hover:bg-green-800 transition-colors duration-200"
+            >
+              {verificationInfo.buttonText}
+            </button>
+          </div>
         </div>
       ) : (
         <>
@@ -135,7 +147,7 @@ const CartPage: React.FC = () => {
                               Math.max(0, item.quantity - 1)
                             )
                           }
-                          className="p-1 rounded-xl bg-gray-200 hover:bg-gray-300"
+                          className="p-1 rounded-lg bg-gray-200 hover:bg-gray-300"
                         >
                           <Minus size={16} />
                         </button>
@@ -146,7 +158,7 @@ const CartPage: React.FC = () => {
                           onClick={() =>
                             updateQuantity(item.product.id, item.quantity + 1)
                           }
-                          className="p-1 rounded-xl bg-gray-200 hover:bg-gray-300"
+                          className="p-1 rounded-lg bg-gray-200 hover:bg-gray-300"
                         >
                           <Plus size={16} />
                         </button>
@@ -162,7 +174,7 @@ const CartPage: React.FC = () => {
                   </div>
                 ))}
               </div>
-              <div className="border-t p-4">
+              <div className="sticky bottom-0 bg-white p-4 border-t">
                 <div className="flex justify-between items-center mb-4">
                   <span className="text-xl font-bold">Total:</span>
                   <span className="text-xl font-bold">

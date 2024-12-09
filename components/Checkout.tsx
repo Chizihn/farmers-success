@@ -111,7 +111,7 @@ const Checkout: React.FC = () => {
   };
 
   return (
-    <div className="px-1">
+    <div className="min-h-screen h-full w-full px-1">
       <CheckoutHeader />
       <OrderSummary cartItems={cartItems} />
       <div className="font-bold mt-2">Total: N{formatPrice(totalPrice)}</div>

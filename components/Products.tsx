@@ -24,6 +24,8 @@ const Products: React.FC = () => {
   useEffect(() => {
     if (products?.length > 0) {
       setDisplayProducts(products);
+      // Ensure initial pagination is set
+      setPaginatedProducts(products.slice(0, 12)); // Assuming 12 items per page
     }
   }, [products]);
 
@@ -32,13 +34,26 @@ const Products: React.FC = () => {
   const handleFilteredProductsChange = useCallback(
     (filteredProducts: Product[]) => {
       setDisplayProducts(filteredProducts);
+      // Reset pagination when filters change
+      setPaginatedProducts(filteredProducts.slice(0, 12));
     },
     []
   );
 
   // Show loading state until products are initialized
-  if (!initialized) {
-    return <LoadingState />;
+  if (loading || !initialized) return <LoadingState />;
+
+  // (!loading && initialized && !products) || products.length === 0
+
+  if (!loading && !products && initialized) {
+    return (
+      <div className="h-screen w-full flex justify-center items-center">
+        <p className="text-center text-gray-500">
+          No products are currently available. <br />
+          Please check back later or refresh the page.
+        </p>
+      </div>
+    );
   }
 
   // Only show error if we're not loading and there's an error
@@ -55,7 +70,6 @@ const Products: React.FC = () => {
     );
   }
 
-  // Only render main content when we have products and aren't loading
   return (
     <main>
       <Category categories={categories} />
@@ -85,7 +99,7 @@ const Products: React.FC = () => {
             </div>
           </div>
 
-          {displayProducts.length === 0 ? (
+          {products.length === 0 || displayProducts.length === 0 ? (
             <div className="w-full h-64 flex items-center justify-center">
               <p className="text-gray-500 text-lg">No products found</p>
             </div>
