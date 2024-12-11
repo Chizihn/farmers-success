@@ -48,7 +48,7 @@ export function middleware(request: NextRequest) {
   if (pathname === "/reset-password") {
     const resetToken = request.cookies.get("reset_token")?.value;
     if (!resetToken) {
-      return redirectTo("/forgotpassword"); // Redirect to forgot password if reset_token is missing
+      return redirectTo("/forgot-password"); // Redirect to forgot password if reset_token is missing
     }
     return NextResponse.next(); // Allow access if reset_token is present
   }

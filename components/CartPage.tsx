@@ -87,21 +87,23 @@ const CartPage: React.FC = () => {
 
   return (
     <div className="h-full flex flex-col">
-      <div className="fixed right-4 top-4 ">
-        <CloseButton onClick={handleCloseCartPage} />
-      </div>
       {verificationInfo ? (
-        <div className="h-full flex justify-center items-center">
-          <div className="p-4  text-red-700 rounded-lg mb-4">
-            <p className="">{verificationInfo.message}</p>
-            <button
-              onClick={() => (window.location.href = verificationInfo.route)}
-              className="mt-3 w-full bg-green-700 text-white font-semibold py-3 rounded-lg hover:bg-green-800 transition-colors duration-200"
-            >
-              {verificationInfo.buttonText}
-            </button>
+        <>
+          <div className="fixed right-4 top-4 ">
+            <CloseButton onClick={handleCloseCartPage} />
           </div>
-        </div>
+          <div className="h-full flex justify-center items-center">
+            <div className="p-4  text-red-700 rounded-lg mb-4">
+              <p className="">{verificationInfo.message}</p>
+              <button
+                onClick={() => (window.location.href = verificationInfo.route)}
+                className="mt-3 w-full bg-green-700 text-white font-semibold py-3 rounded-lg hover:bg-green-800 transition-colors duration-200"
+              >
+                {verificationInfo.buttonText}
+              </button>
+            </div>
+          </div>
+        </>
       ) : (
         <>
           <div className="p-4 border-b flex justify-between items-center">
