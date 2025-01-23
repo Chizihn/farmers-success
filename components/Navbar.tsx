@@ -14,7 +14,7 @@ import Checkout from "./Checkout";
 import PaymentSuccess from "./PaymentSuccess";
 
 const Navbar = () => {
-  const { isModalOpen, isCheckoutModalOpen, isPaymentSuccess } =
+  const { isModalOpen, closeModal, isCheckoutModalOpen, isPaymentSuccess } =
     useModalStore();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
@@ -30,7 +30,7 @@ const Navbar = () => {
       </div>
 
       {isModalOpen && (
-        <Modal isOpen={isModalOpen}>
+        <Modal isOpen={isModalOpen} setIsOpen={closeModal} title="Your Cart">
           {isAuthenticated ? <CartPage /> : <GuestCartPage />}
         </Modal>
       )}

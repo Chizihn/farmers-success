@@ -68,7 +68,7 @@ const Signin = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 lg:bg-gray-50">
-      <div className="w-full h-full lg:max-w-lg p-6 bg-white lg:shadow-md lg:rounded-lg md:w-[40rem] flex flex-col justify-center items-center gap-2">
+      <div className="w-full h-full lg:max-w-xl p-6 bg-white lg:shadow-md lg:rounded-lg md:w-[40rem] flex flex-col justify-center items-center gap-2">
         <h1 className="text-2xl font-bold text-green-700 text-center">
           Welcome To Farmer Success Marketplace
         </h1>
@@ -180,7 +180,8 @@ const Signin = () => {
           <p className="mt-4 text-sm text-gray-500">
             By continuing, you agree to Farmersuccess{`'`}s{" "}
             <a
-              href="#"
+              href="https://farmersuccess.com/terms-of-use"
+              target="_blank"
               className="text-green-600 underline hover:text-green-700"
             >
               Terms and Conditions

@@ -13,20 +13,7 @@ import {
 import client from "@/lib/apolloClient";
 import { GET_USER } from "@/graphql/queries";
 import { AuthState, UserProfile } from "@/types";
-
-// Custom storage object for cookies
-const cookieStorage = {
-  getItem: (name: string): string | null => {
-    const value = Cookies.get(name);
-    return value ? value : null;
-  },
-  setItem: (name: string, value: string): void => {
-    Cookies.set(name, value, { expires: 30 });
-  },
-  removeItem: (name: string): void => {
-    Cookies.remove(name);
-  },
-};
+import { cookieStorage } from "@/utils/session";
 
 const useAuthStore = create<AuthState>()(
   devtools(
@@ -51,8 +38,12 @@ const useAuthStore = create<AuthState>()(
           set({ error });
         },
 
-        setAuthenticated: (isAuthenticated: boolean) => {
-          set({ isAuthenticated });
+        setAuthenticated: (auth) => {
+          if (auth.token) {
+            cookieStorage.setItem("token", auth.token);
+            cookieStorage.setItem("auth_timestamp", Date.now().toString());
+          }
+          set(auth);
         },
         signInWithEmail: async (email: string, password: string) => {
           try {
@@ -286,6 +277,18 @@ const useAuthStore = create<AuthState>()(
         },
 
         fetchUserDetails: async (token: string) => {
+          // Add validation
+          if (!token) {
+            console.error("No token found");
+            get().logout();
+            return null;
+          }
+          if (typeof token !== "string") {
+            console.error("Invalid token format");
+            get().logout();
+            return null;
+          }
+
           try {
             const userResponse = await client.query({
               query: GET_USER,
@@ -294,14 +297,27 @@ const useAuthStore = create<AuthState>()(
                   Authorization: `Bearer ${token}`,
                 },
               },
+              fetchPolicy: "network-only",
             });
+
+            // Add response validation
+            if (!userResponse?.data?.user) {
+              throw new Error("Invalid user data received");
+            }
+
             const fetchedUser = userResponse.data.user;
             set({ user: fetchedUser, isAuthenticated: true });
-
-            // Save user to localStorage for persistence
-            cookieStorage.setItem("user", JSON.stringify(fetchedUser));
+            return fetchedUser;
           } catch (error) {
-            set({ error: (error as Error).message });
+            console.error("Error fetching user by token:", error);
+            // Only logout if it's an auth error
+            if (
+              (error as Error).message.includes("unauthorized") ||
+              (error as Error).message.includes("invalid token")
+            ) {
+              get().logout();
+            }
+            return null;
           }
         },
         logout: () => {
@@ -322,13 +338,28 @@ const useAuthStore = create<AuthState>()(
       {
         name: "auth-storage",
         storage: createJSONStorage(() => cookieStorage),
-        onRehydrateStorage: () => (state) => {
+        onRehydrateStorage: () => async (state) => {
+          if (!state) return;
           const token = cookieStorage.getItem("token");
           if (token) {
-            state?.setAuthenticated(true);
-            state?.fetchUserDetails(token);
+            try {
+              const fetchedUser = await state.fetchUserDetails(token);
+              if (fetchedUser) {
+                state.setAuthenticated({
+                  user: fetchedUser,
+                  token,
+                  isAuthenticated: true,
+                });
+              }
+            } catch (error) {
+              console.error("Rehydration error:", error);
+              state.logout();
+            }
+          } else {
+            state.logout();
           }
         },
+
         partialize: (state) => ({
           user: state.user,
           token: state.token,

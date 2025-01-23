@@ -2,9 +2,14 @@ import { AssetType } from "./category";
 import { OtpActivity } from "./forms";
 
 export interface AuthState extends PersistedAuthState {
+  setUser: (user: UserProfile) => void;
+  setAuthenticated: (auth: PersistedAuthState) => void;
+  setPhoneVerified?: (isPhoneVerified: boolean) => void;
+  setError: (error: string | null) => void;
+  setMethod?: (method: AuthMethod | null) => void;
   signInWithEmail: (email: string, password: string) => Promise<boolean>;
   signInWithPhone: (phoneNumber: string) => Promise<boolean>;
-  fetchUserDetails: (token: string) => Promise<void>;
+  fetchUserDetails: (token: string) => Promise<UserProfile>;
   signUpWithEmail: (email: string, password: string) => Promise<boolean>;
   signUpWithPhone: (phoneNumber: string) => Promise<boolean>;
   verifyEmailOTP: (otp: number, token: string) => Promise<boolean>;
@@ -88,19 +93,14 @@ export interface AssetInfo {
 export type AuthMethod = "email" | "phone-signup" | "phone-signin";
 
 export interface PersistedAuthState {
-  user: UserProfile | null;
-  setUser: (user: UserProfile) => void;
-  isAuthenticated: boolean;
-  setAuthenticated: (isAuthenticated: boolean) => void;
-  token: string | null;
+  user?: UserProfile | null;
+  isAuthenticated?: boolean;
+  token?: string | null;
   isPhoneVerified?: boolean;
-  setPhoneVerified?: (isPhoneVerified: boolean) => void;
-  loading: boolean;
-  error: string | null;
-  setError: (error: string | null) => void;
-  identifier: string;
+  loading?: boolean;
+  error?: string | null;
+  identifier?: string;
   method?: AuthMethod | null;
-  setMethod?: (method: AuthMethod | null) => void;
 }
 
 export interface ForgotPasswordResponse {

@@ -8,6 +8,7 @@ import { capitalizeFirstChar } from "@/utils";
 import CloseButton from "./ui/CloseButton";
 import { deletedFromCartFailure, deletedFromCartSuccess } from "@/utils/toast";
 import { getVerificationMessage } from "@/utils/auth";
+import { UserProfile } from "@/types";
 
 const CartPage: React.FC = () => {
   const { closeModal, openCheckoutModal } = useModalStore();
@@ -80,7 +81,7 @@ const CartPage: React.FC = () => {
 
   const verificationInfo = getVerificationMessage(
     method,
-    user,
+    user as UserProfile,
     isPhoneVerified,
     "cart"
   );
@@ -106,11 +107,6 @@ const CartPage: React.FC = () => {
         </>
       ) : (
         <>
-          <div className="p-4 border-b flex justify-between items-center">
-            <h2 className="text-2xl font-bold">Your Cart</h2>
-            <CloseButton onClick={handleCloseCartPage} />
-          </div>
-
           {cartItems.length === 0 ? (
             <div className="flex-grow flex items-center justify-center">
               <p className="text-gray-500 text-lg">Your cart is empty.</p>

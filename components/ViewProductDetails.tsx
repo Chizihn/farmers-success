@@ -34,7 +34,7 @@ const ViewProductDetails: React.FC<ViewProductDetailsProps> = ({ id }) => {
           <h3 className="text-lg font-medium text-gray-900 mb-2">
             Error Loading Product
           </h3>
-          <p className="text-gray-500 mb-4">{error.message}</p>
+          <p className="text-gray-500 mb-4">{error}</p>
         </div>
       </div>
     );

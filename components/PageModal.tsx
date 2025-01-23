@@ -1,7 +1,6 @@
 "use client";
-import { X } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import CloseButton from "./ui/CloseButton";
 
 interface PageModalProps {
@@ -14,50 +13,63 @@ const PageModal: React.FC<PageModalProps> = ({ isOpen, children, onClose }) => {
   const pathname = usePathname();
   const isUpdateProfilePage =
     pathname === "/account/update-profile" || pathname.includes("/orders/");
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
 
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
+  const [isVisible, setIsVisible] = useState<boolean>(false);
+  const [isClosing, setIsClosing] = useState<boolean>(false);
+
+  // Handle closing animation
+  const handleClose = useCallback(() => {
+    setIsClosing(true);
+    setIsVisible(false);
+    onClose(); // Call the onClose prop to update parent state
   }, [onClose]);
 
+  // Handle escape key press
   useEffect(() => {
+    const handleEscapeKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        handleClose();
+      }
+    };
+
     if (isOpen) {
-      document.body.style.overflow = "hidden"; // Disable scrolling
-    } else {
-      document.body.style.overflow = ""; // Restore scrolling
+      setIsVisible(true);
+      setIsClosing(false);
+      document.addEventListener("keydown", handleEscapeKey);
     }
 
     return () => {
-      document.body.style.overflow = ""; // Clean up on unmount
+      document.removeEventListener("keydown", handleEscapeKey);
     };
-  }, [isOpen]);
+  }, [handleClose, isOpen]);
 
-  if (!isOpen) return null;
+  // Don't render anything if the modal is not open and not in closing state
+  if (!isOpen && !isClosing) return null;
 
   return (
-    <>
-      {/* Backdrop */}
-      <div className="fixed inset-0 bg-black bg-opacity-50 z-50" />
-
-      {/* Modal Container */}
+    <div
+      className={`fixed top-0 left-0 inset-0 z-[1000] flex items-center justify-end 
+        bg-black/50 transition-opacity duration-300 ${
+          isVisible ? "opacity-100" : "opacity-0"
+        }`}
+    >
       <div
-        className="fixed top-0 right-0 w-full max-h-screen h-full lg:w-[32rem] bg-white shadow-xl z-50 flex flex-col overflow-y-auto"
+        className={`min-h-screen h-full overflow-y-auto relative w-full 
+          lg:max-w-[30rem] bg-white shadow-xl my-4 transform transition-transform 
+          duration-300 ${isVisible ? "translate-x-0" : "translate-x-full"}`}
         role="dialog"
         aria-modal="true"
       >
-        {isUpdateProfilePage ? null : (
+        {!isUpdateProfilePage && (
           <div className="absolute top-4 right-4">
-            <CloseButton onClick={onClose} />
+            <CloseButton onClick={handleClose} />
           </div>
         )}
 
         {/* Modal Body */}
         <div className="flex-1">{children}</div>
       </div>
-    </>
+    </div>
   );
 };
 

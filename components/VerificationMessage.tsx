@@ -1,4 +1,5 @@
 import useAuthStore from "@/store/useAuthStore";
+import { UserProfile } from "@/types";
 import { getVerificationMessage } from "@/utils/auth";
 import Link from "next/link";
 
@@ -7,7 +8,7 @@ const VerificationMessage = () => {
 
   const verificationInfo = getVerificationMessage(
     method,
-    user,
+    user as UserProfile,
     isPhoneVerified
   );
 

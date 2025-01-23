@@ -18,6 +18,6 @@ export const useFetchProducts = (initialFilter?: GetProductsFilter) => {
     loading,
     initialized,
     error,
-    refetch: fetchProducts, // Expose for manual re-fetching
+    refetch: fetchProducts, 
   };
 };

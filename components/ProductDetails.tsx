@@ -70,7 +70,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ id, type }) => {
             <h3 className="text-lg font-medium text-gray-900 mb-2">
               Error Loading Product
             </h3>
-            <p className="text-gray-500 mb-4">{error.message}</p>
+            <p className="text-gray-500 mb-4">{error}</p>
           </div>
         </div>
       </>
@@ -128,11 +128,6 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ id, type }) => {
         type === "view" ? "px-4 md:px-10 lg:px-3" : "px-4"
       } `}
     >
-      {/* {type === "view" && (
-        <div className="py-2 px-2">
-          <Cart />
-        </div>
-      )} */}
       <div
         className={`flex ${
           type === "full" ? "flex-col md:flex-row" : "flex-col mt-10 "

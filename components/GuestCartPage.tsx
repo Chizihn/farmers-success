@@ -5,6 +5,7 @@ import useModalStore from "@/store/useModalStore";
 import { capitalizeFirstChar } from "@/utils";
 import useGuestCartStore from "@/store/useGuestCartStore";
 import CloseButton from "./ui/CloseButton";
+import toast from "react-hot-toast";
 
 const GuestCartPage: React.FC = () => {
   const { closeModal, openCheckoutModal } = useModalStore();
@@ -31,16 +32,12 @@ const GuestCartPage: React.FC = () => {
 
   const handleDeleteProduct = (id: string) => {
     guestRemoveFromCart(id);
+    toast.success("Removed item from cart!");
     console.log("deleted", id);
   };
 
   return (
     <div className="h-full flex flex-col">
-      <div className="p-4 border-b flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Your Cart</h2>
-        <CloseButton onClick={handleCloseGuestCartPage} />
-      </div>
-
       {guestCartItems.length === 0 ? (
         <div className="flex-grow flex items-center justify-center">
           <p className="text-gray-500 text-lg">Your cart is empty.</p>
