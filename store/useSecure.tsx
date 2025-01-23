@@ -24,17 +24,12 @@ interface SecureState extends PersistedAuthState {
 
 const useSecureStore = create<SecureState>()((set, get) => ({
   user: null,
-  setUser: (user) => set({ user }),
+
   isAuthenticated: false,
   token: null,
   loading: false,
   error: null,
-  setError: (error) => {
-    set({ error });
-  },
   identifier: "",
-
-  setAuthenticated: (isAuthenticated) => set({ isAuthenticated }),
 
   forgotPassword: async (email: string) => {
     set({ loading: true, error: null });

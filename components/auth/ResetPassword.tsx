@@ -56,8 +56,8 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ token }) => {
         router.push("/signin");
       }
     } catch (err) {
+      toast.error(error as string);
       console.error("Password reset failed:", err);
-      toast.error(error);
     } finally {
       setLoading(false);
     }

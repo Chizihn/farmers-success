@@ -57,7 +57,7 @@ const OwnerDetails = ({ userId }: OwnerDetailsProps) => {
       <div className="w-full min-h-screen flex items-center justify-center">
         <div className="bg-white p-6 rounded-lg shadow-md">
           <p className="text-red-600 font-medium">
-            Error loading products: {error.message}
+            Error loading products: {error}
           </p>
           <p className="text-gray-600 mt-2">Please try refreshing the page</p>
         </div>

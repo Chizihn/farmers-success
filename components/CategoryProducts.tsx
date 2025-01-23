@@ -115,11 +115,7 @@ const CategoryProducts: React.FC<CategoryProductsProps> = ({ categoryId }) => {
   // Main content
   const MainContent = () => {
     if (categoriesError || productsError) {
-      return (
-        <ErrorDisplay
-          message={categoriesError?.message || productsError?.message || ""}
-        />
-      );
+      return <ErrorDisplay message={categoriesError || productsError || ""} />;
     }
 
     if (isInitialLoad || categoriesLoading || productsLoading) {

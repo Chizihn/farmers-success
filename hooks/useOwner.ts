@@ -15,7 +15,7 @@ export const useOwner = (
   }
 
   if (error) {
-    return { owner: null, loading: false, error };
+    return { owner: null, loading: false, error: null };
   }
 
   // Find the first product by this user and get their details
