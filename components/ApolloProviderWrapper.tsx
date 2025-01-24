@@ -5,8 +5,8 @@ import { ApolloProvider } from "@apollo/client";
 import client from "../lib/apolloClient";
 import useAuthStore from "@/store/useAuthStore";
 import useCartStore from "@/store/useCartStore";
-import { Loader } from "./Loader";
 import useProductStore from "@/store/useProductStore";
+import LoadingState from "./Loading";
 
 interface ApolloProviderWrapperProps {
   children: ReactNode;
@@ -15,27 +15,41 @@ interface ApolloProviderWrapperProps {
 const ApolloProviderWrapper = ({ children }: ApolloProviderWrapperProps) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const { fetchCart } = useCartStore();
-  const { fetchProducts } = useProductStore();
+  const { initialized, fetchProducts } = useProductStore();
+  const fetchAllProducts = useCallback(async () => {
+    try {
+      if (!initialized) {
+        await fetchProducts();
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  }, [fetchProducts, initialized]);
   const fetchCartForAuthUser = useCallback(async () => {
     try {
-      fetchProducts();
       if (isAuthenticated) {
         await fetchCart();
       }
     } catch (error) {
       console.error("Error fetching cart:", error);
     }
-  }, [fetchCart, fetchProducts, isAuthenticated]);
+  }, [fetchCart, isAuthenticated]);
 
   useEffect(() => {
-    console.log("function ran");
-
+    fetchAllProducts();
     fetchCartForAuthUser();
-  }, [fetchCart, fetchCartForAuthUser, isAuthenticated]);
+    console.log("function ran");
+  }, [
+    fetchAllProducts,
+    fetchCart,
+    fetchCartForAuthUser,
+    fetchProducts,
+    isAuthenticated,
+  ]);
 
   return (
     <ApolloProvider client={client}>
-      <Suspense fallback={<Loader />}>{children}</Suspense>
+      <Suspense fallback={<LoadingState />}>{children}</Suspense>
     </ApolloProvider>
   );
 };
