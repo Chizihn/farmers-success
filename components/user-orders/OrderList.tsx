@@ -1,22 +1,10 @@
-"use client";
 import { Package } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import LoadingState from "../Loading";
 import { capitalizeFirstChar } from "@/utils";
-import { useFetchOrders } from "@/hooks/useFetchOrders";
+import { Order } from "@/types/order";
 
-const OrderList: React.FC = () => {
-  const { productOrders: orders, initialized, error } = useFetchOrders();
-
-  if (!initialized) {
-    return <LoadingState />;
-  }
-
-  if (error) {
-    return <ErrorState message={error.message} />;
-  }
-
+const OrderList: React.FC<{ orders: Order[] }> = ({ orders }) => {
   return (
     <div className="p-3 bg-gray-50 min-h-screen">
       <h1 className="text-2xl font-bold mb-6">Your Orders</h1>
@@ -41,7 +29,7 @@ const OrderList: React.FC = () => {
   );
 };
 
-const ErrorState: React.FC<{ message: string }> = ({ message }) => (
+export const ErrorState: React.FC<{ message: string }> = ({ message }) => (
   <div className="flex flex-col items-center justify-center min-h-screen text-red-500">
     <p className="text-lg font-medium">Error loading orders: {message}</p>
     <Link href="/" className="bg-green-700 p-3 text-white rounded-lg mt-2">

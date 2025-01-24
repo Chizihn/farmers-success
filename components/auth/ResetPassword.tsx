@@ -8,6 +8,7 @@ import useSecureStore from "@/store/useSecure";
 
 import { capitalizeFirstChar } from "@/utils";
 import toast from "react-hot-toast";
+import Button from "../ui/Button";
 
 interface ResetPasswordProps {
   token: string;
@@ -98,13 +99,14 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ token }) => {
             className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:border-green-600"
           />
 
-          <button
+          <Button
             type="submit"
-            className="w-full bg-green-700 text-white py-2 rounded-md hover:bg-green-800 transition duration-200"
-            disabled={!isComplete}
+            className="w-full"
+            disabled={!isComplete || loading}
+            loading={loading}
           >
-            {loading ? "Resetting..." : "Reset password"}
-          </button>
+            Reset password
+          </Button>
         </form>
 
         <ResendOtp activity="forgot_password" />

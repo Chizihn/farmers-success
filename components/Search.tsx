@@ -12,10 +12,11 @@ const ProductSearch: React.FC = () => {
 
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [suggestions, setSuggestions] = useState<Product[]>([]);
-  const [activeSuggestion, setActiveSuggestion] = useState<number>(-1); // Track active suggestion
+  const [activeSuggestion, setActiveSuggestion] = useState<number>(-1);
   const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [noResultsFound, setNoResultsFound] = useState<boolean>(false);
 
-  // Debounce function to reduce filtering frequency
   const debounce = (func: Function, delay: number) => {
     let timeout: NodeJS.Timeout;
     return (...args: any[]) => {
@@ -27,13 +28,23 @@ const ProductSearch: React.FC = () => {
   const filterSuggestions = useCallback(
     debounce((term: string) => {
       if (term) {
-        setSuggestions(
-          products.filter((product) =>
-            product.name.toLowerCase().includes(term.toLowerCase().trim())
-          )
+        setLoading(true);
+        setNoResultsFound(false);
+
+        const filtered = products.filter((product) =>
+          product.name.toLowerCase().includes(term.toLowerCase().trim())
         );
+
+        // Add a slight delay to simulate loading and improve UX
+        setTimeout(() => {
+          setSuggestions(filtered);
+          setLoading(false);
+          setNoResultsFound(filtered.length === 0);
+        }, 300);
       } else {
         setSuggestions([]);
+        setLoading(false);
+        setNoResultsFound(false);
       }
     }, 300),
     [products]
@@ -90,23 +101,28 @@ const ProductSearch: React.FC = () => {
             setShowSuggestions(true);
           }}
           onKeyDown={handleKeyDown}
-          className="w-full border-2 border-gray-300 p-2 rounded-lg focus:none "
+          className="w-full border-2 border-gray-300 p-2 rounded-lg focus:none"
           placeholder="Search product..."
         />
-        {showSuggestions && (
+        {showSuggestions && searchTerm.trim() && (
           <ul className="absolute top-full left-0 w-full bg-white border shadow-md z-10 max-h-60 overflow-y-auto">
-            {suggestions.length > 0 &&
+            {loading ? (
+              <li className="p-2 text-gray-500">Loading...</li>
+            ) : noResultsFound ? (
+              <li className="p-2 text-gray-500">No results found</li>
+            ) : suggestions && suggestions.length > 0 ? (
               suggestions.map((product, index) => (
                 <li
                   key={product.id}
-                  className={`p-2 cursor-pointer ${
+                  className={`p-2 cursor-pointer  hover:bg-gray-200" ${
                     index === activeSuggestion ? "bg-gray-200" : ""
                   }`}
                   onClick={() => handleSuggestionClick(product.id)}
                 >
                   {capitalizeFirstChar(product.name)}
                 </li>
-              ))}
+              ))
+            ) : null}
           </ul>
         )}
       </div>

@@ -1,7 +1,7 @@
-import { useFetchProducts } from "./useFetchProducts";
+import useProductStore from "@/store/useProductStore";
 
 export const useFetchOwners = () => {
-  const { products, loading, error, initialized } = useFetchProducts();
+  const { products, loading, error, initialized } = useProductStore();
 
   const owners = products
     ? Array.from(new Set(products.map((product) => product.user)))
@@ -14,20 +14,3 @@ export const useFetchOwners = () => {
     initialized,
   };
 };
-
-// import { ProductOwner } from "@/types/product";
-// import { useFetchProducts } from "./useFetchProducts";
-
-// export const useFetchOwners = () => {
-//   const { products } = useFetchProducts();
-
-//   // Use a Map to maintain unique owners by ID
-//   const ownersMap = new Map<string, ProductOwner>();
-//   products.forEach((product) => {
-//     if (product.user) {
-//       ownersMap.set(product.user.id, product.user);
-//     }
-//   });
-
-//   return Array.from(ownersMap.values());
-// };

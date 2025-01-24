@@ -9,6 +9,8 @@ import InputField from "../ui/InputField";
 import toast from "react-hot-toast";
 import { capitalizeFirstChar } from "@/utils";
 import useCartStore from "@/store/useCartStore";
+import Button from "../ui/Button";
+import Link from "next/link";
 
 const Signup = () => {
   const router = useRouter();
@@ -22,18 +24,15 @@ const Signup = () => {
   const [password, setPassword] = useState<string>("");
   const [phoneNumber, setPhoneNumber] = useState<string>("");
 
-  useEffect(() => {
-    if (error) {
-      toast.error(capitalizeFirstChar(error));
-    }
-  }, [error]);
-
   const handleEmailSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     const success = await signUpWithEmail(email, password);
     if (success) {
+      toast.success("Account created!");
       await cartStore.mergeGuestCart();
       router.push("/verify-email");
+    } else {
+      toast.error(error as string);
     }
   };
 
@@ -42,8 +41,11 @@ const Signup = () => {
     const formattedPhoneNumber = phoneNumber.replace(/^\+/, "");
     const success = await signUpWithPhone(formattedPhoneNumber);
     if (success) {
+      toast.success("Account created!");
       await cartStore.mergeGuestCart();
       router.push("/verify-phone");
+    } else {
+      toast.error(error as string);
     }
   };
 
@@ -107,13 +109,14 @@ const Signup = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <button
+              <Button
                 type="submit"
-                className="w-full bg-green-700 text-white py-2 rounded-md hover:bg-green-800 transition duration-200"
+                className="w-full"
                 disabled={loading}
+                loading={loading}
               >
-                {loading ? "Signing up..." : "Continue"}
-              </button>
+                Continue
+              </Button>
             </form>
           ) : (
             <form onSubmit={handlePhoneSignUp} className="space-y-4">
@@ -135,25 +138,27 @@ const Signup = () => {
                   borderRadius: "4px 0 0 4px",
                 }}
               />
-              <button
+
+              <Button
                 type="submit"
-                className="w-full bg-green-700 text-white py-2 rounded-md hover:bg-green-800 transition duration-200"
+                className="w-full"
                 disabled={loading}
+                loading={loading}
               >
-                {loading ? "Signing up..." : "Continue"}
-              </button>
+                Continue
+              </Button>
             </form>
           )}
 
           <div className="mt-6">
             <p className="text-center text-gray-600">
               Already have an account?{" "}
-              <a
+              <Link
                 href="/signin"
                 className="text-green-600 hover:text-green-700 transition duration-200"
               >
                 Sign in
-              </a>
+              </Link>
             </p>
           </div>
 

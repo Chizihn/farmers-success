@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { useFetchProducts } from "@/hooks/useFetchProducts";
 import { useFetchCategories } from "@/hooks/useFetchCategories";
 import { AssetType } from "@/types/category";
 import { capitalizeFirstChar } from "@/utils";
@@ -9,6 +8,7 @@ import ProductCard from "./ProductCard";
 import Category from "./Category";
 import { LoaderCircle } from "lucide-react";
 import { Product } from "@/types/product";
+import useProductStore from "@/store/useProductStore";
 
 interface CategoryProductsProps {
   categoryId: string;
@@ -28,7 +28,7 @@ const CategoryProducts: React.FC<CategoryProductsProps> = ({ categoryId }) => {
     products,
     loading: productsLoading,
     error: productsError,
-  } = useFetchProducts();
+  } = useProductStore();
 
   // Memoized values
   const category = useMemo(

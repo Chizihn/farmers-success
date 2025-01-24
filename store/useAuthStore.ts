@@ -14,6 +14,7 @@ import client from "@/lib/apolloClient";
 import { GET_USER } from "@/graphql/queries";
 import { AuthState, UserProfile } from "@/types";
 import { cookieStorage } from "@/utils/session";
+import { get } from "http";
 
 const useAuthStore = create<AuthState>()(
   devtools(
@@ -280,11 +281,13 @@ const useAuthStore = create<AuthState>()(
           // Add validation
           if (!token) {
             console.error("No token found");
+            cookieStorage.removeItem("token");
             get().logout();
             return null;
           }
           if (typeof token !== "string") {
             console.error("Invalid token format");
+            cookieStorage.removeItem("token");
             get().logout();
             return null;
           }
@@ -322,7 +325,6 @@ const useAuthStore = create<AuthState>()(
         },
         logout: () => {
           cookieStorage.removeItem("token");
-          cookieStorage.removeItem("user");
           set({
             user: null,
             token: null,
@@ -332,7 +334,6 @@ const useAuthStore = create<AuthState>()(
             isPhoneVerified: false,
             error: null,
           });
-          window.location.reload();
         },
       }),
       {

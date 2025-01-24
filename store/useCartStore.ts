@@ -38,6 +38,8 @@ const useCartStore = create<CartStore>()((set, get) => ({
         fetchPolicy: "no-cache",
       });
       const cartData = data.getProductCart;
+      console.log("Fetched cart for user", cartData);
+
       set({
         cartItems: cartData.items,
         totalItems: cartData.totalQuantity,

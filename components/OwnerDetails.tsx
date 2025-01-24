@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { capitalizeWords } from "@/utils";
-import { useFetchProducts } from "@/hooks/useFetchProducts";
 import ProductCard from "./ProductCard";
 import ProductFilter from "./ProductFilter";
 import MobileProductFilter from "./MobileProductFilter";
@@ -47,6 +46,9 @@ const OwnerDetails = ({ userId }: OwnerDetailsProps) => {
     },
     []
   );
+
+  const owner = userId ? products[0]?.user : null;
+  const fullName = owner ? `${owner.firstName} ${owner.lastName}` : null;
   // const handleViewProduct = (id: string) => {
   //   router.push()
   // }
@@ -72,9 +74,6 @@ const OwnerDetails = ({ userId }: OwnerDetailsProps) => {
       </div>
     );
 
-  const owner = userId ? products[0]?.user : null;
-  const fullName = owner ? `${owner.firstName} ${owner.lastName}` : null;
-
   return (
     <section className="w-full min-h-screen h-full pt-3 flex lg:gap-3 justify-center">
       {/* Desktop Filter */}
@@ -90,9 +89,6 @@ const OwnerDetails = ({ userId }: OwnerDetailsProps) => {
       <div className="container space-y-2 h-full overflow-y-auto flex-grow pb-6">
         <div className="bg-white p-[0.8rem] shadow-md rounded-lg mb-3 flex flex-col lg:flex-row justify-between items-center">
           <h2 className="text-xl font-semibold mb-4 lg:mb-0">
-            {/* {userId
-              ? `${capitalizeWords(fullName)}'s Products`
-              : `Available Products (${displayProducts.length})`} */}
             {`${capitalizeWords(fullName)}'s Products`}{" "}
             {`(${displayProducts.length})`}
           </h2>

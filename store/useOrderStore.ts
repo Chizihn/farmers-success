@@ -83,6 +83,7 @@ const useOrderStore = create<OrderState>((set) => ({
       const { data } = await client.query({
         query: GET_PRODUCT_ORDER_BY_ID,
         variables: { orderId },
+        fetchPolicy: "cache-first",
       });
 
       console.log("Query response:", data);

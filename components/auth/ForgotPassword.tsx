@@ -5,6 +5,8 @@ import Logo from "../Logo";
 import useSecureStore from "@/store/useSecure";
 import InputField from "../ui/InputField";
 import toast from "react-hot-toast";
+import Link from "next/link";
+import Button from "../ui/Button";
 
 const ForgotPassword = () => {
   const router = useRouter();
@@ -48,13 +50,14 @@ const ForgotPassword = () => {
               onChange={(e) => setEmail(e.target.value)}
             />
 
-            <button
+            <Button
               type="submit"
-              className="w-full bg-green-700 text-white py-2 rounded-md hover:bg-green-800 transition duration-200"
+              className="w-full"
               disabled={loading}
+              loading={loading}
             >
-              {loading ? "Sending code..." : "Send code"}
-            </button>
+              Send code
+            </Button>
           </form>
 
           {error && <p className="text-red-500 text-center">{error}</p>}
@@ -62,12 +65,12 @@ const ForgotPassword = () => {
           <div className="mt-6">
             <p className="text-center text-gray-600">
               Remembered your password?{" "}
-              <a
+              <Link
                 href="/signin"
                 className="text-green-600 hover:text-green-700 transition duration-200"
               >
                 Sign in
-              </a>
+              </Link>
             </p>
           </div>
 

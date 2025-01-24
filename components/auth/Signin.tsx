@@ -9,6 +9,10 @@ import InputField from "../ui/InputField";
 import toast from "react-hot-toast";
 import { capitalizeFirstChar } from "@/utils";
 import useCartStore from "@/store/useCartStore";
+import Link from "next/link";
+import Button from "../ui/Button";
+import { Loader } from "../Loader";
+import LoadingState from "../Loading";
 
 const Signin = () => {
   const router = useRouter();
@@ -23,6 +27,7 @@ const Signin = () => {
   const [phoneNumber, setPhoneNumber] = useState<string>("");
 
   const loginError = capitalizeFirstChar(error);
+  let pageLoading = false;
 
   const handleEmailSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,7 +36,8 @@ const Signin = () => {
     }
     const success = await signInWithEmail(email, password);
     if (success) {
-      toast.success("Successfully signed in!");
+      pageLoading = true;
+      toast.success("Signed in!");
       await cartStore.mergeGuestCart();
       router.push("/");
     } else {
@@ -50,11 +56,12 @@ const Signin = () => {
     console.log(formattedPhoneNumber);
 
     if (success) {
-      toast.success("Successfully signed in!");
+      pageLoading = true;
+      toast.success("Signed in!");
       await cartStore.mergeGuestCart();
       router.push("/verify-otp");
     } else {
-      toast.error(loginError || "Invalid credential");
+      toast.error(loginError || "Invalid phone number");
     }
   };
 
@@ -65,6 +72,8 @@ const Signin = () => {
     setPhoneNumber("");
     setError(null);
   };
+
+  if (pageLoading) return <LoadingState />;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 lg:bg-gray-50">
@@ -120,20 +129,21 @@ const Signin = () => {
                 onChange={(e) => setPassword(e.target.value)}
               />
               <div className="mt-3">
-                <a
+                <Link
                   href="/forgot-password"
                   className="text-green-600 hover:text-green-700 transition duration-200"
                 >
                   Forgot Password?
-                </a>
+                </Link>
               </div>
-              <button
+              <Button
                 type="submit"
-                className="w-full bg-green-700 text-white py-2 rounded-md hover:bg-green-800 transition duration-200"
+                className="w-full"
                 disabled={loading}
+                loading={loading}
               >
-                {loading ? "Signing in..." : "Sign in"}
-              </button>
+                Sign in
+              </Button>
             </form>
           ) : (
             <form onSubmit={handlePhoneSignIn} className="space-y-4">
@@ -155,25 +165,27 @@ const Signin = () => {
                   borderRadius: "4px 0 0 4px",
                 }}
               />
-              <button
+
+              <Button
                 type="submit"
-                className="w-full bg-green-700 text-white py-2 rounded-md hover:bg-green-800 transition duration-200"
+                className="w-full"
                 disabled={loading}
+                loading={loading}
               >
-                {loading ? "Signing in..." : "Sign in"}
-              </button>
+                Continue
+              </Button>
             </form>
           )}
 
           <div className="mt-6">
             <p className="text-center text-gray-600">
               {"Don't"} have an account?{" "}
-              <a
+              <Link
                 href="/signup"
                 className="text-green-600 hover:text-green-700 transition duration-200"
               >
                 Sign up
-              </a>
+              </Link>
             </p>
           </div>
 

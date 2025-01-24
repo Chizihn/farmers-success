@@ -8,6 +8,7 @@ import ResendOtp from "./ResendOtp";
 import { OtpFormType, otpSchema } from "@/types/forms";
 import useAuthStore from "@/store/useAuthStore";
 import toast from "react-hot-toast";
+import Button from "../ui/Button";
 
 const OTPVerification: React.FC<{
   verificationType: "verifyEmail" | "verifyPhone" | "verifySignIn";
@@ -112,13 +113,14 @@ const OTPVerification: React.FC<{
           </div>
           {errors.otp && <p className="text-red-500">{errors.otp.message}</p>}
 
-          <button
+          <Button
             type="submit"
-            className="w-full bg-green-700 text-white py-2 rounded-md hover:bg-green-800 transition duration-200"
-            disabled={!isOtpComplete}
+            className="w-full"
+            disabled={!isOtpComplete || loading}
+            loading={loading}
           >
-            {loading ? "Verifying..." : "Verify"}
-          </button>
+            Verify
+          </Button>
         </form>
 
         <div className="mt-6">

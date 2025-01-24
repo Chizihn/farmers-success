@@ -1,20 +1,22 @@
 "use client";
 
-import { useFetchProducts } from "@/hooks/useFetchProducts";
-import { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
+import useProductStore from "@/store/useProductStore";
+import { useFetchCategories } from "@/hooks/useFetchCategories";
 import ProductCard from "./ProductCard";
 import LoadingState from "./Loading";
 import { SlidersHorizontal } from "lucide-react";
 import Category from "./Category";
 import ProductFilter from "./ProductFilter";
 import { AssetType } from "@/types/category";
-import { useFetchCategories } from "@/hooks/useFetchCategories";
 import MobileProductFilter from "./MobileProductFilter";
 import { Product } from "@/types/product";
 import Paginator from "./Paginator";
+import Cart from "./Cart";
 
 const Products: React.FC = () => {
-  const { products, loading, initialized, error } = useFetchProducts();
+  // Directly use the store instead of the hook
+  const { products, loading, initialized, error } = useProductStore();
   const { categories } = useFetchCategories(AssetType.CROP);
   const [showFilter, setShowFilter] = useState<boolean>(false);
   const [displayProducts, setDisplayProducts] = useState<Product[]>([]);
@@ -24,54 +26,62 @@ const Products: React.FC = () => {
   useEffect(() => {
     if (products?.length > 0) {
       setDisplayProducts(products);
-      // Ensure initial pagination is set
-      setPaginatedProducts(products.slice(0, 12)); // Assuming 12 items per page
+      setPaginatedProducts(products.slice(0, 12));
     }
   }, [products]);
 
-  const handleOpenFilter = () => setShowFilter(!showFilter);
+  const handleOpenFilter = useCallback(
+    () => setShowFilter((prev) => !prev),
+    []
+  );
 
   const handleFilteredProductsChange = useCallback(
     (filteredProducts: Product[]) => {
       setDisplayProducts(filteredProducts);
-      // Reset pagination when filters change
       setPaginatedProducts(filteredProducts.slice(0, 12));
     },
     []
   );
 
-  // Show loading state until products are initialized
-  if (loading || !initialized) return <LoadingState />;
+  // Memoize rendering logic for empty/error states
+  const renderContent = useMemo(() => {
+    if (loading || !initialized) return <LoadingState />;
 
-  // (!loading && initialized && !products) || products.length === 0
-
-  if (!loading && !products && initialized) {
-    return (
-      <div className="h-screen w-full flex justify-center items-center">
-        <p className="text-center text-gray-500">
-          No products are currently available. <br />
-          Please check back later or refresh the page.
-        </p>
-      </div>
-    );
-  }
-
-  // Only show error if we're not loading and there's an error
-  if (error) {
-    return (
-      <div className="w-full min-h-screen flex items-center justify-center">
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <p className="text-red-600 font-medium">
-            Error loading products: {error}
-          </p>
-          <p className="text-gray-600 mt-2">Please try refreshing the page</p>
+    if (error) {
+      return (
+        <div className="w-full min-h-screen flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg shadow-md">
+            <p className="text-red-600 font-medium">
+              Error loading products: {error}
+            </p>
+            <p className="text-gray-600 mt-2">Please try refreshing the page</p>
+          </div>
         </div>
-      </div>
-    );
-  }
+      );
+    }
+
+    if (!loading && !products && initialized) {
+      return (
+        <div className="h-screen w-full flex justify-center items-center">
+          <p className="text-center text-gray-500">
+            No products are currently available. <br />
+            Please check back later or refresh the page.
+          </p>
+        </div>
+      );
+    }
+
+    return null;
+  }, [loading, initialized, products, error]);
+
+  // If there's a rendering issue for content, return early
+  if (renderContent) return renderContent;
 
   return (
-    <main>
+    <main className="relative">
+      <div className="fixed bottom-5 lg:bottom-6 right-5 lg:right-10 bg-green-700 rounded-full p-4">
+        <Cart color="white" />
+      </div>
       <Category categories={categories} />
       <section className="w-full min-h-screen h-full pt-3 flex lg:gap-3 justify-center">
         {/* Desktop Filter */}
@@ -115,7 +125,7 @@ const Products: React.FC = () => {
               <Paginator
                 products={displayProducts}
                 onPageChange={setPaginatedProducts}
-                itemsPerPage={12} // Adjust based on your grid layout
+                itemsPerPage={12}
               />
             </>
           )}
@@ -134,4 +144,4 @@ const Products: React.FC = () => {
   );
 };
 
-export default Products;
+export default React.memo(Products);
