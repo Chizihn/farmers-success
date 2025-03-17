@@ -47,29 +47,40 @@ const PageModal: React.FC<PageModalProps> = ({ isOpen, children, onClose }) => {
   if (!isOpen && !isClosing) return null;
 
   return (
-    <div
-      className={`fixed top-0 left-0 inset-0 z-[1000] flex items-center justify-end 
-        bg-black/50 transition-opacity duration-300 ${
-          isVisible ? "opacity-100" : "opacity-0"
-        }`}
-    >
+    <>
       <div
-        className={`min-h-screen h-full overflow-y-auto relative w-full 
-          lg:max-w-[30rem] bg-white shadow-xl my-4 transform transition-transform 
-          duration-300 ${isVisible ? "translate-x-0" : "translate-x-full"}`}
+        className={`fixed top-0 left-0 inset-0 z-[1000] flex items-center justify-end 
+              bg-black/50 transition-opacity duration-300 ${
+                isVisible ? "opacity-100" : "opacity-0"
+              }`}
+      />
+
+      {/* Modal */}
+      <div
+        className={`fixed top-0 right-0 z-[1000] max-h-screen h-full w-full 
+           lg:max-w-[30rem] bg-white shadow-xl transform transition-all
+           duration-300 flex flex-col overflow-auto ${
+             isVisible
+               ? "translate-x-0 opacity-100"
+               : "translate-x-full opacity-0"
+           }`}
         role="dialog"
         aria-modal="true"
       >
-        {!isUpdateProfilePage && (
-          <div className="absolute top-4 right-4">
-            <CloseButton onClick={handleClose} />
-          </div>
-        )}
+        <div className="h-full w-full">
+          {/* Header - fixed height */}
 
-        {/* Modal Body */}
-        <div className="flex-1">{children}</div>
+          {!isUpdateProfilePage && (
+            <div className="absolute top-4 right-4">
+              <CloseButton onClick={handleClose} />
+            </div>
+          )}
+
+          {/* Content - scrollable only when needed */}
+          <div className="flex-1 overflow-auto p-4">{children}</div>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
