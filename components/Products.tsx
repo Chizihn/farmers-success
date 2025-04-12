@@ -79,7 +79,7 @@ const Products: React.FC = () => {
 
   return (
     <main className="relative">
-      <div className="fixed bottom-5 lg:bottom-6 right-5 lg:right-10 bg-green-700 rounded-full p-4">
+      <div className="fixed bottom-5 lg:bottom-6 right-5 lg:right-10 bg-green-700 rounded-full p-4 z-[100]">
         <Cart color="white" />
       </div>
       <Category categories={categories} />
